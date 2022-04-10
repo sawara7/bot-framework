@@ -15,6 +15,9 @@ class BaseBotClass {
         this._logic = baseParams.botLogic;
         this._baseCurrency = baseParams.baseCurrency;
     }
+    get uuid() {
+        return this._uuid;
+    }
     get id() {
         return this._id;
     }
@@ -29,6 +32,16 @@ class BaseBotClass {
     }
     get startTime() {
         return this._startTime;
+    }
+    get botResult() {
+        return {
+            botID: this.id,
+            baseCurrency: this.baseCurrency,
+            botLogic: this.botLogic,
+            botName: this.botName,
+            startTime: this.startTime,
+            uuid: this.uuid
+        };
     }
 }
 exports.BaseBotClass = BaseBotClass;
