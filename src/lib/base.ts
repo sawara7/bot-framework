@@ -13,6 +13,14 @@ export interface BaseBotParams {
     botName: string
 }
 
+export interface BaseBotResult {
+    botID: string
+    baseCurrency: botCurrency
+    botLogic: string
+    botName: string
+    startTime: number
+    uuid: string
+}
 export class BaseBotClass {
     private _uuid: string
     private _id: string
@@ -46,11 +54,22 @@ export class BaseBotClass {
         return this._logic
     }
 
-    get baseCurrency(): string {
+    get baseCurrency(): botCurrency {
         return this._baseCurrency
     }
 
     get startTime(): number {
         return this._startTime
+    }
+
+    get botResult(): BaseBotResult {
+        return {
+            botID: this.id,
+            baseCurrency: this.baseCurrency,
+            botLogic: this.botLogic,
+            botName: this.botName,
+            startTime: this.startTime,
+            uuid: this.uuid
+        }
     }
 }
