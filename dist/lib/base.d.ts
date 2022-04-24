@@ -5,8 +5,10 @@ export interface BaseBotParams {
     baseCurrency: botCurrency;
     botLogic: string;
     botName: string;
+    notificationChannel?: string;
 }
 export interface BaseBotResult {
+    time: number;
     botID: string;
     baseCurrency: botCurrency;
     botLogic: string;
@@ -21,12 +23,16 @@ export declare class BaseBotClass {
     private _logic;
     private _baseCurrency;
     private _startTime;
-    constructor(baseParams: BaseBotParams);
+    private _notificationChannel?;
+    private _notifier?;
+    constructor(params: BaseBotParams);
+    Start(): Promise<void>;
     get uuid(): string;
     get id(): string;
     get botName(): string;
     get botLogic(): string;
     get baseCurrency(): botCurrency;
     get startTime(): number;
+    protected notice(msg: string): void;
     get botResult(): BaseBotResult;
 }
