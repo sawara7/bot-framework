@@ -18,6 +18,7 @@ exports.botCurrencyList = [
 ];
 class BaseBotClass {
     constructor(params) {
+        this._enabled = false;
         this._uuid = (0, uuid_1.v4)();
         this._startTime = Date.now();
         this._id = params.botID;
@@ -31,6 +32,14 @@ class BaseBotClass {
             if (this._notificationChannel) {
                 this._notifier = yield (0, slack_notification_1.getSlackNotifier)(this._notificationChannel);
             }
+            this._enabled = true;
+            this.notice("Start: " + this.botName);
+        });
+    }
+    Stop() {
+        return __awaiter(this, void 0, void 0, function* () {
+            this._enabled = false;
+            this.notice("Stop: " + this.botName);
         });
     }
     get uuid() {
@@ -50,6 +59,9 @@ class BaseBotClass {
     }
     get startTime() {
         return this._startTime;
+    }
+    get enabled() {
+        return this._enabled;
     }
     notice(msg) {
         if (this._notifier) {

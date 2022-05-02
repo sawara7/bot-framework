@@ -34,6 +34,7 @@ export class BaseBotClass {
     private _startTime: number
     private _notificationChannel?: string
     private _notifier?: SlackNotifier
+    private _enabled: boolean = false
 
     constructor(params: BaseBotParams) {
         this._uuid = uuidv4()
@@ -49,6 +50,13 @@ export class BaseBotClass {
         if (this._notificationChannel) {
             this._notifier = await getSlackNotifier(this._notificationChannel)
         }
+        this._enabled = true
+        this.notice("Start: " + this.botName)
+    }
+
+    async Stop() {
+        this._enabled = false
+        this.notice("Stop: " + this.botName)
     }
 
     get uuid(): string {
@@ -73,6 +81,10 @@ export class BaseBotClass {
 
     get startTime(): number {
         return this._startTime
+    }
+
+    get enabled(): boolean {
+        return this._enabled
     }
 
     protected notice(msg: string) {

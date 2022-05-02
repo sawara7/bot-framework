@@ -25,14 +25,17 @@ export declare class BaseBotClass {
     private _startTime;
     private _notificationChannel?;
     private _notifier?;
+    private _enabled;
     constructor(params: BaseBotParams);
     Start(): Promise<void>;
+    Stop(): Promise<void>;
     get uuid(): string;
     get id(): string;
     get botName(): string;
     get botLogic(): string;
     get baseCurrency(): botCurrency;
     get startTime(): number;
+    get enabled(): boolean;
     protected notice(msg: string): void;
     get botResult(): BaseBotResult;
 }
