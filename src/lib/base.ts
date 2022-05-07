@@ -25,7 +25,7 @@ export interface BaseBotResult {
     uuid: string
 }
 
-export class BaseBotClass {
+export abstract class BaseBotClass {
     private _uuid: string
     private _id: string
     private _name: string
@@ -46,18 +46,30 @@ export class BaseBotClass {
         this._notificationChannel = params.notificationChannel
     }
 
-    async Start() {
+    public async start(): Promise<void> {
+        if (this._enabled) {
+            throw new Error('start failed.')
+        }
         if (this._notificationChannel) {
             this._notifier = await getSlackNotifier(this._notificationChannel)
         }
         this._enabled = true
         this.notice("Start: " + this.botName)
+        await this.doStart()
     }
 
-    async Stop() {
+    protected abstract doStart(): Promise<void>
+
+    public async stop(): Promise<void> {
+        if (!this._enabled) {
+            throw new Error('stop failed.')
+        }
+        await this.doStop()
         this._enabled = false
         this.notice("Stop: " + this.botName)
     }
+
+    protected abstract doStop(): Promise<void>
 
     get uuid(): string {
         return this._uuid

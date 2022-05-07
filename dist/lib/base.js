@@ -27,17 +27,25 @@ class BaseBotClass {
         this._baseCurrency = params.baseCurrency;
         this._notificationChannel = params.notificationChannel;
     }
-    Start() {
+    start() {
         return __awaiter(this, void 0, void 0, function* () {
+            if (this._enabled) {
+                throw new Error('start failed.');
+            }
             if (this._notificationChannel) {
                 this._notifier = yield (0, slack_notification_1.getSlackNotifier)(this._notificationChannel);
             }
             this._enabled = true;
             this.notice("Start: " + this.botName);
+            yield this.doStart();
         });
     }
-    Stop() {
+    stop() {
         return __awaiter(this, void 0, void 0, function* () {
+            if (!this._enabled) {
+                throw new Error('stop failed.');
+            }
+            yield this.doStop();
             this._enabled = false;
             this.notice("Stop: " + this.botName);
         });

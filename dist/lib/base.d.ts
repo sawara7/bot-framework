@@ -16,7 +16,7 @@ export interface BaseBotResult {
     startTime: number;
     uuid: string;
 }
-export declare class BaseBotClass {
+export declare abstract class BaseBotClass {
     private _uuid;
     private _id;
     private _name;
@@ -27,8 +27,10 @@ export declare class BaseBotClass {
     private _notifier?;
     private _enabled;
     constructor(params: BaseBotParams);
-    Start(): Promise<void>;
-    Stop(): Promise<void>;
+    start(): Promise<void>;
+    protected abstract doStart(): Promise<void>;
+    stop(): Promise<void>;
+    protected abstract doStop(): Promise<void>;
     get uuid(): string;
     get id(): string;
     get botName(): string;
