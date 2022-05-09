@@ -43,10 +43,11 @@ class BaseBotClass {
     stop() {
         return __awaiter(this, void 0, void 0, function* () {
             if (!this._enabled) {
+                this.notice("Stop failed");
                 throw new Error('stop failed.');
             }
-            yield this.doStop();
             this._enabled = false;
+            yield this.doStop();
             this.notice("Stop: " + this.botName);
         });
     }

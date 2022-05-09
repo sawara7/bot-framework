@@ -62,10 +62,11 @@ export abstract class BaseBotClass {
 
     public async stop(): Promise<void> {
         if (!this._enabled) {
+            this.notice("Stop failed")
             throw new Error('stop failed.')
-        }
-        await this.doStop()
+        } 
         this._enabled = false
+        await this.doStop()
         this.notice("Stop: " + this.botName)
     }
 
