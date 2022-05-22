@@ -6,7 +6,7 @@ export interface BaseBotParams {
     baseCurrency: botCurrency;
     botLogic: string;
     botName: string;
-    notifier: SlackNotifier;
+    notifier?: SlackNotifier;
 }
 export interface BaseBotResult {
     time: number;
