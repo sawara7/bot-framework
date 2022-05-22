@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid'
-import { SlackNotifier, getSlackNotifier } from 'slack-notification'
+import { SlackNotifier } from 'slack-notification'
 
 export const botCurrencyList = [
     'JPY',
@@ -12,7 +12,7 @@ export interface BaseBotParams {
     baseCurrency: botCurrency
     botLogic: string
     botName: string
-    notificationChannel?: string
+    notifier: SlackNotifier
 }
 
 export interface BaseBotResult {
@@ -32,7 +32,6 @@ export abstract class BaseBotClass {
     private _logic: string
     private _baseCurrency: botCurrency
     private _startTime: number
-    private _notificationChannel?: string
     private _notifier?: SlackNotifier
     private _enabled: boolean = false
 
@@ -43,15 +42,12 @@ export abstract class BaseBotClass {
         this._name = params.botName
         this._logic = params.botLogic
         this._baseCurrency = params.baseCurrency
-        this._notificationChannel = params.notificationChannel
+        this._notifier = params.notifier
     }
 
     public async start(): Promise<void> {
         if (this._enabled) {
             throw new Error('start failed.')
-        }
-        if (this._notificationChannel) {
-            this._notifier = await getSlackNotifier(this._notificationChannel)
         }
         this._enabled = true
         this.notice("Start: " + this.botName)

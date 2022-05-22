@@ -1,3 +1,4 @@
+import { SlackNotifier } from 'slack-notification';
 export declare const botCurrencyList: readonly ["JPY", "USD"];
 export declare type botCurrency = typeof botCurrencyList[number];
 export interface BaseBotParams {
@@ -5,7 +6,7 @@ export interface BaseBotParams {
     baseCurrency: botCurrency;
     botLogic: string;
     botName: string;
-    notificationChannel?: string;
+    notifier: SlackNotifier;
 }
 export interface BaseBotResult {
     time: number;
@@ -23,7 +24,6 @@ export declare abstract class BaseBotClass {
     private _logic;
     private _baseCurrency;
     private _startTime;
-    private _notificationChannel?;
     private _notifier?;
     private _enabled;
     constructor(params: BaseBotParams);

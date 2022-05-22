@@ -11,7 +11,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BaseBotClass = exports.botCurrencyList = void 0;
 const uuid_1 = require("uuid");
-const slack_notification_1 = require("slack-notification");
 exports.botCurrencyList = [
     'JPY',
     'USD'
@@ -25,15 +24,12 @@ class BaseBotClass {
         this._name = params.botName;
         this._logic = params.botLogic;
         this._baseCurrency = params.baseCurrency;
-        this._notificationChannel = params.notificationChannel;
+        this._notifier = params.notifier;
     }
     start() {
         return __awaiter(this, void 0, void 0, function* () {
             if (this._enabled) {
                 throw new Error('start failed.');
-            }
-            if (this._notificationChannel) {
-                this._notifier = yield (0, slack_notification_1.getSlackNotifier)(this._notificationChannel);
             }
             this._enabled = true;
             this.notice("Start: " + this.botName);
