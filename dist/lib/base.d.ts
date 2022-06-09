@@ -7,6 +7,9 @@ export interface BaseBotParams {
     botLogic: string;
     botName: string;
     notifier?: SlackNotifier;
+    onHourly?: (bot: BaseBotClass) => void;
+    onDaily?: (bot: BaseBotClass) => void;
+    onWeekly?: (bot: BaseBotClass) => void;
 }
 export interface BaseBotResult {
     time: number;
@@ -26,8 +29,19 @@ export declare abstract class BaseBotClass {
     private _startTime;
     private _notifier?;
     private _enabled;
+    protected _totalProfit: number;
+    private _previousHourlyProfit;
+    protected _hourlyProfit: number;
+    private _onHourly?;
+    private _previousDailyProfit;
+    protected _dailyProfit: number;
+    private _onDaily?;
+    private _previousWeeklyProfit;
+    protected _weeklyProfit: number;
+    private _onWeekly?;
     constructor(params: BaseBotParams);
     start(): Promise<void>;
+    private schedule;
     protected abstract doStart(): Promise<void>;
     stop(): Promise<void>;
     protected abstract doStop(): Promise<void>;
@@ -38,6 +52,9 @@ export declare abstract class BaseBotClass {
     get baseCurrency(): botCurrency;
     get startTime(): number;
     get enabled(): boolean;
+    get hourlyProfit(): number;
+    get dailyProfit(): number;
+    get weeklyProfit(): number;
     protected notice(msg: string): void;
     get botResult(): BaseBotResult;
 }

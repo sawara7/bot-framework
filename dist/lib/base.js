@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BaseBotClass = exports.botCurrencyList = void 0;
+const node_cron_1 = require("node-cron");
 const uuid_1 = require("uuid");
 exports.botCurrencyList = [
     'JPY',
@@ -18,6 +19,13 @@ exports.botCurrencyList = [
 class BaseBotClass {
     constructor(params) {
         this._enabled = false;
+        this._totalProfit = 0;
+        this._previousHourlyProfit = 0;
+        this._hourlyProfit = 0;
+        this._previousDailyProfit = 0;
+        this._dailyProfit = 0;
+        this._previousWeeklyProfit = 0;
+        this._weeklyProfit = 0;
         this._uuid = (0, uuid_1.v4)();
         this._startTime = Date.now();
         this._id = params.botID;
@@ -33,8 +41,38 @@ class BaseBotClass {
             }
             this._enabled = true;
             this.notice("Start: " + this.botName);
+            this.schedule();
             yield this.doStart();
         });
+    }
+    schedule() {
+        // hourly
+        (0, node_cron_1.schedule)('59 * * * *', () => __awaiter(this, void 0, void 0, function* () {
+            this._hourlyProfit = this._totalProfit - this._previousHourlyProfit;
+            if (this._onHourly) {
+                yield this._onHourly(this);
+            }
+            this._previousHourlyProfit = this._totalProfit;
+            this._hourlyProfit = 0;
+        }));
+        // daily
+        (0, node_cron_1.schedule)('59 23 * * *', () => __awaiter(this, void 0, void 0, function* () {
+            this._dailyProfit = this._totalProfit - this._previousDailyProfit;
+            if (this._onDaily) {
+                yield this._onDaily(this);
+            }
+            this._previousDailyProfit = this._totalProfit;
+            this._dailyProfit = 0;
+        }));
+        // weekly
+        (0, node_cron_1.schedule)('59 23 * * 6', () => __awaiter(this, void 0, void 0, function* () {
+            this._weeklyProfit = this._totalProfit - this._previousWeeklyProfit;
+            if (this._onWeekly) {
+                yield this._onWeekly(this);
+            }
+            this._previousWeeklyProfit = this._totalProfit;
+            this._weeklyProfit = 0;
+        }));
     }
     stop() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -67,6 +105,15 @@ class BaseBotClass {
     }
     get enabled() {
         return this._enabled;
+    }
+    get hourlyProfit() {
+        return this._hourlyProfit;
+    }
+    get dailyProfit() {
+        return this._dailyProfit;
+    }
+    get weeklyProfit() {
+        return this._weeklyProfit;
     }
     notice(msg) {
         if (this._notifier) {

@@ -1,3 +1,4 @@
+import { schedule } from "node-cron"
 import { v4 as uuidv4 } from 'uuid'
 import { SlackNotifier } from 'slack-notification'
 
@@ -13,6 +14,9 @@ export interface BaseBotParams {
     botLogic: string
     botName: string
     notifier?: SlackNotifier
+    onHourly?: (bot: BaseBotClass) => void
+    onDaily?: (bot: BaseBotClass) => void
+    onWeekly?: (bot: BaseBotClass) => void
 }
 
 export interface BaseBotResult {
@@ -35,6 +39,17 @@ export abstract class BaseBotClass {
     private _notifier?: SlackNotifier
     private _enabled: boolean = false
 
+    protected _totalProfit: number = 0
+    private _previousHourlyProfit: number = 0
+    protected _hourlyProfit: number = 0
+    private _onHourly?: (bot: BaseBotClass) => void
+    private _previousDailyProfit: number = 0
+    protected _dailyProfit: number = 0
+    private _onDaily?: (bot: BaseBotClass) => void
+    private _previousWeeklyProfit: number = 0
+    protected _weeklyProfit: number = 0
+    private _onWeekly?: (bot: BaseBotClass) => void
+
     constructor(params: BaseBotParams) {
         this._uuid = uuidv4()
         this._startTime = Date.now()
@@ -51,7 +66,40 @@ export abstract class BaseBotClass {
         }
         this._enabled = true
         this.notice("Start: " + this.botName)
+        this.schedule()
         await this.doStart()
+    }
+
+    private schedule() {
+        // hourly
+        schedule('59 * * * *', async () => {
+            this._hourlyProfit = this._totalProfit - this._previousHourlyProfit
+            if (this._onHourly) {
+                await this._onHourly(this)
+            }
+            this._previousHourlyProfit = this._totalProfit
+            this._hourlyProfit = 0
+        })
+
+        // daily
+        schedule('59 23 * * *', async () => {
+            this._dailyProfit = this._totalProfit - this._previousDailyProfit
+            if (this._onDaily) {
+                await this._onDaily(this)
+            }
+            this._previousDailyProfit = this._totalProfit
+            this._dailyProfit = 0
+        })
+
+        // weekly
+        schedule('59 23 * * 6', async () => {
+            this._weeklyProfit = this._totalProfit - this._previousWeeklyProfit
+            if (this._onWeekly) {
+                await this._onWeekly(this)
+            }
+            this._previousWeeklyProfit = this._totalProfit
+            this._weeklyProfit = 0
+        })
     }
 
     protected abstract doStart(): Promise<void>
@@ -94,6 +142,18 @@ export abstract class BaseBotClass {
 
     get enabled(): boolean {
         return this._enabled
+    }
+
+    get hourlyProfit(): number {
+        return this._hourlyProfit
+    }
+
+    get dailyProfit(): number {
+        return this._dailyProfit
+    }
+
+    get weeklyProfit(): number {
+        return this._weeklyProfit
     }
 
     protected notice(msg: string) {
