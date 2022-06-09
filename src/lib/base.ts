@@ -70,9 +70,12 @@ export abstract class BaseBotClass {
         await this.doStart()
     }
 
+    protected abstract calcTotalProfit(): number
+
     private schedule() {
         // hourly
         schedule('59 * * * *', async () => {
+            this._totalProfit = this.calcTotalProfit()
             this._hourlyProfit = this._totalProfit - this._previousHourlyProfit
             if (this._onHourly) {
                 await this._onHourly(this)
@@ -82,7 +85,7 @@ export abstract class BaseBotClass {
         })
 
         // daily
-        schedule('59 23 * * *', async () => {
+        schedule('0 0 * * *', async () => {
             this._dailyProfit = this._totalProfit - this._previousDailyProfit
             if (this._onDaily) {
                 await this._onDaily(this)
@@ -92,7 +95,7 @@ export abstract class BaseBotClass {
         })
 
         // weekly
-        schedule('59 23 * * 6', async () => {
+        schedule('0 0 * * 6', async () => {
             this._weeklyProfit = this._totalProfit - this._previousWeeklyProfit
             if (this._onWeekly) {
                 await this._onWeekly(this)
@@ -142,6 +145,10 @@ export abstract class BaseBotClass {
 
     get enabled(): boolean {
         return this._enabled
+    }
+
+    get totalProfit(): number {
+        return this._totalProfit
     }
 
     get hourlyProfit(): number {

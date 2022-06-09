@@ -41,6 +41,7 @@ export declare abstract class BaseBotClass {
     private _onWeekly?;
     constructor(params: BaseBotParams);
     start(): Promise<void>;
+    protected abstract calcTotalProfit(): number;
     private schedule;
     protected abstract doStart(): Promise<void>;
     stop(): Promise<void>;
@@ -52,6 +53,7 @@ export declare abstract class BaseBotClass {
     get baseCurrency(): botCurrency;
     get startTime(): number;
     get enabled(): boolean;
+    get totalProfit(): number;
     get hourlyProfit(): number;
     get dailyProfit(): number;
     get weeklyProfit(): number;

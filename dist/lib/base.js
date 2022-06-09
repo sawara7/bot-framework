@@ -48,6 +48,7 @@ class BaseBotClass {
     schedule() {
         // hourly
         (0, node_cron_1.schedule)('59 * * * *', () => __awaiter(this, void 0, void 0, function* () {
+            this._totalProfit = this.calcTotalProfit();
             this._hourlyProfit = this._totalProfit - this._previousHourlyProfit;
             if (this._onHourly) {
                 yield this._onHourly(this);
@@ -56,7 +57,7 @@ class BaseBotClass {
             this._hourlyProfit = 0;
         }));
         // daily
-        (0, node_cron_1.schedule)('59 23 * * *', () => __awaiter(this, void 0, void 0, function* () {
+        (0, node_cron_1.schedule)('0 0 * * *', () => __awaiter(this, void 0, void 0, function* () {
             this._dailyProfit = this._totalProfit - this._previousDailyProfit;
             if (this._onDaily) {
                 yield this._onDaily(this);
@@ -65,7 +66,7 @@ class BaseBotClass {
             this._dailyProfit = 0;
         }));
         // weekly
-        (0, node_cron_1.schedule)('59 23 * * 6', () => __awaiter(this, void 0, void 0, function* () {
+        (0, node_cron_1.schedule)('0 0 * * 6', () => __awaiter(this, void 0, void 0, function* () {
             this._weeklyProfit = this._totalProfit - this._previousWeeklyProfit;
             if (this._onWeekly) {
                 yield this._onWeekly(this);
@@ -105,6 +106,9 @@ class BaseBotClass {
     }
     get enabled() {
         return this._enabled;
+    }
+    get totalProfit() {
+        return this._totalProfit;
     }
     get hourlyProfit() {
         return this._hourlyProfit;
