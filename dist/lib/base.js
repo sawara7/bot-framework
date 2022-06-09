@@ -33,6 +33,9 @@ class BaseBotClass {
         this._logic = params.botLogic;
         this._baseCurrency = params.baseCurrency;
         this._notifier = params.notifier;
+        this._onHourly = params.onHourly;
+        this._onDaily = params.onDaily;
+        this._onWeekly = params.onWeekly;
     }
     start() {
         return __awaiter(this, void 0, void 0, function* () {
