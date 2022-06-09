@@ -57,7 +57,8 @@ class BaseBotClass {
             this._hourlyProfit = 0;
         }));
         // daily
-        (0, node_cron_1.schedule)('0 0 * * *', () => __awaiter(this, void 0, void 0, function* () {
+        (0, node_cron_1.schedule)('59 23 * * *', () => __awaiter(this, void 0, void 0, function* () {
+            this._totalProfit = this.calcTotalProfit();
             this._dailyProfit = this._totalProfit - this._previousDailyProfit;
             if (this._onDaily) {
                 yield this._onDaily(this);
@@ -66,7 +67,8 @@ class BaseBotClass {
             this._dailyProfit = 0;
         }));
         // weekly
-        (0, node_cron_1.schedule)('0 0 * * 6', () => __awaiter(this, void 0, void 0, function* () {
+        (0, node_cron_1.schedule)('59 23 * * 6', () => __awaiter(this, void 0, void 0, function* () {
+            this._totalProfit = this.calcTotalProfit();
             this._weeklyProfit = this._totalProfit - this._previousWeeklyProfit;
             if (this._onWeekly) {
                 yield this._onWeekly(this);
@@ -132,7 +134,11 @@ class BaseBotClass {
             botLogic: this.botLogic,
             botName: this.botName,
             startTime: this.startTime,
-            uuid: this.uuid
+            uuid: this.uuid,
+            totalProfit: this.totalProfit,
+            hourlyProfit: this.totalProfit,
+            dailyProfit: this.totalProfit,
+            weeklyProfit: this.totalProfit
         };
     }
 }

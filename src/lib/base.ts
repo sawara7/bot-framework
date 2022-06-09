@@ -27,6 +27,10 @@ export interface BaseBotResult {
     botName: string
     startTime: number
     uuid: string
+    totalProfit: number
+    hourlyProfit: number
+    dailyProfit: number
+    weeklyProfit: number
 }
 
 export abstract class BaseBotClass {
@@ -85,7 +89,8 @@ export abstract class BaseBotClass {
         })
 
         // daily
-        schedule('0 0 * * *', async () => {
+        schedule('59 23 * * *', async () => {
+            this._totalProfit = this.calcTotalProfit()
             this._dailyProfit = this._totalProfit - this._previousDailyProfit
             if (this._onDaily) {
                 await this._onDaily(this)
@@ -95,7 +100,8 @@ export abstract class BaseBotClass {
         })
 
         // weekly
-        schedule('0 0 * * 6', async () => {
+        schedule('59 23 * * 6', async () => {
+            this._totalProfit = this.calcTotalProfit()
             this._weeklyProfit = this._totalProfit - this._previousWeeklyProfit
             if (this._onWeekly) {
                 await this._onWeekly(this)
@@ -177,7 +183,11 @@ export abstract class BaseBotClass {
             botLogic: this.botLogic,
             botName: this.botName,
             startTime: this.startTime,
-            uuid: this.uuid
+            uuid: this.uuid,
+            totalProfit: this.totalProfit,
+            hourlyProfit: this.totalProfit,
+            dailyProfit: this.totalProfit,
+            weeklyProfit: this.totalProfit
         }
     }
 }

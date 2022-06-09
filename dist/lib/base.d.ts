@@ -19,6 +19,10 @@ export interface BaseBotResult {
     botName: string;
     startTime: number;
     uuid: string;
+    totalProfit: number;
+    hourlyProfit: number;
+    dailyProfit: number;
+    weeklyProfit: number;
 }
 export declare abstract class BaseBotClass {
     private _uuid;
