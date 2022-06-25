@@ -1,4 +1,5 @@
 import { SlackNotifier } from 'slack-notification';
+import { BaseBotResult } from "./result";
 export declare const botCurrencyList: readonly ["JPY", "USD"];
 export declare type botCurrency = typeof botCurrencyList[number];
 export interface BaseBotParams {
@@ -10,19 +11,6 @@ export interface BaseBotParams {
     onHourly?: (bot: BaseBotClass) => void;
     onDaily?: (bot: BaseBotClass) => void;
     onWeekly?: (bot: BaseBotClass) => void;
-}
-export interface BaseBotResult {
-    time: number;
-    botID: string;
-    baseCurrency: botCurrency;
-    botLogic: string;
-    botName: string;
-    startTime: number;
-    uuid: string;
-    totalProfit: number;
-    hourlyProfit: number;
-    dailyProfit: number;
-    weeklyProfit: number;
 }
 export declare abstract class BaseBotClass {
     private _uuid;

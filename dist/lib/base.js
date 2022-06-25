@@ -139,9 +139,9 @@ class BaseBotClass {
             startTime: this.startTime,
             uuid: this.uuid,
             totalProfit: this.totalProfit,
-            hourlyProfit: this.totalProfit,
-            dailyProfit: this.totalProfit,
-            weeklyProfit: this.totalProfit
+            hourlyProfit: this.hourlyProfit,
+            dailyProfit: this.dailyProfit,
+            weeklyProfit: this.weeklyProfit
         };
     }
 }
