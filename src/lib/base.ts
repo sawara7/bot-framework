@@ -1,6 +1,7 @@
 import { schedule } from "node-cron"
 import { v4 as uuidv4 } from 'uuid'
 import { SlackNotifier } from 'slack-notification'
+import { BaseBotResult } from "./result";
 
 export const botCurrencyList = [
     'JPY',
@@ -18,21 +19,6 @@ export interface BaseBotParams {
     onDaily?: (bot: BaseBotClass) => void
     onWeekly?: (bot: BaseBotClass) => void
 }
-
-export interface BaseBotResult {
-    time: number
-    botID: string
-    baseCurrency: botCurrency
-    botLogic: string
-    botName: string
-    startTime: number
-    uuid: string
-    totalProfit: number
-    hourlyProfit: number
-    dailyProfit: number
-    weeklyProfit: number
-}
-
 export abstract class BaseBotClass {
     private _uuid: string
     private _id: string
@@ -188,9 +174,9 @@ export abstract class BaseBotClass {
             startTime: this.startTime,
             uuid: this.uuid,
             totalProfit: this.totalProfit,
-            hourlyProfit: this.totalProfit,
-            dailyProfit: this.totalProfit,
-            weeklyProfit: this.totalProfit
+            hourlyProfit: this.hourlyProfit,
+            dailyProfit: this.dailyProfit,
+            weeklyProfit: this.weeklyProfit
         }
     }
 }
