@@ -20,8 +20,8 @@
   },
   "bundleDependencies": false,
   "dependencies": {
+    "slack-notification": "github:sawara7/slack-notification",
     "node-cron": "^3.0.1",
-    "uuid": "^8.3.2",
-    "slack-notification": "github:sawara7/slack-notification"
+    "uuid": "^8.3.2"
   }
 }
