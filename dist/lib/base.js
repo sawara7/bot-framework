@@ -123,7 +123,7 @@ class BaseBotClass extends my_utils_1.UUIDInstanceClass {
     }
     notice(msg) {
         if (this._notifier) {
-            this._notifier.sendMessage(msg);
+            this._notifier(msg);
         }
     }
     get botResult() {

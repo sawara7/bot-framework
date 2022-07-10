@@ -1,4 +1,3 @@
-import { SlackNotifier } from 'slack-notification';
 import { BaseBotResult } from "./result";
 import { UUIDInstanceClass } from "my-utils";
 export declare const botCurrencyList: readonly ["JPY", "USD"];
@@ -8,7 +7,7 @@ export interface BaseBotParams {
     baseCurrency: botCurrency;
     botLogic: string;
     botName: string;
-    notifier?: SlackNotifier;
+    notifier?: (msg: string) => void;
     onHourly?: (bot: BaseBotClass) => void;
     onDaily?: (bot: BaseBotClass) => void;
     onWeekly?: (bot: BaseBotClass) => void;

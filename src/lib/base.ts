@@ -1,5 +1,4 @@
 import { schedule } from "node-cron"
-import { SlackNotifier } from 'slack-notification'
 import { BaseBotResult } from "./result"
 import { UUIDInstanceClass } from "my-utils"
 
@@ -14,7 +13,7 @@ export interface BaseBotParams {
     baseCurrency: botCurrency
     botLogic: string
     botName: string
-    notifier?: SlackNotifier
+    notifier?: (msg: string) => void
     onHourly?: (bot: BaseBotClass) => void
     onDaily?: (bot: BaseBotClass) => void
     onWeekly?: (bot: BaseBotClass) => void
@@ -26,7 +25,7 @@ export abstract class BaseBotClass extends UUIDInstanceClass {
     private _logic: string
     private _baseCurrency: botCurrency
     private _startTime: number
-    private _notifier?: SlackNotifier
+    private _notifier?: (msg: string) => void
     private _enabled: boolean = false
 
     protected _totalProfit: number = 0
@@ -156,7 +155,7 @@ export abstract class BaseBotClass extends UUIDInstanceClass {
 
     protected notice(msg: string) {
         if (this._notifier) {
-            this._notifier.sendMessage(msg)
+            this._notifier(msg)
         }
     }
 
