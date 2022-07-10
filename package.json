@@ -24,8 +24,5 @@
     "node-cron": "^3.0.1",
     "slack-notification": "github:sawara7/slack-notification"
   },
-  "bundleDependencies": [
-    "my-utils",
-    "slack-notification"
-  ]
+  "bundleDependencies": []
 }
