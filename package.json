@@ -8,6 +8,7 @@
   },
   "main": "dist/index.js",
   "scripts": {
+    "clean": "npm install --save-dev rimraf && rimraf package-lock.json && rimraf node_modules && npm install && tsc",
     "build": "tsc"
   },
   "author": "sawara",
@@ -15,13 +16,13 @@
   "devDependencies": {
     "@types/node": "^14.14.34",
     "@types/node-cron": "^3.0.1",
-    "@types/uuid": "^8.3.4",
+    "rimraf": "^3.0.2",
     "typescript": "^4.3.5"
   },
-  "bundleDependencies": false,
+  "bundleDependencies": [],
   "dependencies": {
     "my-utils": "github:sawara7/my-utils",
     "node-cron": "^3.0.1",
-    "uuid": "^8.3.2"
+    "slack-notification": "github:sawara7/slack-notification"
   }
 }
