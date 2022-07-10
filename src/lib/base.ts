@@ -1,13 +1,13 @@
 import { schedule } from "node-cron"
-import { v4 as uuidv4 } from 'uuid'
 import { SlackNotifier } from 'slack-notification'
-import { BaseBotResult } from "./result";
+import { BaseBotResult } from "./result"
+import { UUIDInstanceClass } from "my-utils"
 
 export const botCurrencyList = [
     'JPY',
     'USD'
     ] as const;
-export type botCurrency = typeof botCurrencyList[number];
+export type botCurrency = typeof botCurrencyList[number]
 
 export interface BaseBotParams {
     botID: string
@@ -19,8 +19,8 @@ export interface BaseBotParams {
     onDaily?: (bot: BaseBotClass) => void
     onWeekly?: (bot: BaseBotClass) => void
 }
-export abstract class BaseBotClass {
-    private _uuid: string
+
+export abstract class BaseBotClass extends UUIDInstanceClass {
     private _id: string
     private _name: string
     private _logic: string
@@ -41,7 +41,7 @@ export abstract class BaseBotClass {
     private _onWeekly?: (bot: BaseBotClass) => void
 
     constructor(params: BaseBotParams) {
-        this._uuid = uuidv4()
+        super()
         this._startTime = Date.now()
         this._id = params.botID
         this._name = params.botName
@@ -113,10 +113,6 @@ export abstract class BaseBotClass {
     }
 
     protected abstract doStop(): Promise<void>
-
-    get uuid(): string {
-        return this._uuid
-    }
 
     get id(): string {
         return this._id

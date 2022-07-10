@@ -20,6 +20,7 @@
   },
   "bundleDependencies": false,
   "dependencies": {
+    "my-utils": "github:sawara7/my-utils",
     "node-cron": "^3.0.1",
     "uuid": "^8.3.2"
   }

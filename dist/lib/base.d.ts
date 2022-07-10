@@ -1,5 +1,6 @@
 import { SlackNotifier } from 'slack-notification';
 import { BaseBotResult } from "./result";
+import { UUIDInstanceClass } from "my-utils";
 export declare const botCurrencyList: readonly ["JPY", "USD"];
 export declare type botCurrency = typeof botCurrencyList[number];
 export interface BaseBotParams {
@@ -12,8 +13,7 @@ export interface BaseBotParams {
     onDaily?: (bot: BaseBotClass) => void;
     onWeekly?: (bot: BaseBotClass) => void;
 }
-export declare abstract class BaseBotClass {
-    private _uuid;
+export declare abstract class BaseBotClass extends UUIDInstanceClass {
     private _id;
     private _name;
     private _logic;
@@ -38,7 +38,6 @@ export declare abstract class BaseBotClass {
     protected abstract doStart(): Promise<void>;
     stop(): Promise<void>;
     protected abstract doStop(): Promise<void>;
-    get uuid(): string;
     get id(): string;
     get botName(): string;
     get botLogic(): string;

@@ -11,13 +11,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BaseBotClass = exports.botCurrencyList = void 0;
 const node_cron_1 = require("node-cron");
-const uuid_1 = require("uuid");
+const my_utils_1 = require("my-utils");
 exports.botCurrencyList = [
     'JPY',
     'USD'
 ];
-class BaseBotClass {
+class BaseBotClass extends my_utils_1.UUIDInstanceClass {
     constructor(params) {
+        super();
         this._enabled = false;
         this._totalProfit = 0;
         this._previousHourlyProfit = 0;
@@ -26,7 +27,6 @@ class BaseBotClass {
         this._dailyProfit = 0;
         this._previousWeeklyProfit = 0;
         this._weeklyProfit = 0;
-        this._uuid = (0, uuid_1.v4)();
         this._startTime = Date.now();
         this._id = params.botID;
         this._name = params.botName;
@@ -90,9 +90,6 @@ class BaseBotClass {
             yield this.doStop();
             this.notice("Stop: " + this.botName);
         });
-    }
-    get uuid() {
-        return this._uuid;
     }
     get id() {
         return this._id;
