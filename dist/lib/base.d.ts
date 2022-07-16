@@ -34,6 +34,7 @@ export declare abstract class BaseBotClass extends UUIDInstanceClass {
     constructor(params: BaseBotParams);
     start(): Promise<void>;
     protected abstract calcTotalProfit(): number;
+    protected abstract calcUnrealizedProfit(): number;
     private schedule;
     protected abstract doStart(): Promise<void>;
     stop(): Promise<void>;
