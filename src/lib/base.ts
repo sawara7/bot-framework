@@ -64,11 +64,13 @@ export abstract class BaseBotClass extends UUIDInstanceClass {
     }
 
     protected abstract calcTotalProfit(): number
+    protected abstract calcUnrealizedProfit(): number
 
     private schedule() {
         // hourly
         schedule('59 * * * *', async () => {
             this._totalProfit = this.calcTotalProfit()
+            this._unrealizedProfit = this.calcUnrealizedProfit()
             this._hourlyProfit = this._totalProfit - this._previousHourlyProfit
             if (this._onHourly) {
                 await this._onHourly(this)
@@ -79,6 +81,7 @@ export abstract class BaseBotClass extends UUIDInstanceClass {
         // daily
         schedule('58 23 * * *', async () => {
             this._totalProfit = this.calcTotalProfit()
+            this._unrealizedProfit = this.calcUnrealizedProfit()
             this._dailyProfit = this._totalProfit - this._previousDailyProfit
             if (this._onDaily) {
                 await this._onDaily(this)
@@ -89,6 +92,7 @@ export abstract class BaseBotClass extends UUIDInstanceClass {
         // weekly
         schedule('57 23 * * 6', async () => {
             this._totalProfit = this.calcTotalProfit()
+            this._unrealizedProfit = this.calcUnrealizedProfit()
             this._weeklyProfit = this._totalProfit - this._previousWeeklyProfit
             if (this._onWeekly) {
                 await this._onWeekly(this)
