@@ -28,6 +28,7 @@ export abstract class BaseBotClass extends UUIDInstanceClass {
     private _notifier?: (msg: string) => void
     private _enabled: boolean = false
 
+    protected _unrealizedProfit: number = 0
     protected _totalProfit: number = 0
     private _previousHourlyProfit: number = 0
     protected _hourlyProfit: number = 0
@@ -73,29 +74,26 @@ export abstract class BaseBotClass extends UUIDInstanceClass {
                 await this._onHourly(this)
             }
             this._previousHourlyProfit = this._totalProfit
-            this._hourlyProfit = 0
         })
 
         // daily
-        schedule('59 23 * * *', async () => {
+        schedule('58 23 * * *', async () => {
             this._totalProfit = this.calcTotalProfit()
             this._dailyProfit = this._totalProfit - this._previousDailyProfit
             if (this._onDaily) {
                 await this._onDaily(this)
             }
             this._previousDailyProfit = this._totalProfit
-            this._dailyProfit = 0
         })
 
         // weekly
-        schedule('59 23 * * 6', async () => {
+        schedule('57 23 * * 6', async () => {
             this._totalProfit = this.calcTotalProfit()
             this._weeklyProfit = this._totalProfit - this._previousWeeklyProfit
             if (this._onWeekly) {
                 await this._onWeekly(this)
             }
             this._previousWeeklyProfit = this._totalProfit
-            this._weeklyProfit = 0
         })
     }
 
@@ -153,6 +151,10 @@ export abstract class BaseBotClass extends UUIDInstanceClass {
         return this._weeklyProfit
     }
 
+    get unrealizedProfit(): number {
+        return this._unrealizedProfit
+    }
+
     protected notice(msg: string) {
         if (this._notifier) {
             this._notifier(msg)
@@ -171,7 +173,8 @@ export abstract class BaseBotClass extends UUIDInstanceClass {
             totalProfit: this.totalProfit,
             hourlyProfit: this.hourlyProfit,
             dailyProfit: this.dailyProfit,
-            weeklyProfit: this.weeklyProfit
+            weeklyProfit: this.weeklyProfit,
+            unrealizedProfit: this.unrealizedProfit
         }
     }
 }

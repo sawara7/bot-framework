@@ -12,4 +12,5 @@ export interface BaseBotResult {
     hourlyProfit: number
     dailyProfit: number
     weeklyProfit: number
+    unrealizedProfit: number
 }

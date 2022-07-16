@@ -20,6 +20,7 @@ class BaseBotClass extends my_utils_1.UUIDInstanceClass {
     constructor(params) {
         super();
         this._enabled = false;
+        this._unrealizedProfit = 0;
         this._totalProfit = 0;
         this._previousHourlyProfit = 0;
         this._hourlyProfit = 0;
@@ -57,27 +58,24 @@ class BaseBotClass extends my_utils_1.UUIDInstanceClass {
                 yield this._onHourly(this);
             }
             this._previousHourlyProfit = this._totalProfit;
-            this._hourlyProfit = 0;
         }));
         // daily
-        (0, node_cron_1.schedule)('59 23 * * *', () => __awaiter(this, void 0, void 0, function* () {
+        (0, node_cron_1.schedule)('58 23 * * *', () => __awaiter(this, void 0, void 0, function* () {
             this._totalProfit = this.calcTotalProfit();
             this._dailyProfit = this._totalProfit - this._previousDailyProfit;
             if (this._onDaily) {
                 yield this._onDaily(this);
             }
             this._previousDailyProfit = this._totalProfit;
-            this._dailyProfit = 0;
         }));
         // weekly
-        (0, node_cron_1.schedule)('59 23 * * 6', () => __awaiter(this, void 0, void 0, function* () {
+        (0, node_cron_1.schedule)('57 23 * * 6', () => __awaiter(this, void 0, void 0, function* () {
             this._totalProfit = this.calcTotalProfit();
             this._weeklyProfit = this._totalProfit - this._previousWeeklyProfit;
             if (this._onWeekly) {
                 yield this._onWeekly(this);
             }
             this._previousWeeklyProfit = this._totalProfit;
-            this._weeklyProfit = 0;
         }));
     }
     stop() {
@@ -121,6 +119,9 @@ class BaseBotClass extends my_utils_1.UUIDInstanceClass {
     get weeklyProfit() {
         return this._weeklyProfit;
     }
+    get unrealizedProfit() {
+        return this._unrealizedProfit;
+    }
     notice(msg) {
         if (this._notifier) {
             this._notifier(msg);
@@ -138,7 +139,8 @@ class BaseBotClass extends my_utils_1.UUIDInstanceClass {
             totalProfit: this.totalProfit,
             hourlyProfit: this.hourlyProfit,
             dailyProfit: this.dailyProfit,
-            weeklyProfit: this.weeklyProfit
+            weeklyProfit: this.weeklyProfit,
+            unrealizedProfit: this.unrealizedProfit
         };
     }
 }

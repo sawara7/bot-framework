@@ -20,6 +20,7 @@ export declare abstract class BaseBotClass extends UUIDInstanceClass {
     private _startTime;
     private _notifier?;
     private _enabled;
+    protected _unrealizedProfit: number;
     protected _totalProfit: number;
     private _previousHourlyProfit;
     protected _hourlyProfit: number;
@@ -47,6 +48,7 @@ export declare abstract class BaseBotClass extends UUIDInstanceClass {
     get hourlyProfit(): number;
     get dailyProfit(): number;
     get weeklyProfit(): number;
+    get unrealizedProfit(): number;
     protected notice(msg: string): void;
     get botResult(): BaseBotResult;
 }
