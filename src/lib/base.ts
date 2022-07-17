@@ -33,12 +33,6 @@ export abstract class BaseBotClass extends UUIDInstanceClass {
     private _previousHourlyProfit: number = 0
     protected _hourlyProfit: number = 0
     private _onHourly?: (bot: BaseBotClass) => void
-    private _previousDailyProfit: number = 0
-    protected _dailyProfit: number = 0
-    private _onDaily?: (bot: BaseBotClass) => void
-    private _previousWeeklyProfit: number = 0
-    protected _weeklyProfit: number = 0
-    private _onWeekly?: (bot: BaseBotClass) => void
 
     constructor(params: BaseBotParams) {
         super()
@@ -49,8 +43,6 @@ export abstract class BaseBotClass extends UUIDInstanceClass {
         this._baseCurrency = params.baseCurrency
         this._notifier = params.notifier
         this._onHourly = params.onHourly
-        this._onDaily = params.onDaily
-        this._onWeekly = params.onWeekly
     }
 
     public async start(): Promise<void> {
@@ -76,28 +68,6 @@ export abstract class BaseBotClass extends UUIDInstanceClass {
                 await this._onHourly(this)
             }
             this._previousHourlyProfit = this._totalProfit
-        })
-
-        // daily
-        schedule('58 23 * * *', async () => {
-            this._totalProfit = this.calcTotalProfit()
-            this._unrealizedProfit = this.calcUnrealizedProfit()
-            this._dailyProfit = this._totalProfit - this._previousDailyProfit
-            if (this._onDaily) {
-                await this._onDaily(this)
-            }
-            this._previousDailyProfit = this._totalProfit
-        })
-
-        // weekly
-        schedule('57 23 * * 6', async () => {
-            this._totalProfit = this.calcTotalProfit()
-            this._unrealizedProfit = this.calcUnrealizedProfit()
-            this._weeklyProfit = this._totalProfit - this._previousWeeklyProfit
-            if (this._onWeekly) {
-                await this._onWeekly(this)
-            }
-            this._previousWeeklyProfit = this._totalProfit
         })
     }
 
@@ -147,14 +117,6 @@ export abstract class BaseBotClass extends UUIDInstanceClass {
         return this._hourlyProfit
     }
 
-    get dailyProfit(): number {
-        return this._dailyProfit
-    }
-
-    get weeklyProfit(): number {
-        return this._weeklyProfit
-    }
-
     get unrealizedProfit(): number {
         return this._unrealizedProfit
     }
@@ -176,8 +138,6 @@ export abstract class BaseBotClass extends UUIDInstanceClass {
             uuid: this.uuid,
             totalProfit: this.totalProfit,
             hourlyProfit: this.hourlyProfit,
-            dailyProfit: this.dailyProfit,
-            weeklyProfit: this.weeklyProfit,
             unrealizedProfit: this.unrealizedProfit
         }
     }

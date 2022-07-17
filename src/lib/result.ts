@@ -10,7 +10,5 @@ export interface BaseBotResult {
     uuid: string
     totalProfit: number
     hourlyProfit: number
-    dailyProfit: number
-    weeklyProfit: number
     unrealizedProfit: number
 }

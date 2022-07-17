@@ -24,10 +24,6 @@ class BaseBotClass extends my_utils_1.UUIDInstanceClass {
         this._totalProfit = 0;
         this._previousHourlyProfit = 0;
         this._hourlyProfit = 0;
-        this._previousDailyProfit = 0;
-        this._dailyProfit = 0;
-        this._previousWeeklyProfit = 0;
-        this._weeklyProfit = 0;
         this._startTime = Date.now();
         this._id = params.botID;
         this._name = params.botName;
@@ -35,8 +31,6 @@ class BaseBotClass extends my_utils_1.UUIDInstanceClass {
         this._baseCurrency = params.baseCurrency;
         this._notifier = params.notifier;
         this._onHourly = params.onHourly;
-        this._onDaily = params.onDaily;
-        this._onWeekly = params.onWeekly;
     }
     start() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -59,26 +53,6 @@ class BaseBotClass extends my_utils_1.UUIDInstanceClass {
                 yield this._onHourly(this);
             }
             this._previousHourlyProfit = this._totalProfit;
-        }));
-        // daily
-        (0, node_cron_1.schedule)('58 23 * * *', () => __awaiter(this, void 0, void 0, function* () {
-            this._totalProfit = this.calcTotalProfit();
-            this._unrealizedProfit = this.calcUnrealizedProfit();
-            this._dailyProfit = this._totalProfit - this._previousDailyProfit;
-            if (this._onDaily) {
-                yield this._onDaily(this);
-            }
-            this._previousDailyProfit = this._totalProfit;
-        }));
-        // weekly
-        (0, node_cron_1.schedule)('57 23 * * 6', () => __awaiter(this, void 0, void 0, function* () {
-            this._totalProfit = this.calcTotalProfit();
-            this._unrealizedProfit = this.calcUnrealizedProfit();
-            this._weeklyProfit = this._totalProfit - this._previousWeeklyProfit;
-            if (this._onWeekly) {
-                yield this._onWeekly(this);
-            }
-            this._previousWeeklyProfit = this._totalProfit;
         }));
     }
     stop() {
@@ -116,12 +90,6 @@ class BaseBotClass extends my_utils_1.UUIDInstanceClass {
     get hourlyProfit() {
         return this._hourlyProfit;
     }
-    get dailyProfit() {
-        return this._dailyProfit;
-    }
-    get weeklyProfit() {
-        return this._weeklyProfit;
-    }
     get unrealizedProfit() {
         return this._unrealizedProfit;
     }
@@ -141,8 +109,6 @@ class BaseBotClass extends my_utils_1.UUIDInstanceClass {
             uuid: this.uuid,
             totalProfit: this.totalProfit,
             hourlyProfit: this.hourlyProfit,
-            dailyProfit: this.dailyProfit,
-            weeklyProfit: this.weeklyProfit,
             unrealizedProfit: this.unrealizedProfit
         };
     }
