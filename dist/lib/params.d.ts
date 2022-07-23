@@ -1,4 +1,4 @@
-import { BaseBotClass } from "./base";
+import { BaseBotClass } from "./bot";
 import { botCurrency } from "./types";
 export interface BaseBotParams {
     baseCurrency: botCurrency;
