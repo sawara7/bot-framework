@@ -9,14 +9,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.BaseBotClass = exports.botCurrencyList = void 0;
+exports.BaseBotClass = void 0;
 const node_cron_1 = require("node-cron");
 const my_utils_1 = require("my-utils");
-exports.botCurrencyList = [
-    'JPY',
-    'USD'
-];
-class BaseBotClass extends my_utils_1.UUIDInstanceClass {
+class BaseBotClass extends my_utils_1.BaseObjectClass {
     constructor(params) {
         super();
         this._enabled = false;
@@ -25,12 +21,28 @@ class BaseBotClass extends my_utils_1.UUIDInstanceClass {
         this._previousHourlyProfit = 0;
         this._hourlyProfit = 0;
         this._startTime = Date.now();
-        this._id = params.botID;
         this._name = params.botName;
         this._logic = params.botLogic;
         this._baseCurrency = params.baseCurrency;
         this._notifier = params.notifier;
         this._onHourly = params.onHourly;
+    }
+    import(j) {
+        super.import(j);
+        const v = j;
+        this._name = v._name;
+        this._logic = v._logic;
+        this._baseCurrency = v._baseCurrency;
+        this._startTime = v._startTime;
+        this._enabled = v._enabled;
+    }
+    export() {
+        const v = super.export();
+        v._startTime = this._startTime;
+        v._name = this._name;
+        v._logic = this._logic;
+        v._baseCurrency = this._baseCurrency;
+        return v;
     }
     start() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -66,9 +78,6 @@ class BaseBotClass extends my_utils_1.UUIDInstanceClass {
             this.notice("Stop: " + this.botName);
         });
     }
-    get id() {
-        return this._id;
-    }
     get botName() {
         return this._name;
     }
@@ -101,7 +110,7 @@ class BaseBotClass extends my_utils_1.UUIDInstanceClass {
     get botResult() {
         return {
             time: Date.now(),
-            botID: this.id,
+            botID: this.uuid,
             baseCurrency: this.baseCurrency,
             botLogic: this.botLogic,
             botName: this.botName,
