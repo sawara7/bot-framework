@@ -63,7 +63,7 @@ class BotFrameClass {
     getBotResult() {
         return __awaiter(this, void 0, void 0, function* () {
             return {
-                updateTimestamp: Date.now().toLocaleString(),
+                updateTimestamp: new Date().toLocaleString(),
                 totalProfit: this.totalProfit.toString()
             };
         });
