@@ -1,2 +1,6 @@
 export declare const botCurrencyList: readonly ["JPY", "USD"];
-export declare type botCurrency = typeof botCurrencyList[number];
+export type botCurrency = typeof botCurrencyList[number];
+export interface BaseBotResult {
+    updateTimestamp: string;
+    totalProfit: string;
+}
