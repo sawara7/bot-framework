@@ -14,15 +14,6 @@ const utils_firebase_server_1 = require("utils-firebase-server");
 class BotFrameClass {
     constructor(_params) {
         this._params = _params;
-        this._result = {
-            updateTimestamp: Date.now().toString(),
-            totalProfit: '0'
-        };
-    }
-    initialize() {
-        return __awaiter(this, void 0, void 0, function* () {
-            this._rdb = yield (0, utils_firebase_server_1.getRealTimeDatabase)();
-        });
     }
     start() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -35,21 +26,38 @@ class BotFrameClass {
                     console.log(this._params.botName, e);
                 }
                 finally {
-                    console.log(this._params.botName, new Date().toLocaleString());
+                    if (!this.isBackTest)
+                        console.log(this._params.botName, new Date().toLocaleString());
                 }
             }
         });
     }
+    initialize() {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!this.isBackTest)
+                this._rdb = yield (0, utils_firebase_server_1.getRealTimeDatabase)();
+        });
+    }
     update() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.setRealtimeDatabase();
+            if (!this.isBackTest)
+                yield this.setRealtimeDatabase();
         });
     }
     setRealtimeDatabase() {
         return __awaiter(this, void 0, void 0, function* () {
             if (this._rdb)
-                yield this._rdb.set('bot/' + this._params.botName, this._result);
+                yield this._rdb.set('bot/' + this._params.botName, this.botResult);
         });
+    }
+    get isBackTest() {
+        return this._params.isBackTest;
+    }
+    get botResult() {
+        return {
+            updateTimestamp: Date.now().toString(),
+            totalProfit: '0'
+        };
     }
 }
 exports.BotFrameClass = BotFrameClass;
