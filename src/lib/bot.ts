@@ -4,6 +4,7 @@ import { BaseBotResult } from "./types"
 
 export class BotFrameClass {
     private _rdb: RealtimeDatabaseClass | undefined
+    private _totalProfit: number = 0
 
     constructor(private _baseParams: BaseBotParams) {}
 
@@ -36,10 +37,18 @@ export class BotFrameClass {
         return this._baseParams.isBackTest? true: false
     }
 
+    protected get totalProfit(): number {
+        return this._totalProfit
+    }
+
+    protected set totalProfit(value: number) {
+        this._totalProfit = value
+    }
+
     protected async getBotResult(): Promise<BaseBotResult> {
         return {
             updateTimestamp: Date.now().toString(),
-            totalProfit: '0'
+            totalProfit: this.totalProfit.toString()
         }
     }
 }

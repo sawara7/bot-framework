@@ -14,6 +14,7 @@ const utils_firebase_server_1 = require("utils-firebase-server");
 class BotFrameClass {
     constructor(_baseParams) {
         this._baseParams = _baseParams;
+        this._totalProfit = 0;
     }
     start() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -53,11 +54,17 @@ class BotFrameClass {
     get isBackTest() {
         return this._baseParams.isBackTest ? true : false;
     }
+    get totalProfit() {
+        return this._totalProfit;
+    }
+    set totalProfit(value) {
+        this._totalProfit = value;
+    }
     getBotResult() {
         return __awaiter(this, void 0, void 0, function* () {
             return {
                 updateTimestamp: Date.now().toString(),
-                totalProfit: '0'
+                totalProfit: this.totalProfit.toString()
             };
         });
     }
