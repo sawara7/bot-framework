@@ -47,7 +47,7 @@ export class BotFrameClass {
 
     protected async getBotResult(): Promise<BaseBotResult> {
         return {
-            updateTimestamp: Date.now().toString(),
+            updateTimestamp: Date.now().toLocaleString(),
             totalProfit: this.totalProfit.toString()
         }
     }
