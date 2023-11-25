@@ -6,8 +6,8 @@ export declare class BotFrameClass {
     private _totalProfit;
     constructor(_baseParams: BaseBotParams);
     start(): Promise<void>;
-    protected initialize(): Promise<void>;
-    protected update(): Promise<void>;
+    initialize(): Promise<void>;
+    update(): Promise<void>;
     private setRealtimeDatabase;
     protected get isBackTest(): boolean;
     protected get totalProfit(): number;

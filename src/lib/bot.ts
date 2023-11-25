@@ -21,11 +21,11 @@ export class BotFrameClass {
         }
     }
 
-    protected async initialize(): Promise<void> {
+    async initialize(): Promise<void> {
         if (!this.isBackTest) this._rdb = await getRealTimeDatabase()
     }
 
-    protected async update(): Promise<void> {
+    async update(): Promise<void> {
         if (!this.isBackTest) await this.setRealtimeDatabase()
     }
     
