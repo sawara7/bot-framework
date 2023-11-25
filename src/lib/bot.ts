@@ -5,7 +5,7 @@ import { BaseBotResult } from "./types"
 export class BotFrameClass {
     private _rdb: RealtimeDatabaseClass | undefined
 
-    constructor(private _params: BaseBotParams) {}
+    constructor(private _baseParams: BaseBotParams) {}
 
     async start(): Promise<void> {
         await this.initialize()
@@ -13,9 +13,9 @@ export class BotFrameClass {
             try {
                 await this.update()
             } catch(e) {
-                console.log(this._params.botName, e)
+                console.log(this._baseParams.botName, e)
             } finally {
-                if (!this.isBackTest) console.log(this._params.botName, new Date().toLocaleString())
+                if (!this.isBackTest) console.log(this._baseParams.botName, new Date().toLocaleString())
             }
         }
     }
@@ -29,14 +29,14 @@ export class BotFrameClass {
     }
     
     private async setRealtimeDatabase(): Promise<void> {
-        if (this._rdb) await this._rdb.set('bot/' + this._params.botName, this.botResult)
+        if (this._rdb) await this._rdb.set('bot/' + this._baseParams.botName, await this.getBotResult())
     }
 
     protected get isBackTest(): boolean {
-        return this._params.isBackTest
+        return this._baseParams.isBackTest? true: false
     }
 
-    protected get botResult(): BaseBotResult {
+    protected async getBotResult(): Promise<BaseBotResult> {
         return {
             updateTimestamp: Date.now().toString(),
             totalProfit: '0'

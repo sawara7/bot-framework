@@ -12,8 +12,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.BotFrameClass = void 0;
 const utils_firebase_server_1 = require("utils-firebase-server");
 class BotFrameClass {
-    constructor(_params) {
-        this._params = _params;
+    constructor(_baseParams) {
+        this._baseParams = _baseParams;
     }
     start() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -23,11 +23,11 @@ class BotFrameClass {
                     yield this.update();
                 }
                 catch (e) {
-                    console.log(this._params.botName, e);
+                    console.log(this._baseParams.botName, e);
                 }
                 finally {
                     if (!this.isBackTest)
-                        console.log(this._params.botName, new Date().toLocaleString());
+                        console.log(this._baseParams.botName, new Date().toLocaleString());
                 }
             }
         });
@@ -47,17 +47,19 @@ class BotFrameClass {
     setRealtimeDatabase() {
         return __awaiter(this, void 0, void 0, function* () {
             if (this._rdb)
-                yield this._rdb.set('bot/' + this._params.botName, this.botResult);
+                yield this._rdb.set('bot/' + this._baseParams.botName, yield this.getBotResult());
         });
     }
     get isBackTest() {
-        return this._params.isBackTest;
+        return this._baseParams.isBackTest ? true : false;
     }
-    get botResult() {
-        return {
-            updateTimestamp: Date.now().toString(),
-            totalProfit: '0'
-        };
+    getBotResult() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return {
+                updateTimestamp: Date.now().toString(),
+                totalProfit: '0'
+            };
+        });
     }
 }
 exports.BotFrameClass = BotFrameClass;
