@@ -47,6 +47,8 @@ export class BotFrameClass {
 
     protected async getBotResult(): Promise<BaseBotResult> {
         return {
+            botName: this._baseParams.botName,
+            logicName: this._baseParams.logicName,
             updateTimestamp: new Date().toLocaleString(),
             totalProfit: this.totalProfit.toString()
         }
