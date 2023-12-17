@@ -20,6 +20,7 @@ export class BotFrameClass {
             try {
                 if (!this._rdb) return
                 const botStatus = await this._rdb.get(await this._rdb.getReference("botStatus/" + this._baseParams.botName)) as BotStatus
+                console.log(botStatus)
                 if (!botStatus || botStatus.isStop) {
                     await sleep(1000)
                     continue
@@ -27,6 +28,8 @@ export class BotFrameClass {
                 if (botStatus.isClaer) {
                     await this.clearPosition()
                     await this._rdb.set("botStatus/" + this._baseParams.botName + "/isClear", false)
+                    await sleep(1000)
+                    continue    
                 }
                 await this.update()
             } catch(e) {
