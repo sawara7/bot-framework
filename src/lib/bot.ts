@@ -2,6 +2,11 @@ import { RealtimeDatabaseClass, getRealTimeDatabase } from "utils-firebase-serve
 import { BaseBotParams } from "./params"
 import { BaseBotResult } from "./types"
 
+export interface BotStatus {
+    isClaer: boolean
+    isStop: boolean
+}
+
 export class BotFrameClass {
     private _rdb: RealtimeDatabaseClass | undefined
     private _totalProfit: number = 0
@@ -12,6 +17,13 @@ export class BotFrameClass {
         await this.initialize()
         while(true) {
             try {
+                if (!this._rdb) return
+                const botStatus = await this._rdb.get(await this._rdb.getReference("botStatus/" + this._baseParams.botName)) as BotStatus
+                if (!botStatus || botStatus.isStop) return
+                if (botStatus.isClaer) {
+                    await this.clearPosition()
+                    await this._rdb.set("botStatus/" + this._baseParams.botName + "/isClear", false)
+                }
                 await this.update()
             } catch(e) {
                 console.log(this._baseParams.botName, e)
@@ -23,6 +35,9 @@ export class BotFrameClass {
 
     async initialize(): Promise<void> {
         if (!this.isBackTest) this._rdb = await getRealTimeDatabase()
+    }
+
+    async clearPosition(): Promise<void> {
     }
 
     async update(): Promise<void> {

@@ -1,5 +1,9 @@
 import { BaseBotParams } from "./params";
 import { BaseBotResult } from "./types";
+export interface BotStatus {
+    isClaer: boolean;
+    isStop: boolean;
+}
 export declare class BotFrameClass {
     private _baseParams;
     private _rdb;
@@ -7,6 +11,7 @@ export declare class BotFrameClass {
     constructor(_baseParams: BaseBotParams);
     start(): Promise<void>;
     initialize(): Promise<void>;
+    clearPosition(): Promise<void>;
     update(): Promise<void>;
     private setRealtimeDatabase;
     protected get isBackTest(): boolean;

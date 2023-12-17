@@ -21,6 +21,15 @@ class BotFrameClass {
             yield this.initialize();
             while (true) {
                 try {
+                    if (!this._rdb)
+                        return;
+                    const botStatus = yield this._rdb.get(yield this._rdb.getReference("botStatus/" + this._baseParams.botName));
+                    if (!botStatus || botStatus.isStop)
+                        return;
+                    if (botStatus.isClaer) {
+                        yield this.clearPosition();
+                        yield this._rdb.set("botStatus/" + this._baseParams.botName + "/isClear", false);
+                    }
                     yield this.update();
                 }
                 catch (e) {
@@ -37,6 +46,10 @@ class BotFrameClass {
         return __awaiter(this, void 0, void 0, function* () {
             if (!this.isBackTest)
                 this._rdb = yield (0, utils_firebase_server_1.getRealTimeDatabase)();
+        });
+    }
+    clearPosition() {
+        return __awaiter(this, void 0, void 0, function* () {
         });
     }
     update() {
