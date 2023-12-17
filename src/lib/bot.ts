@@ -26,7 +26,7 @@ export class BotFrameClass {
                     await sleep(1000)
                     continue
                 }
-                console.log("before clear")
+                console.log("before clear", botStatus.isClaer, botStatus.isClaer === true)
                 if (botStatus.isClaer) {
                     console.log("clear")
                     await this.clearPosition()

@@ -31,7 +31,7 @@ class BotFrameClass {
                         yield (0, utils_general_1.sleep)(1000);
                         continue;
                     }
-                    console.log("before clear");
+                    console.log("before clear", botStatus.isClaer, botStatus.isClaer === true);
                     if (botStatus.isClaer) {
                         console.log("clear");
                         yield this.clearPosition();
