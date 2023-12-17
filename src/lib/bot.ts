@@ -1,6 +1,7 @@
 import { RealtimeDatabaseClass, getRealTimeDatabase } from "utils-firebase-server"
 import { BaseBotParams } from "./params"
 import { BaseBotResult } from "./types"
+import { sleep } from "utils-general"
 
 export interface BotStatus {
     isClaer: boolean
@@ -19,7 +20,10 @@ export class BotFrameClass {
             try {
                 if (!this._rdb) return
                 const botStatus = await this._rdb.get(await this._rdb.getReference("botStatus/" + this._baseParams.botName)) as BotStatus
-                if (!botStatus || botStatus.isStop) return
+                if (!botStatus || botStatus.isStop) {
+                    await sleep(1000)
+                    continue
+                }
                 if (botStatus.isClaer) {
                     await this.clearPosition()
                     await this._rdb.set("botStatus/" + this._baseParams.botName + "/isClear", false)

@@ -11,6 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BotFrameClass = void 0;
 const utils_firebase_server_1 = require("utils-firebase-server");
+const utils_general_1 = require("utils-general");
 class BotFrameClass {
     constructor(_baseParams) {
         this._baseParams = _baseParams;
@@ -24,8 +25,10 @@ class BotFrameClass {
                     if (!this._rdb)
                         return;
                     const botStatus = yield this._rdb.get(yield this._rdb.getReference("botStatus/" + this._baseParams.botName));
-                    if (!botStatus || botStatus.isStop)
-                        return;
+                    if (!botStatus || botStatus.isStop) {
+                        yield (0, utils_general_1.sleep)(1000);
+                        continue;
+                    }
                     if (botStatus.isClaer) {
                         yield this.clearPosition();
                         yield this._rdb.set("botStatus/" + this._baseParams.botName + "/isClear", false);
