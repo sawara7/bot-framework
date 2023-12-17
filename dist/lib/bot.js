@@ -26,10 +26,12 @@ class BotFrameClass {
                         return;
                     const botStatus = yield this._rdb.get(yield this._rdb.getReference("botStatus/" + this._baseParams.botName));
                     console.log(botStatus);
-                    if (!botStatus || botStatus.isStop) {
+                    if (botStatus.isStop) {
+                        console.log("stop");
                         yield (0, utils_general_1.sleep)(1000);
                         continue;
                     }
+                    console.log("before clear");
                     if (botStatus.isClaer) {
                         console.log("clear");
                         yield this.clearPosition();
