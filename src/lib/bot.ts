@@ -4,7 +4,7 @@ import { BaseBotResult } from "./types"
 import { sleep } from "utils-general"
 
 export interface BotStatus {
-    isClaer: boolean
+    isClear: boolean
     isStop: boolean
 }
 
@@ -20,15 +20,11 @@ export class BotFrameClass {
             try {
                 if (!this._rdb) return
                 const botStatus = await this._rdb.get(await this._rdb.getReference("botStatus/" + this._baseParams.botName)) as BotStatus
-                console.log(botStatus)
                 if (botStatus.isStop) {
-                    console.log("stop")
                     await sleep(1000)
                     continue
                 }
-                console.log("before clear", botStatus.isClaer, botStatus.isClaer === true)
-                if (botStatus.isClaer) {
-                    console.log("clear")
+                if (botStatus.isClear) {
                     await this.clearPosition()
                     await this._rdb.set("botStatus/" + this._baseParams.botName + "/isClear", false)
                     await sleep(1000)

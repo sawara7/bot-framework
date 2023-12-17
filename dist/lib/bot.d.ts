@@ -1,7 +1,7 @@
 import { BaseBotParams } from "./params";
 import { BaseBotResult } from "./types";
 export interface BotStatus {
-    isClaer: boolean;
+    isClear: boolean;
     isStop: boolean;
 }
 export declare class BotFrameClass {
