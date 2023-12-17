@@ -26,6 +26,7 @@ export class BotFrameClass {
                     continue
                 }
                 if (botStatus.isClaer) {
+                    console.log("clear")
                     await this.clearPosition()
                     await this._rdb.set("botStatus/" + this._baseParams.botName + "/isClear", false)
                     await sleep(1000)
