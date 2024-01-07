@@ -1,0 +1,33 @@
+import { BaseBotParams, BaseBotResult, TickerType } from "./types";
+export declare abstract class BotFrameClass {
+    private _baseParams;
+    private _realtimeDB;
+    private _mongoDB;
+    private _cumulativeProfit;
+    private _botStatus;
+    private _initialBadget;
+    private _currentBadget;
+    private _previousTicker;
+    private _currentTicker;
+    constructor(_baseParams: BaseBotParams);
+    start(): Promise<void>;
+    protected initialize(): Promise<void>;
+    private isStopOrClearPosition;
+    private getBotStatusFromRealtimeDbAndIsContinue;
+    abstract clearPosition(): Promise<void>;
+    abstract updateTicker(): Promise<void>;
+    abstract updateBadget(): Promise<void>;
+    abstract updateTrade(): Promise<void>;
+    private setBotStatusToRealtimeDB;
+    private setBotResultToRealtimeDB;
+    protected get isBackTest(): boolean;
+    protected getBotResult(): Promise<BaseBotResult>;
+    protected get cumulativeProfit(): number;
+    protected set cumulativeProfit(value: number);
+    protected get currentBadget(): number;
+    protected set currentBadget(badget: number);
+    protected get initialBadget(): number;
+    protected get currentTicker(): TickerType;
+    protected set currentTicker(tk: TickerType);
+    protected get previousTicker(): TickerType;
+}

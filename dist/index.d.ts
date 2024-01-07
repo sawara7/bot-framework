@@ -1,3 +1,2 @@
-export * from './lib/bot';
-export * from './lib/types';
-export * from './lib/params';
+export * from './lib/base/bot';
+export * from './lib/base/types';
