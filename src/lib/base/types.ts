@@ -1,4 +1,4 @@
-import { OrderSide } from "utils-trade";
+import { Ticker, getDefaultTicker } from "utils-trade";
 
 export const MONGO_PATH_BOTSTATUS = 'botStatus'
 
@@ -14,22 +14,8 @@ export interface BaseBotParams {
     botName: string
     logicName: string
     baseCurrency: botCurrency
-    dbName: string
-    useRealtimeDB: boolean
-    useMongoDBAndDBName?: string
+    mongoDbName: string
     isBackTest?: boolean
-}
-
-export interface TickerType {
-    ask: number
-    bid: number
-}
-
-export function getDefaultTicker(): TickerType {
-    return {
-        ask: 0,
-        bid: 0
-    }
 }
 
 export interface BaseBotStatus {
@@ -55,7 +41,7 @@ export interface BaseBotResult {
     cumulativeProfit: number
     initialBadget: number
     currentBadget: number
-    ticker: TickerType
+    ticker: Ticker
 }
 
 export function getBaseBotResult(): BaseBotResult {
@@ -69,12 +55,3 @@ export function getBaseBotResult(): BaseBotResult {
         ticker: getDefaultTicker()
     }
 }
-
-export interface MongoPosition {
-    mongoID: string,
-    mongoIndex: number,
-    openSide: OrderSide,
-    openSize: string,
-    isOpened: boolean
-}
-export type MongoPositionRefProc = (pos: MongoPosition) => void;

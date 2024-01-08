@@ -1,6 +1,7 @@
 import { RealtimeDatabaseClass, getRealTimeDatabase } from "utils-firebase-server"
 import { MongodbManagerClass } from "utils-mongodb"
-import { BaseBotParams, BaseBotResult, BaseBotStatus, MONGO_PATH_BOTRESULT, MONGO_PATH_BOTSTATUS, TickerType, getBaseBotResult, getBaseBotStatus, getDefaultTicker } from "./types"
+import { Ticker, getDefaultTicker } from "utils-trade"
+import { BaseBotParams, BaseBotResult, BaseBotStatus, MONGO_PATH_BOTRESULT, MONGO_PATH_BOTSTATUS, getBaseBotResult, getBaseBotStatus } from "./types"
 import { sleep } from "utils-general"
 
 export abstract class BotFrameClass {
@@ -8,8 +9,8 @@ export abstract class BotFrameClass {
     private _mongoDB: MongodbManagerClass | undefined
     private _botStatus: BaseBotStatus = getBaseBotStatus()
     private _botResult: BaseBotResult = getBaseBotResult()
-    private _previousTicker: TickerType = getDefaultTicker()
-    private _currentTicker: TickerType = getDefaultTicker()
+    private _previousTicker: Ticker = getDefaultTicker()
+    private _currentTicker: Ticker = getDefaultTicker()
 
     constructor(private _baseParams: BaseBotParams) {
         this._botResult.botName = this._baseParams.botName
@@ -47,12 +48,12 @@ export abstract class BotFrameClass {
     }
 
     protected async initialize(): Promise<void> {
-        if (!this.isBackTest && this._baseParams.useRealtimeDB) {
+        if (!this.isBackTest) {
             this._realtimeDB = await getRealTimeDatabase()
         }
 
-        if (!this.isBackTest && this._baseParams.useMongoDBAndDBName) {
-            this._mongoDB = new MongodbManagerClass(this._baseParams.useMongoDBAndDBName)
+        if (!this.isBackTest) {
+            this._mongoDB = new MongodbManagerClass(this._baseParams.mongoDbName)
             await this._mongoDB.connect()
         }
 
@@ -136,13 +137,13 @@ export abstract class BotFrameClass {
         }
     }
 
-    abstract clearPosition(): Promise<void>
+    protected abstract clearPosition(): Promise<void>
 
-    abstract updateTicker(): Promise<void>
+    protected abstract updateTicker(): Promise<void>
 
-    abstract updateBadget(): Promise<void> 
+    protected abstract updateBadget(): Promise<void> 
 
-    abstract updateTrade(): Promise<void>
+    protected abstract updateTrade(): Promise<void>
 
     private async loadFromRealtimeDB(path: string): Promise<Object | null> {
         if (!this._realtimeDB) throw new Error("no realtime db.")
@@ -184,15 +185,15 @@ export abstract class BotFrameClass {
         return this._botResult.initialBadget
     }
 
-    protected get currentTicker(): TickerType {
+    protected get currentTicker(): Ticker {
         return this._currentTicker
     }
 
-    protected set currentTicker(tk: TickerType) {
+    protected set currentTicker(tk: Ticker) {
         this._currentTicker = tk
     }
 
-    protected get previousTicker(): TickerType {
+    protected get previousTicker(): Ticker {
         return this._previousTicker
     }
 

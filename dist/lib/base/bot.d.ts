@@ -1,5 +1,6 @@
 import { MongodbManagerClass } from "utils-mongodb";
-import { BaseBotParams, BaseBotResult, TickerType } from "./types";
+import { Ticker } from "utils-trade";
+import { BaseBotParams, BaseBotResult } from "./types";
 export declare abstract class BotFrameClass {
     private _baseParams;
     private _realtimeDB;
@@ -19,10 +20,10 @@ export declare abstract class BotFrameClass {
     private saveBotResult;
     protected loadFromMongoDB(path: string, filter?: any): Promise<any>;
     protected saveToMongoDB(path: string, data: any, filter?: any): Promise<void>;
-    abstract clearPosition(): Promise<void>;
-    abstract updateTicker(): Promise<void>;
-    abstract updateBadget(): Promise<void>;
-    abstract updateTrade(): Promise<void>;
+    protected abstract clearPosition(): Promise<void>;
+    protected abstract updateTicker(): Promise<void>;
+    protected abstract updateBadget(): Promise<void>;
+    protected abstract updateTrade(): Promise<void>;
     private loadFromRealtimeDB;
     private saveToRealtimeDB;
     protected get isBackTest(): boolean;
@@ -32,8 +33,8 @@ export declare abstract class BotFrameClass {
     protected get currentBadget(): number;
     protected set currentBadget(badget: number);
     protected get initialBadget(): number;
-    protected get currentTicker(): TickerType;
-    protected set currentTicker(tk: TickerType);
-    protected get previousTicker(): TickerType;
+    protected get currentTicker(): Ticker;
+    protected set currentTicker(tk: Ticker);
+    protected get previousTicker(): Ticker;
     protected get mongoDB(): MongodbManagerClass;
 }

@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.BotFrameClass = void 0;
 const utils_firebase_server_1 = require("utils-firebase-server");
 const utils_mongodb_1 = require("utils-mongodb");
+const utils_trade_1 = require("utils-trade");
 const types_1 = require("./types");
 const utils_general_1 = require("utils-general");
 class BotFrameClass {
@@ -19,8 +20,8 @@ class BotFrameClass {
         this._baseParams = _baseParams;
         this._botStatus = (0, types_1.getBaseBotStatus)();
         this._botResult = (0, types_1.getBaseBotResult)();
-        this._previousTicker = (0, types_1.getDefaultTicker)();
-        this._currentTicker = (0, types_1.getDefaultTicker)();
+        this._previousTicker = (0, utils_trade_1.getDefaultTicker)();
+        this._currentTicker = (0, utils_trade_1.getDefaultTicker)();
         this._botResult.botName = this._baseParams.botName;
         this._botResult.logicName = this._baseParams.logicName;
     }
@@ -61,11 +62,11 @@ class BotFrameClass {
     }
     initialize() {
         return __awaiter(this, void 0, void 0, function* () {
-            if (!this.isBackTest && this._baseParams.useRealtimeDB) {
+            if (!this.isBackTest) {
                 this._realtimeDB = yield (0, utils_firebase_server_1.getRealTimeDatabase)();
             }
-            if (!this.isBackTest && this._baseParams.useMongoDBAndDBName) {
-                this._mongoDB = new utils_mongodb_1.MongodbManagerClass(this._baseParams.useMongoDBAndDBName);
+            if (!this.isBackTest) {
+                this._mongoDB = new utils_mongodb_1.MongodbManagerClass(this._baseParams.mongoDbName);
                 yield this._mongoDB.connect();
             }
             if (!this.isBackTest) {

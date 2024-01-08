@@ -1,19 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getBaseBotResult = exports.getBaseBotStatus = exports.getDefaultTicker = exports.botCurrencyList = exports.MONGO_PATH_BOTRESULT = exports.MONGO_PATH_BOTSTATUS = void 0;
+exports.getBaseBotResult = exports.getBaseBotStatus = exports.botCurrencyList = exports.MONGO_PATH_BOTRESULT = exports.MONGO_PATH_BOTSTATUS = void 0;
+const utils_trade_1 = require("utils-trade");
 exports.MONGO_PATH_BOTSTATUS = 'botStatus';
 exports.MONGO_PATH_BOTRESULT = 'botResult';
 exports.botCurrencyList = [
     'JPY',
     'USD'
 ];
-function getDefaultTicker() {
-    return {
-        ask: 0,
-        bid: 0
-    };
-}
-exports.getDefaultTicker = getDefaultTicker;
 function getBaseBotStatus() {
     return {
         isClear: false,
@@ -31,7 +25,7 @@ function getBaseBotResult() {
         cumulativeProfit: 0,
         currentBadget: 0,
         initialBadget: 0,
-        ticker: getDefaultTicker()
+        ticker: (0, utils_trade_1.getDefaultTicker)()
     };
 }
 exports.getBaseBotResult = getBaseBotResult;

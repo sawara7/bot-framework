@@ -18,5 +18,5 @@ Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./lib/base/bot"), exports);
 __exportStar(require("./lib/base/types"), exports);
 // multi position
-// export * from './lib/multiPosition/bot'
-// export * from './lib/multiPosition/types'
+__exportStar(require("./lib/multiPosition/bot"), exports);
+__exportStar(require("./lib/multiPosition/types"), exports);
