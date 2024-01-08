@@ -17,13 +17,12 @@ const utils_general_1 = require("utils-general");
 class BotFrameClass {
     constructor(_baseParams) {
         this._baseParams = _baseParams;
-        this._cumulativeProfit = 0;
         this._botStatus = (0, types_1.getBaseBotStatus)();
-        this._initialBadget = 0;
-        this._currentBadget = 0;
+        this._botResult = (0, types_1.getBaseBotResult)();
         this._previousTicker = (0, types_1.getDefaultTicker)();
         this._currentTicker = (0, types_1.getDefaultTicker)();
-        // 
+        this._botResult.botName = this._baseParams.botName;
+        this._botResult.logicName = this._baseParams.logicName;
     }
     start() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -36,12 +35,22 @@ class BotFrameClass {
                     yield this.updateTicker();
                     this._previousTicker = this._currentTicker;
                     yield this.updateTrade();
-                    if (!this.isBackTest)
-                        yield this.setBotResultToRealtimeDB();
+                    if (!this.isBackTest) {
+                        this._botStatus.message = 'Normal.';
+                        yield this.saveBotStatus();
+                        yield this.saveBotResult();
+                    }
                 }
                 catch (e) {
                     const err = e;
                     console.log(this._baseParams.botName, err.name, err.message);
+                    this._botStatus = {
+                        isClear: false,
+                        isStop: true,
+                        isExit: false,
+                        message: err.name + '/' + err.message
+                    };
+                    yield this.saveBotStatus();
                 }
                 finally {
                     if (!this.isBackTest)
@@ -54,15 +63,20 @@ class BotFrameClass {
         return __awaiter(this, void 0, void 0, function* () {
             if (!this.isBackTest && this._baseParams.useRealtimeDB) {
                 this._realtimeDB = yield (0, utils_firebase_server_1.getRealTimeDatabase)();
-                yield this.setBotStatusToRealtimeDB();
             }
             if (!this.isBackTest && this._baseParams.useMongoDBAndDBName) {
                 this._mongoDB = new utils_mongodb_1.MongodbManagerClass(this._baseParams.useMongoDBAndDBName);
                 yield this._mongoDB.connect();
             }
-            yield this.updateBadget();
-            this._initialBadget = this._currentBadget;
-            if (isNaN(this._initialBadget) || this._initialBadget === 0) {
+            if (!this.isBackTest) {
+                yield this.loadBotStatus(true);
+                yield this.loadBotResult(true);
+            }
+            if (this._botResult.initialBadget === 0) {
+                yield this.updateBadget();
+                this._botResult.initialBadget = this._botResult.currentBadget;
+            }
+            if (isNaN(this._botResult.initialBadget) || this._botResult.initialBadget === 0) {
                 throw new Error('Update initial badget error.');
             }
         });
@@ -70,12 +84,14 @@ class BotFrameClass {
     isStopOrClearPosition() {
         return __awaiter(this, void 0, void 0, function* () {
             if (this._botStatus.isStop) {
+                this._botStatus.message = 'Stopping...';
                 yield (0, utils_general_1.sleep)(1000);
                 return true;
             }
             if (this._botStatus.isClear) {
                 yield this.clearPosition();
                 this._botStatus.isClear = false;
+                this._botStatus.message = 'Position cleared.';
                 yield (0, utils_general_1.sleep)(1000);
                 return true;
             }
@@ -90,49 +106,92 @@ class BotFrameClass {
             return !this._botStatus.isExit;
         });
     }
-    setBotStatusToRealtimeDB() {
+    loadBotStatus(initialized) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const res = yield this.loadFromRealtimeDB(types_1.MONGO_PATH_BOTSTATUS);
+            if (res == null) {
+                if (initialized) {
+                    return;
+                }
+                throw new Error('failed load botStatus');
+            }
+            this._botStatus = res;
+        });
+    }
+    saveBotStatus() {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.saveToRealtimeDB(types_1.MONGO_PATH_BOTSTATUS, this._botStatus);
+        });
+    }
+    loadBotResult(initialized) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const res = yield this.loadFromRealtimeDB(types_1.MONGO_PATH_BOTRESULT);
+            if (res == null) {
+                if (initialized) {
+                    return;
+                }
+                throw new Error('failed load botResult');
+            }
+            this._botResult = res;
+        });
+    }
+    saveBotResult() {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.saveToRealtimeDB(types_1.MONGO_PATH_BOTRESULT, this._botResult);
+        });
+    }
+    loadFromMongoDB(path, filter) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!this.isBackTest && this._mongoDB) {
+                const res = yield this._mongoDB.find(path, filter);
+                if (res.result)
+                    return res.data;
+            }
+        });
+    }
+    saveToMongoDB(path, data, filter) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!this.isBackTest && this._mongoDB) {
+                yield this._mongoDB.upsert(path, filter, data);
+            }
+        });
+    }
+    loadFromRealtimeDB(path) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!this._realtimeDB)
                 throw new Error("no realtime db.");
-            yield this._realtimeDB.set("botStatus/" + this._baseParams.botName, this._botStatus);
+            return yield this._realtimeDB.get(yield this._realtimeDB.getReference(path + "/" + this._baseParams.botName));
         });
     }
-    setBotResultToRealtimeDB() {
+    saveToRealtimeDB(path, data) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (this._realtimeDB)
-                yield this._realtimeDB.set('botResult/' + this._baseParams.botName, yield this.getBotResult());
+            if (!this._realtimeDB)
+                throw new Error("no realtime db.");
+            yield this._realtimeDB.set(path + '/' + this._baseParams.botName, data);
         });
     }
     get isBackTest() {
         return this._baseParams.isBackTest ? true : false;
     }
-    getBotResult() {
-        return __awaiter(this, void 0, void 0, function* () {
-            return {
-                botName: this._baseParams.botName,
-                logicName: this._baseParams.logicName,
-                updateTimestamp: new Date().toLocaleString(),
-                cumulativeProfit: this.cumulativeProfit.toString(),
-                currentBadget: this.currentBadget.toString(),
-                initialBadget: this.initialBadget.toString(),
-                ticker: this.currentTicker
-            };
-        });
+    get botResult() {
+        this._botResult.ticker = this.currentTicker;
+        this._botResult.updateTimestamp = new Date().toLocaleString();
+        return this._botResult;
     }
     get cumulativeProfit() {
-        return this._cumulativeProfit;
+        return this._botResult.cumulativeProfit;
     }
     set cumulativeProfit(value) {
-        this._cumulativeProfit = value;
+        this._botResult.cumulativeProfit = value;
     }
     get currentBadget() {
-        return this._currentBadget;
+        return this._botResult.currentBadget;
     }
     set currentBadget(badget) {
-        this._currentBadget = badget;
+        this._botResult.currentBadget = badget;
     }
     get initialBadget() {
-        return this._initialBadget;
+        return this._botResult.initialBadget;
     }
     get currentTicker() {
         return this._currentTicker;
@@ -142,6 +201,11 @@ class BotFrameClass {
     }
     get previousTicker() {
         return this._previousTicker;
+    }
+    get mongoDB() {
+        if (!this._mongoDB)
+            throw new Error('no mongoDB.');
+        return this._mongoDB;
     }
 }
 exports.BotFrameClass = BotFrameClass;

@@ -1,6 +1,6 @@
 {
   "name": "bot-framework",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": "dist/index.js",
   "scripts": {
     "install-rimraf": "npm install --save-dev rimraf",
@@ -22,7 +22,6 @@
   "dependencies": {
     "utils-firebase-server": "github:sawara7/utils-firebase-server",
     "utils-general": "github:sawara7/utils-general",
-    "utils-private": "github:sawara7/utils-private",
     "utils-trade": "github:sawara7/utils-trade"
   }
 }

@@ -1,3 +1,6 @@
+import { OrderSide } from "utils-trade";
+export declare const MONGO_PATH_BOTSTATUS = "botStatus";
+export declare const MONGO_PATH_BOTRESULT = "botResult";
 export declare const botCurrencyList: readonly ["JPY", "USD"];
 export type botCurrency = typeof botCurrencyList[number];
 export interface BaseBotParams {
@@ -9,15 +12,6 @@ export interface BaseBotParams {
     useMongoDBAndDBName?: string;
     isBackTest?: boolean;
 }
-export interface BaseBotResult {
-    botName: string;
-    logicName: string;
-    updateTimestamp: string;
-    cumulativeProfit: string;
-    initialBadget: string;
-    currentBadget: string;
-    ticker: TickerType;
-}
 export interface TickerType {
     ask: number;
     bid: number;
@@ -27,5 +21,24 @@ export interface BaseBotStatus {
     isClear: boolean;
     isStop: boolean;
     isExit: boolean;
+    message: string;
 }
 export declare function getBaseBotStatus(): BaseBotStatus;
+export interface BaseBotResult {
+    botName: string;
+    logicName: string;
+    updateTimestamp: string;
+    cumulativeProfit: number;
+    initialBadget: number;
+    currentBadget: number;
+    ticker: TickerType;
+}
+export declare function getBaseBotResult(): BaseBotResult;
+export interface MongoPosition {
+    mongoID: string;
+    mongoIndex: number;
+    openSide: OrderSide;
+    openSize: string;
+    isOpened: boolean;
+}
+export type MongoPositionRefProc = (pos: MongoPosition) => void;

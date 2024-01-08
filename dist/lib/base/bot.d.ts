@@ -1,12 +1,11 @@
+import { MongodbManagerClass } from "utils-mongodb";
 import { BaseBotParams, BaseBotResult, TickerType } from "./types";
 export declare abstract class BotFrameClass {
     private _baseParams;
     private _realtimeDB;
     private _mongoDB;
-    private _cumulativeProfit;
     private _botStatus;
-    private _initialBadget;
-    private _currentBadget;
+    private _botResult;
     private _previousTicker;
     private _currentTicker;
     constructor(_baseParams: BaseBotParams);
@@ -14,14 +13,20 @@ export declare abstract class BotFrameClass {
     protected initialize(): Promise<void>;
     private isStopOrClearPosition;
     private getBotStatusFromRealtimeDbAndIsContinue;
+    private loadBotStatus;
+    private saveBotStatus;
+    private loadBotResult;
+    private saveBotResult;
+    protected loadFromMongoDB(path: string, filter?: any): Promise<any>;
+    protected saveToMongoDB(path: string, data: any, filter?: any): Promise<void>;
     abstract clearPosition(): Promise<void>;
     abstract updateTicker(): Promise<void>;
     abstract updateBadget(): Promise<void>;
     abstract updateTrade(): Promise<void>;
-    private setBotStatusToRealtimeDB;
-    private setBotResultToRealtimeDB;
+    private loadFromRealtimeDB;
+    private saveToRealtimeDB;
     protected get isBackTest(): boolean;
-    protected getBotResult(): Promise<BaseBotResult>;
+    protected get botResult(): BaseBotResult;
     protected get cumulativeProfit(): number;
     protected set cumulativeProfit(value: number);
     protected get currentBadget(): number;
@@ -30,4 +35,5 @@ export declare abstract class BotFrameClass {
     protected get currentTicker(): TickerType;
     protected set currentTicker(tk: TickerType);
     protected get previousTicker(): TickerType;
+    protected get mongoDB(): MongodbManagerClass;
 }
