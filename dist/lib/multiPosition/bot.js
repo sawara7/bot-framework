@@ -64,8 +64,7 @@ class BotMultiPositionClass extends bot_1.BotFrameClass {
                 if (!pos.isOpened && !pos.isClosed && pos.openOrderID === '') {
                     // if 何もしていない
                     // do Open注文する
-                    yield this.sendOpenOrder(pos);
-                    if (pos.openOrderID !== '')
+                    if (yield this.sendOpenOrder(pos))
                         yield this.updatePosition(pos);
                 }
                 if (!pos.isOpened && !pos.isClosed && pos.openOrderID !== '') {
@@ -73,8 +72,7 @@ class BotMultiPositionClass extends bot_1.BotFrameClass {
                     // do Open状態にする
                     // 注文リストで約定したか確認する
                     // do Open状態にする
-                    yield this.checkOpenOrder(pos);
-                    if (pos.openSize > 0 && pos.openPrice > 0) {
+                    if (yield this.checkOpenOrder(pos)) {
                         pos.openOrderID = '';
                         pos.isOpened = true;
                         yield this.updatePosition(pos);
@@ -83,15 +81,13 @@ class BotMultiPositionClass extends bot_1.BotFrameClass {
                 if (pos.isOpened && !pos.isClosed && pos.closeOrderID === '') {
                     // if Open状態でClose注文していない
                     // do Close注文する
-                    yield this.sendCloseOrder(pos);
-                    if (pos.closeOrderID !== '')
+                    if (yield this.sendCloseOrder(pos))
                         yield this.updatePosition(pos);
                 }
                 if (pos.isOpened && !pos.isClosed && pos.closeOrderID !== '') {
                     // if Close注文が成約したか
                     // do Close状態にする
-                    yield this.checkCloseOrder(pos);
-                    if (pos.closePrice > 0) {
+                    if (yield this.checkCloseOrder(pos)) {
                         pos.closeOrderID = '';
                         pos.isClosed = true;
                         yield this.updatePosition(pos);
@@ -107,6 +103,35 @@ class BotMultiPositionClass extends bot_1.BotFrameClass {
                     pos.openPrice = 0;
                     pos.openSize = 0;
                     yield this.updatePosition(pos);
+                }
+            }));
+        });
+    }
+    clearPosition() {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.updateTicker();
+            yield this.updateMultiPositionStatisticsAndUpdateActiveOrders();
+            yield this.checkActiveOrderInfo(this._activeOrderIDs);
+            yield this.positionLoop((pos) => __awaiter(this, void 0, void 0, function* () {
+                if (pos.isOpened && !pos.isClosed && pos.closeOrderID === '') {
+                    // if Open状態でClose注文していない
+                    // do Close注文す
+                    if (yield this.sendCloseOrder(pos, true))
+                        yield this.updatePosition(pos);
+                }
+                if (pos.isOpened && !pos.isClosed && pos.closeOrderID !== '') {
+                    // if Close注文が成約したか
+                    // do Close状態にする
+                    if (yield this.checkCloseOrder(pos)) {
+                        pos.closeOrderID = '';
+                        pos.isClosed = true;
+                        yield this.updatePosition(pos);
+                    }
+                    else {
+                        yield this.cancelOrder(pos);
+                        if (yield this.sendCloseOrder(pos, true))
+                            yield this.updatePosition(pos);
+                    }
                 }
             }));
         });

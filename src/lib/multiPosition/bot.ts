@@ -49,16 +49,14 @@ export abstract class BotMultiPositionClass extends BotFrameClass {
                 if (!pos.isOpened && !pos.isClosed && pos.openOrderID === ''){
                     // if 何もしていない
                     // do Open注文する
-                    await this.sendOpenOrder(pos)
-                    if (pos.openOrderID !== '') await this.updatePosition(pos)
+                    if (await this.sendOpenOrder(pos)) await this.updatePosition(pos)
                 }
                 if (!pos.isOpened && !pos.isClosed && pos.openOrderID !== ''){
                     // if Open注文が成約したか
                     // do Open状態にする
                     // 注文リストで約定したか確認する
                     // do Open状態にする
-                    await this.checkOpenOrder(pos)
-                    if (pos.openSize > 0 && pos.openPrice > 0) {
+                    if (await this.checkOpenOrder(pos)) {
                         pos.openOrderID = ''
                         pos.isOpened = true
                         await this.updatePosition(pos)
@@ -67,14 +65,12 @@ export abstract class BotMultiPositionClass extends BotFrameClass {
                 if (pos.isOpened && !pos.isClosed && pos.closeOrderID === ''){
                     // if Open状態でClose注文していない
                     // do Close注文する
-                    await this.sendCloseOrder(pos)
-                    if (pos.closeOrderID !== '') await this.updatePosition(pos)
+                    if (await this.sendCloseOrder(pos)) await this.updatePosition(pos)
                 }
                 if (pos.isOpened && !pos.isClosed && pos.closeOrderID !== ''){
                     // if Close注文が成約したか
                     // do Close状態にする
-                    await this.checkCloseOrder(pos)
-                    if (pos.closePrice > 0) {
+                    if (await this.checkCloseOrder(pos)) {
                         pos.closeOrderID = ''
                         pos.isClosed = true
                         await this.updatePosition(pos)
@@ -95,11 +91,39 @@ export abstract class BotMultiPositionClass extends BotFrameClass {
         )  
     }
 
+    protected async clearPosition(): Promise<void> {
+        await this.updateTicker()
+        await this.updateMultiPositionStatisticsAndUpdateActiveOrders()
+        await this.checkActiveOrderInfo(this._activeOrderIDs)
+        await this.positionLoop(
+            async (pos: MongoPosition)=> {
+                if (pos.isOpened && !pos.isClosed && pos.closeOrderID === ''){
+                    // if Open状態でClose注文していない
+                    // do Close注文す
+                    if (await this.sendCloseOrder(pos, true)) await this.updatePosition(pos)
+                }
+                if (pos.isOpened && !pos.isClosed && pos.closeOrderID !== ''){
+                    // if Close注文が成約したか
+                    // do Close状態にする
+                    if (await this.checkCloseOrder(pos)) {
+                        pos.closeOrderID = ''
+                        pos.isClosed = true
+                        await this.updatePosition(pos)
+                    } else {
+                        await this.cancelOrder(pos)
+                        if (await this.sendCloseOrder(pos, true)) await this.updatePosition(pos)
+                    }
+                }
+            }
+        )  
+    }
+
     protected abstract checkActiveOrderInfo(orderIds: string[]): Promise<void>
-    protected abstract sendOpenOrder(pos: MongoPosition): Promise<void>
-    protected abstract sendCloseOrder(pos: MongoPosition): Promise<void>
-    protected abstract checkOpenOrder(pos: MongoPosition): Promise<void>
-    protected abstract checkCloseOrder(pos: MongoPosition): Promise<void>
+    protected abstract sendOpenOrder(pos: MongoPosition, force?: boolean): Promise<boolean>
+    protected abstract sendCloseOrder(pos: MongoPosition, force?: boolean): Promise<boolean>
+    protected abstract checkOpenOrder(pos: MongoPosition): Promise<boolean>
+    protected abstract checkCloseOrder(pos: MongoPosition): Promise<boolean>
+    protected abstract cancelOrder(pos: MongoPosition): Promise<boolean>
 
     private async updateMultiPositionStatisticsAndUpdateActiveOrders(): Promise<void> {
         let result = getDefaultMultiPositionStatistics()
