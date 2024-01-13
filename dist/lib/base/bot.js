@@ -112,6 +112,7 @@ class BotFrameClass {
             const res = yield this.loadFromRealtimeDB(types_1.MONGO_PATH_BOTSTATUS);
             if (res == null) {
                 if (initialized) {
+                    yield this.saveBotStatus();
                     return;
                 }
                 throw new Error('failed load botStatus');
@@ -129,6 +130,7 @@ class BotFrameClass {
             const res = yield this.loadFromRealtimeDB(types_1.MONGO_PATH_BOTRESULT);
             if (res == null) {
                 if (initialized) {
+                    yield this.saveBotResult();
                     return;
                 }
                 throw new Error('failed load botResult');

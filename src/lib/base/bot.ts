@@ -98,6 +98,7 @@ export abstract class BotFrameClass {
         const res = await this.loadFromRealtimeDB(MONGO_PATH_BOTSTATUS) 
         if (res == null) {
             if (initialized) {
+                await this.saveBotStatus()
                 return
             }
             throw new Error('failed load botStatus')
@@ -113,6 +114,7 @@ export abstract class BotFrameClass {
         const res = await this.loadFromRealtimeDB(MONGO_PATH_BOTRESULT)
         if (res == null) {
             if (initialized) {
+                await this.saveBotResult()
                 return
             }
             throw new Error('failed load botResult')

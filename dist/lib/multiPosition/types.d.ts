@@ -15,8 +15,8 @@ export interface MongoPosition {
     isOpened: boolean;
     isClosed: boolean;
 }
-export type MongoPositionRefProc = (pos: MongoPosition) => void;
-export type MongoPositionDict = {
+export declare type MongoPositionRefProc = (pos: MongoPosition) => void;
+export declare type MongoPositionDict = {
     [id: string]: MongoPosition;
 };
 export interface MultiPositionsStatistics {
