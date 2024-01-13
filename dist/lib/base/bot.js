@@ -33,9 +33,8 @@ class BotFrameClass {
                     if (!this.isBackTest && (yield this.isStopOrClearPosition()))
                         continue;
                     yield this.updateBadget();
-                    yield this.updateTicker();
                     this._previousTicker = this._currentTicker;
-                    this._botResult.ticker = this.currentTicker;
+                    yield this.updateTicker();
                     yield this.updateTrade();
                     if (!this.isBackTest) {
                         this._botStatus.message = 'Normal.';
@@ -52,7 +51,6 @@ class BotFrameClass {
                         isExit: false,
                         message: err.name + '/' + err.message
                     };
-                    this._botResult.updateTimestamp = new Date().toLocaleString();
                     yield this.saveBotStatus();
                 }
                 finally {
@@ -75,6 +73,7 @@ class BotFrameClass {
                 yield this.loadBotStatus(true);
                 yield this.loadBotResult(true);
             }
+            yield this.updateTicker();
             if (this._botResult.initialBadget === 0) {
                 yield this.updateBadget();
                 this._botResult.initialBadget = this._botResult.currentBadget;
@@ -142,6 +141,8 @@ class BotFrameClass {
     }
     saveBotResult() {
         return __awaiter(this, void 0, void 0, function* () {
+            this._botResult.ticker = this.currentTicker;
+            this._botResult.updateTimestamp = new Date().toLocaleString();
             yield this.saveToRealtimeDB(types_1.MONGO_PATH_BOTRESULT, this.botResult);
         });
     }
