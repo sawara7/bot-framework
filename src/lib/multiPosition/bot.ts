@@ -56,11 +56,7 @@ export abstract class BotMultiPositionClass extends BotFrameClass {
                     // do Open状態にする
                     // 注文リストで約定したか確認する
                     // do Open状態にする
-                    if (await this.checkOpenOrder(pos)) {
-                        pos.openOrderID = ''
-                        pos.isOpened = true
-                        await this.updatePosition(pos)
-                    }
+                    if (await this.checkOpenOrder(pos)) await this.updatePosition(pos)
                 }
                 if (pos.isOpened && !pos.isClosed && pos.closeOrderID === ''){
                     // if Open状態でClose注文していない
@@ -70,11 +66,7 @@ export abstract class BotMultiPositionClass extends BotFrameClass {
                 if (pos.isOpened && !pos.isClosed && pos.closeOrderID !== ''){
                     // if Close注文が成約したか
                     // do Close状態にする
-                    if (await this.checkCloseOrder(pos)) {
-                        pos.closeOrderID = ''
-                        pos.isClosed = true
-                        await this.updatePosition(pos)
-                    }
+                    if (await this.checkCloseOrder(pos)) await this.updatePosition(pos)
                 }
                 if (pos.isOpened && pos.isClosed){
                     // if Positionが完了した
@@ -106,8 +98,6 @@ export abstract class BotMultiPositionClass extends BotFrameClass {
                     // if Close注文が成約したか
                     // do Close状態にする
                     if (await this.checkCloseOrder(pos)) {
-                        pos.closeOrderID = ''
-                        pos.isClosed = true
                         await this.updatePosition(pos)
                     } else {
                         await this.cancelOrder(pos)
