@@ -35,6 +35,7 @@ class BotFrameClass {
                     yield this.updateBadget();
                     yield this.updateTicker();
                     this._previousTicker = this._currentTicker;
+                    this._botResult.ticker = this.currentTicker;
                     yield this.updateTrade();
                     if (!this.isBackTest) {
                         this._botStatus.message = 'Normal.';
@@ -51,6 +52,7 @@ class BotFrameClass {
                         isExit: false,
                         message: err.name + '/' + err.message
                     };
+                    this._botResult.updateTimestamp = new Date().toLocaleString();
                     yield this.saveBotStatus();
                 }
                 finally {
@@ -140,7 +142,7 @@ class BotFrameClass {
     }
     saveBotResult() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.saveToRealtimeDB(types_1.MONGO_PATH_BOTRESULT, this._botResult);
+            yield this.saveToRealtimeDB(types_1.MONGO_PATH_BOTRESULT, this.botResult);
         });
     }
     loadFromMongoDB(path, filter) {
@@ -177,8 +179,6 @@ class BotFrameClass {
         return this._baseParams.isBackTest ? true : false;
     }
     get botResult() {
-        this._botResult.ticker = this.currentTicker;
-        this._botResult.updateTimestamp = new Date().toLocaleString();
         return this._botResult;
     }
     get cumulativeProfit() {

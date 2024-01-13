@@ -25,6 +25,7 @@ export abstract class BotFrameClass {
                 await this.updateBadget()
                 await this.updateTicker()
                 this._previousTicker = this._currentTicker
+                this._botResult.ticker = this.currentTicker
                 await this.updateTrade()
                 if (!this.isBackTest) {
                     this._botStatus.message = 'Normal.'
@@ -40,6 +41,7 @@ export abstract class BotFrameClass {
                     isExit: false,
                     message: err.name + '/' + err.message
                 }
+                this._botResult.updateTimestamp = new Date().toLocaleString()
                 await this.saveBotStatus()
             } finally {
                 if (!this.isBackTest) console.log(this._baseParams.botName, new Date().toLocaleString())
@@ -123,7 +125,7 @@ export abstract class BotFrameClass {
     }
 
     private async saveBotResult(): Promise<void> {
-        await this.saveToRealtimeDB(MONGO_PATH_BOTRESULT, this._botResult)
+        await this.saveToRealtimeDB(MONGO_PATH_BOTRESULT, this.botResult)
     }
 
     protected async loadFromMongoDB(path: string, filter?:any): Promise<any> {
@@ -162,8 +164,6 @@ export abstract class BotFrameClass {
     }
 
     protected get botResult(): BaseBotResult {
-        this._botResult.ticker = this.currentTicker
-        this._botResult.updateTimestamp = new Date().toLocaleString()
         return this._botResult
     }
 
