@@ -20,6 +20,8 @@ class BotMultiPositionClass extends bot_1.BotFrameClass {
         this._debugPositions = {};
         this._multiPositionsStatistics = (0, types_1.getDefaultMultiPositionStatistics)();
         this._activeOrderIDs = [];
+        this._activeOrders = [];
+        this._closedOrders = {};
     }
     initialize() {
         const _super = Object.create(null, {
@@ -59,33 +61,73 @@ class BotMultiPositionClass extends bot_1.BotFrameClass {
     updateTrade() {
         return __awaiter(this, void 0, void 0, function* () {
             yield this.updateMultiPositionStatisticsAndUpdateActiveOrders();
-            yield this.checkActiveOrderInfo(this._activeOrderIDs);
+            const res = yield this.getActiveOrders(this._activeOrderIDs);
+            if (!res.success)
+                return;
+            this._activeOrders = res.activeOrderIDs;
+            const res2 = yield this.getClosedOrders(this._activeOrderIDs);
+            if (!res2.success)
+                return;
+            this._closedOrders = res2.closedOrders;
             yield this.positionLoop((pos) => __awaiter(this, void 0, void 0, function* () {
                 if (!pos.isOpened && !pos.isClosed && pos.openOrderID === '') {
                     // if 何もしていない
                     // do Open注文する
-                    if (yield this.sendOpenOrder(pos))
+                    const res = yield this.sendOpenOrder(pos);
+                    if (res.success) {
+                        pos.openOrderID = res.orderID;
+                        pos.openOrderType = res.orderType;
                         yield this.updatePosition(pos);
+                    }
+                    return;
                 }
                 if (!pos.isOpened && !pos.isClosed && pos.openOrderID !== '') {
                     // if Open注文が成約したか
                     // do Open状態にする
                     // 注文リストで約定したか確認する
                     // do Open状態にする
-                    if (yield this.checkOpenOrder(pos))
+                    if (this._activeOrders.includes(pos.openOrderID))
+                        return;
+                    if (Object.keys(this._closedOrders).includes(pos.openOrderID)) {
+                        pos.openOrderID = '';
+                        pos.isOpened = true;
+                        pos.openPrice = this._closedOrders[pos.openOrderID].price;
+                        pos.openSize = this._closedOrders[pos.openOrderID].size;
                         yield this.updatePosition(pos);
+                        return;
+                    }
+                    // orderが存在しない
+                    pos.openOrderID = '';
+                    yield this.updatePosition(pos);
+                    return;
                 }
                 if (pos.isOpened && !pos.isClosed && pos.closeOrderID === '') {
                     // if Open状態でClose注文していない
                     // do Close注文する
-                    if (yield this.sendCloseOrder(pos))
+                    const res = yield this.sendCloseOrder(pos);
+                    if (res.success) {
+                        pos.closeOrderID = res.orderID;
+                        pos.closeOrderType = res.orderType;
                         yield this.updatePosition(pos);
+                    }
+                    return;
                 }
                 if (pos.isOpened && !pos.isClosed && pos.closeOrderID !== '') {
                     // if Close注文が成約したか
                     // do Close状態にする
-                    if (yield this.checkCloseOrder(pos))
+                    if (this._activeOrders.includes(pos.closeOrderID))
+                        return;
+                    if (Object.keys(this._closedOrders).includes(pos.closeOrderID)) {
+                        pos.closeOrderID = '';
+                        pos.isClosed = true;
+                        pos.closePrice = this._closedOrders[pos.closeOrderID].price;
                         yield this.updatePosition(pos);
+                        return;
+                    }
+                    // orderが存在しない
+                    pos.closeOrderID = '';
+                    yield this.updatePosition(pos);
+                    return;
                 }
                 if (pos.isOpened && pos.isClosed) {
                     // if Positionが完了した
@@ -97,6 +139,7 @@ class BotMultiPositionClass extends bot_1.BotFrameClass {
                     pos.openPrice = 0;
                     pos.openSize = 0;
                     yield this.updatePosition(pos);
+                    return;
                 }
             }));
         });
@@ -105,25 +148,39 @@ class BotMultiPositionClass extends bot_1.BotFrameClass {
         return __awaiter(this, void 0, void 0, function* () {
             yield this.updateTicker();
             yield this.updateMultiPositionStatisticsAndUpdateActiveOrders();
-            yield this.checkActiveOrderInfo(this._activeOrderIDs);
+            const res = yield this.getActiveOrders(this._activeOrderIDs);
+            if (!res.success)
+                return;
+            this._activeOrders = res.activeOrderIDs;
+            const res2 = yield this.getClosedOrders(this._activeOrderIDs);
+            if (!res2.success)
+                return;
+            this._closedOrders = res2.closedOrders;
             yield this.positionLoop((pos) => __awaiter(this, void 0, void 0, function* () {
                 if (pos.isOpened && !pos.isClosed && pos.closeOrderID === '') {
                     // if Open状態でClose注文していない
                     // do Close注文す
-                    if (yield this.sendCloseOrder(pos, true))
+                    const res = yield this.sendCloseOrder(pos, true);
+                    if (res.success) {
+                        pos.closeOrderID = res.orderID;
+                        pos.closeOrderType = res.orderType;
                         yield this.updatePosition(pos);
+                    }
+                    return;
                 }
                 if (pos.isOpened && !pos.isClosed && pos.closeOrderID !== '') {
                     // if Close注文が成約したか
                     // do Close状態にする
-                    if (yield this.checkCloseOrder(pos)) {
-                        yield this.updatePosition(pos);
-                    }
-                    else {
+                    if (this._activeOrders.includes(pos.closeOrderID)) {
                         yield this.cancelOrder(pos);
-                        if (yield this.sendCloseOrder(pos, true))
+                        const res = yield this.sendCloseOrder(pos, true);
+                        if (res.success) {
+                            pos.closeOrderID = res.orderID;
+                            pos.closeOrderType = res.orderType;
                             yield this.updatePosition(pos);
+                        }
                     }
+                    return;
                 }
             }));
         });

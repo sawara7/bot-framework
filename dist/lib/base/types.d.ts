@@ -2,7 +2,7 @@ import { Ticker } from "utils-trade";
 export declare const MONGO_PATH_BOTSTATUS = "botStatus";
 export declare const MONGO_PATH_BOTRESULT = "botResult";
 export declare const botCurrencyList: readonly ["JPY", "USD"];
-export declare type botCurrency = typeof botCurrencyList[number];
+export type botCurrency = typeof botCurrencyList[number];
 export interface BaseBotParams {
     botName: string;
     logicName: string;

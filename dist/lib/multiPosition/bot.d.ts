@@ -1,20 +1,21 @@
-import { MongoPosition, MultiPositionBotParams, MultiPositionsStatistics } from "./types";
+import { MongoPosition, MultiPositionBotParams, MultiPositionsStatistics, getActiveOrdersResult, getClosedOrdersResult, sendCancelOrderResult, sendCloseOrderResult, sendOpenOrderResult } from "./types";
 import { BotFrameClass } from "../base/bot";
 export declare abstract class BotMultiPositionClass extends BotFrameClass {
     private _params;
     private _debugPositions;
     private _multiPositionsStatistics;
     private _activeOrderIDs;
+    private _activeOrders;
+    private _closedOrders;
     constructor(_params: MultiPositionBotParams);
     initialize(): Promise<void>;
     protected updateTrade(): Promise<void>;
     protected clearPosition(): Promise<void>;
-    protected abstract checkActiveOrderInfo(orderIds: string[]): Promise<void>;
-    protected abstract sendOpenOrder(pos: MongoPosition, force?: boolean): Promise<boolean>;
-    protected abstract sendCloseOrder(pos: MongoPosition, force?: boolean): Promise<boolean>;
-    protected abstract checkOpenOrder(pos: MongoPosition): Promise<boolean>;
-    protected abstract checkCloseOrder(pos: MongoPosition): Promise<boolean>;
-    protected abstract cancelOrder(pos: MongoPosition): Promise<boolean>;
+    protected abstract getActiveOrders(orderIds: string[]): Promise<getActiveOrdersResult>;
+    protected abstract getClosedOrders(orderIds: string[]): Promise<getClosedOrdersResult>;
+    protected abstract sendOpenOrder(pos: MongoPosition): Promise<sendOpenOrderResult>;
+    protected abstract sendCloseOrder(pos: MongoPosition, force?: boolean): Promise<sendCloseOrderResult>;
+    protected abstract cancelOrder(pos: MongoPosition): Promise<sendCancelOrderResult>;
     private updateMultiPositionStatisticsAndUpdateActiveOrders;
     private getPositions;
     private getPosition;

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getDefaultMultiPositionStatistics = exports.MONGO_PATH_POSITIONS = void 0;
+exports.getDefaultSendCloseOrderResult = exports.getDefaultSendOpenOrderResult = exports.getDefaultMultiPositionStatistics = exports.MONGO_PATH_POSITIONS = void 0;
 exports.MONGO_PATH_POSITIONS = 'Positions';
 function getDefaultMultiPositionStatistics() {
     return {
@@ -14,3 +14,19 @@ function getDefaultMultiPositionStatistics() {
     };
 }
 exports.getDefaultMultiPositionStatistics = getDefaultMultiPositionStatistics;
+function getDefaultSendOpenOrderResult() {
+    return {
+        success: false,
+        orderID: '',
+        orderType: 'limit'
+    };
+}
+exports.getDefaultSendOpenOrderResult = getDefaultSendOpenOrderResult;
+function getDefaultSendCloseOrderResult() {
+    return {
+        success: false,
+        orderID: '',
+        orderType: 'limit'
+    };
+}
+exports.getDefaultSendCloseOrderResult = getDefaultSendCloseOrderResult;

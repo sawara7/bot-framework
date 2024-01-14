@@ -1,11 +1,31 @@
-import { getUnrealizedPL } from "utils-trade"
-import { MONGO_PATH_POSITIONS, MongoPosition, MongoPositionDict, MongoPositionRefProc, MultiPositionBotParams, MultiPositionsStatistics, getDefaultMultiPositionStatistics } from "./types"
-import { BotFrameClass } from "../base/bot"
+import { 
+    getUnrealizedPL
+} from "utils-trade"
+import {
+    ClosedOrderDict,
+    MONGO_PATH_POSITIONS,
+    MongoPosition,
+    MongoPositionDict,
+    MongoPositionRefProc,
+    MultiPositionBotParams,
+    MultiPositionsStatistics,
+    getActiveOrdersResult,
+    getClosedOrdersResult,
+    getDefaultMultiPositionStatistics,
+    sendCancelOrderResult,
+    sendCloseOrderResult,
+    sendOpenOrderResult
+} from "./types"
+import {
+    BotFrameClass
+} from "../base/bot"
 
 export abstract class BotMultiPositionClass extends BotFrameClass {
     private _debugPositions: MongoPositionDict = {}
     private _multiPositionsStatistics : MultiPositionsStatistics = getDefaultMultiPositionStatistics()
     private _activeOrderIDs: string[] = []
+    private _activeOrders: string[] = []
+    private _closedOrders: ClosedOrderDict = {}
 
     constructor(private _params: MultiPositionBotParams) {
         super(_params)
@@ -43,31 +63,81 @@ export abstract class BotMultiPositionClass extends BotFrameClass {
 
     protected async updateTrade(): Promise<void> {
         await this.updateMultiPositionStatisticsAndUpdateActiveOrders()
-        await this.checkActiveOrderInfo(this._activeOrderIDs)
+        const res = await this.getActiveOrders(this._activeOrderIDs)
+        if (!res.success) return
+        this._activeOrders = res.activeOrderIDs
+        const res2 = await this.getClosedOrders(this._activeOrderIDs)
+        if (!res2.success) return
+        this._closedOrders = res2.closedOrders
+
         await this.positionLoop(
             async (pos: MongoPosition)=> {
+                
                 if (!pos.isOpened && !pos.isClosed && pos.openOrderID === ''){
                     // if 何もしていない
                     // do Open注文する
-                    if (await this.sendOpenOrder(pos)) await this.updatePosition(pos)
+                    const res = await this.sendOpenOrder(pos)
+                    if (res.success) {
+                        pos.openOrderID = res.orderID
+                        pos.openOrderType = res.orderType
+                        await this.updatePosition(pos)
+                    }
+                    return
                 }
+
                 if (!pos.isOpened && !pos.isClosed && pos.openOrderID !== ''){
                     // if Open注文が成約したか
                     // do Open状態にする
                     // 注文リストで約定したか確認する
                     // do Open状態にする
-                    if (await this.checkOpenOrder(pos)) await this.updatePosition(pos)
+                    if (this._activeOrders.includes(pos.openOrderID)) return
+
+                    if (Object.keys(this._closedOrders).includes(pos.openOrderID)) {
+                        pos.openOrderID = ''
+                        pos.isOpened = true
+                        pos.openPrice = this._closedOrders[pos.openOrderID].price
+                        pos.openSize = this._closedOrders[pos.openOrderID].size
+                        await this.updatePosition(pos)
+                        return
+                    }
+
+                    // orderが存在しない
+                    pos.openOrderID = ''
+                    await this.updatePosition(pos)
+                    return
                 }
+
                 if (pos.isOpened && !pos.isClosed && pos.closeOrderID === ''){
                     // if Open状態でClose注文していない
                     // do Close注文する
-                    if (await this.sendCloseOrder(pos)) await this.updatePosition(pos)
+                    const res = await this.sendCloseOrder(pos)
+                    if (res.success) {
+                        pos.closeOrderID = res.orderID
+                        pos.closeOrderType = res.orderType
+                        await this.updatePosition(pos)
+                    }
+                    return
                 }
+
                 if (pos.isOpened && !pos.isClosed && pos.closeOrderID !== ''){
                     // if Close注文が成約したか
                     // do Close状態にする
-                    if (await this.checkCloseOrder(pos)) await this.updatePosition(pos)
+                    if (this._activeOrders.includes(pos.closeOrderID)) return
+
+                    if (Object.keys(this._closedOrders).includes(pos.closeOrderID)) {
+                        pos.closeOrderID = ''
+                        pos.isClosed = true
+                        pos.closePrice = this._closedOrders[pos.closeOrderID].price
+                        await this.updatePosition(pos)
+                        return
+                    }
+
+                    // orderが存在しない
+                    pos.closeOrderID = ''
+                    await this.updatePosition(pos)
+                    return
                 }
+
                 if (pos.isOpened && pos.isClosed){
                     // if Positionが完了した
                     // do Positionをリセットする
@@ -78,6 +148,7 @@ export abstract class BotMultiPositionClass extends BotFrameClass {
                     pos.openPrice = 0
                     pos.openSize = 0
                     await this.updatePosition(pos)
+                    return
                 }
             }
         )  
@@ -86,34 +157,49 @@ export abstract class BotMultiPositionClass extends BotFrameClass {
     protected async clearPosition(): Promise<void> {
         await this.updateTicker()
         await this.updateMultiPositionStatisticsAndUpdateActiveOrders()
-        await this.checkActiveOrderInfo(this._activeOrderIDs)
+        const res = await this.getActiveOrders(this._activeOrderIDs)
+        if (!res.success) return
+        this._activeOrders = res.activeOrderIDs
+        const res2 = await this.getClosedOrders(this._activeOrderIDs)
+        if (!res2.success) return
+        this._closedOrders = res2.closedOrders
+
         await this.positionLoop(
             async (pos: MongoPosition)=> {
                 if (pos.isOpened && !pos.isClosed && pos.closeOrderID === ''){
                     // if Open状態でClose注文していない
                     // do Close注文す
-                    if (await this.sendCloseOrder(pos, true)) await this.updatePosition(pos)
+                    const res = await this.sendCloseOrder(pos, true)
+                    if (res.success) {
+                        pos.closeOrderID = res.orderID
+                        pos.closeOrderType = res.orderType
+                        await this.updatePosition(pos)
+                    }
+                    return
                 }
                 if (pos.isOpened && !pos.isClosed && pos.closeOrderID !== ''){
                     // if Close注文が成約したか
                     // do Close状態にする
-                    if (await this.checkCloseOrder(pos)) {
-                        await this.updatePosition(pos)
-                    } else {
+                    if (this._activeOrders.includes(pos.closeOrderID)) {
                         await this.cancelOrder(pos)
-                        if (await this.sendCloseOrder(pos, true)) await this.updatePosition(pos)
+                        const res = await this.sendCloseOrder(pos, true)
+                        if (res.success) {
+                            pos.closeOrderID = res.orderID
+                            pos.closeOrderType = res.orderType
+                            await this.updatePosition(pos)
+                        }
                     }
+                    return
                 }
             }
         )  
     }
 
-    protected abstract checkActiveOrderInfo(orderIds: string[]): Promise<void>
-    protected abstract sendOpenOrder(pos: MongoPosition, force?: boolean): Promise<boolean>
-    protected abstract sendCloseOrder(pos: MongoPosition, force?: boolean): Promise<boolean>
-    protected abstract checkOpenOrder(pos: MongoPosition): Promise<boolean>
-    protected abstract checkCloseOrder(pos: MongoPosition): Promise<boolean>
-    protected abstract cancelOrder(pos: MongoPosition): Promise<boolean>
+    protected abstract getActiveOrders(orderIds: string[]): Promise<getActiveOrdersResult>
+    protected abstract getClosedOrders(orderIds: string[]): Promise<getClosedOrdersResult>
+    protected abstract sendOpenOrder(pos: MongoPosition): Promise<sendOpenOrderResult>
+    protected abstract sendCloseOrder(pos: MongoPosition, force?: boolean): Promise<sendCloseOrderResult>
+    protected abstract cancelOrder(pos: MongoPosition): Promise<sendCancelOrderResult>
 
     private async updateMultiPositionStatisticsAndUpdateActiveOrders(): Promise<void> {
         let result = getDefaultMultiPositionStatistics()

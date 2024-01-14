@@ -20,6 +20,7 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
+    "logic-namping": "github:sawara7/logic-namping",
     "utils-firebase-server": "github:sawara7/utils-firebase-server",
     "utils-general": "github:sawara7/utils-general",
     "utils-trade": "github:sawara7/utils-trade"
