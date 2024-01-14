@@ -15,8 +15,8 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 // base
-__exportStar(require("./lib/base/bot"), exports);
-__exportStar(require("./lib/base/types"), exports);
+__exportStar(require("./lib/base"), exports);
 // multi position
-__exportStar(require("./lib/multiPosition/bot"), exports);
-__exportStar(require("./lib/multiPosition/types"), exports);
+__exportStar(require("./lib/multiPosition"), exports);
+// namping
+__exportStar(require("./lib/namping"), exports);

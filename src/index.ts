@@ -1,6 +1,6 @@
 // base
-export * from './lib/base/bot'
-export * from './lib/base/types'
+export * from './lib/base'
 // multi position
-export * from './lib/multiPosition/bot'
-export * from './lib/multiPosition/types'
+export * from './lib/multiPosition'
+// namping
+export * from './lib/namping'

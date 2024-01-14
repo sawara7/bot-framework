@@ -1,4 +1,5 @@
 import { BotMultiPositionClass, MongoPosition, sendCloseOrderResult, sendOpenOrderResult } from "../multiPosition/";
+import { LogicNampingClass, LogicNampingSettings } from "logic-namping";
 import { NampingBotParams } from "./types";
 export declare abstract class BotNampingClass extends BotMultiPositionClass {
     private _nampingParams;
@@ -10,5 +11,6 @@ export declare abstract class BotNampingClass extends BotMultiPositionClass {
     protected sendOpenOrder(pos: MongoPosition): Promise<sendOpenOrderResult>;
     protected abstract doSendCloseOrder(pos: MongoPosition, force?: boolean): Promise<sendCloseOrderResult>;
     protected sendCloseOrder(pos: MongoPosition, force?: boolean): Promise<sendCloseOrderResult>;
-    private get logicSettings();
+    protected get logic(): LogicNampingClass;
+    protected get logicSettings(): LogicNampingSettings;
 }

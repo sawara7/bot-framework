@@ -52,9 +52,18 @@ class BotNampingClass extends multiPosition_1.BotMultiPositionClass {
                 return yield this.doSendCloseOrder(pos, true);
             }
             // take profit
+            if ((pos.openSide === "sell" && pos.openPrice * (1 - this.logicSettings.profitRate) > this.currentTicker.ask) || (pos.openSide === "buy" && pos.openPrice * (1 + this.logicSettings.profitRate) < this.currentTicker.bid)) {
+                return yield this.doSendCloseOrder(pos);
+            }
             // losscut
+            if ((pos.openSide === "sell" && pos.openPrice * (1 + this.logicSettings.losscutRate) < this.currentTicker.ask) || (pos.openSide === "buy" && pos.openPrice * (1 - this.logicSettings.losscutRate) > this.currentTicker.bid)) {
+                return yield this.doSendCloseOrder(pos, true);
+            }
             return res;
         });
+    }
+    get logic() {
+        return this._logic;
     }
     get logicSettings() {
         return this._nampingParams.logicParams;
