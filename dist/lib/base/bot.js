@@ -54,6 +54,7 @@ class BotFrameClass {
                     yield this.saveBotStatus();
                 }
                 finally {
+                    yield (0, utils_general_1.sleep)(100);
                     if (!this.isBackTest)
                         console.log(this._baseParams.botName, new Date().toLocaleString());
                 }

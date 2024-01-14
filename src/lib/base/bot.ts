@@ -42,6 +42,7 @@ export abstract class BotFrameClass {
                 }
                 await this.saveBotStatus()
             } finally {
+                await sleep(100)
                 if (!this.isBackTest) console.log(this._baseParams.botName, new Date().toLocaleString())
             }
         }

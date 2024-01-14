@@ -96,7 +96,7 @@ class BotMultiPositionClass extends bot_1.BotFrameClass {
                         yield this.updatePosition(pos);
                         return;
                     }
-                    // orderが存在しない
+                    // orderが存在しない, もしくはキャンセル
                     pos.openOrderID = '';
                     yield this.updatePosition(pos);
                     return;

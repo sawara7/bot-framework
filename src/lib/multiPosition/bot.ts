@@ -101,7 +101,7 @@ export abstract class BotMultiPositionClass extends BotFrameClass {
                         return
                     }
 
-                    // orderが存在しない
+                    // orderが存在しない, もしくはキャンセル
                     pos.openOrderID = ''
                     await this.updatePosition(pos)
                     return
