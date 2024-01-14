@@ -17,11 +17,19 @@ class BotNampingForwardClass extends base_1.BaseBotNampingClass {
     }
     checkCancelOpenOrder(pos) {
         return __awaiter(this, void 0, void 0, function* () {
+            const openPrice = yield this.logic.getPositionInfo(pos.openSide, pos.mongoIndex).openPrice;
+            if ((pos.openSide === "buy" && openPrice * (1 + this.logicSettings.profitRate * 2) < this.previousTicker.ask) || (pos.openSide === "sell" && openPrice * (1 - this.logicSettings.profitRate * 2) > this.previousTicker.bid)) {
+                return true;
+            }
             return false;
         });
     }
     checkCancelCloseOrder(pos) {
         return __awaiter(this, void 0, void 0, function* () {
+            const closePrice = this.logic.getPositionInfo(pos.openSide, pos.mongoIndex).closePrice;
+            if ((pos.openSide === "buy" && closePrice * (1 + this.logicSettings.profitRate * 2) < this.currentTicker.ask) || (pos.openSide === "sell" && closePrice * (1 - this.logicSettings.profitRate * 2) > this.currentTicker.bid)) {
+                return true;
+            }
             return false;
         });
     }
@@ -29,8 +37,10 @@ class BotNampingForwardClass extends base_1.BaseBotNampingClass {
         return __awaiter(this, void 0, void 0, function* () {
             const openPrice = yield this.logic.getPositionInfo(pos.openSide, pos.mongoIndex).openPrice;
             if ((pos.openSide === "buy" &&
-                this.currentTicker.ask >= openPrice && openPrice > this.previousTicker.ask) || (pos.openSide === "sell" &&
-                this.currentTicker.bid <= openPrice && openPrice < this.previousTicker.bid)) {
+                openPrice <= this.currentTicker.ask &&
+                openPrice >= this.currentTicker.ask * (1 - this.logicSettings.profitRate * 1.5)) || (pos.openSide === "sell" &&
+                openPrice >= this.currentTicker.bid &&
+                openPrice <= this.currentTicker.bid * (1 + this.logicSettings.profitRate * 1.5))) {
                 return true;
             }
             return false;
@@ -38,8 +48,12 @@ class BotNampingForwardClass extends base_1.BaseBotNampingClass {
     }
     checkCloseOrder(pos) {
         return __awaiter(this, void 0, void 0, function* () {
-            // take profit
-            if ((pos.openSide === "sell" && pos.openPrice * (1 - this.logicSettings.profitRate) > this.currentTicker.ask) || (pos.openSide === "buy" && pos.openPrice * (1 + this.logicSettings.profitRate) < this.currentTicker.bid)) {
+            const closePrice = this.logic.getPositionInfo(pos.openSide, pos.mongoIndex).closePrice;
+            if ((pos.openSide === "sell" &&
+                closePrice <= this.currentTicker.ask &&
+                closePrice >= this.currentTicker.ask * (1 - this.logicSettings.profitRate * 1.5)) || (pos.openSide === "buy" &&
+                closePrice >= this.currentTicker.bid &&
+                closePrice <= this.currentTicker.bid * (1 + this.logicSettings.profitRate * 1.5))) {
                 return true;
             }
             return false;
@@ -47,8 +61,10 @@ class BotNampingForwardClass extends base_1.BaseBotNampingClass {
     }
     checkLosscutOrder(pos) {
         return __awaiter(this, void 0, void 0, function* () {
-            // losscut
-            if ((pos.openSide === "sell" && pos.openPrice * (1 + this.logicSettings.losscutRate) < this.currentTicker.ask) || (pos.openSide === "buy" && pos.openPrice * (1 - this.logicSettings.losscutRate) > this.currentTicker.bid)) {
+            const losscutPrice = this.logic.getPositionInfo(pos.openSide, pos.mongoIndex).losscutPrice;
+            if ((pos.openSide === "sell" &&
+                losscutPrice < this.currentTicker.ask) || (pos.openSide === "buy" &&
+                losscutPrice > this.currentTicker.bid)) {
                 return true;
             }
             return false;
