@@ -5,7 +5,7 @@ import {
     getDefaultSendOpenOrderResult,
     sendCloseOrderResult,
     sendOpenOrderResult
-} from "../multiPosition/"
+} from "../multiPosition"
 import {
     LogicNampingClass,
     LogicNampingSettings
@@ -14,7 +14,7 @@ import {
     NampingBotParams
 } from "./types"
 
-export abstract class BotNampingClass extends BotMultiPositionClass {
+export abstract class BaseBotNampingClass extends BotMultiPositionClass {
     private _logic: LogicNampingClass
 
     constructor(private _nampingParams: NampingBotParams) {
@@ -34,27 +34,19 @@ export abstract class BotNampingClass extends BotMultiPositionClass {
     }
 
     protected abstract doSendOpenOrder(pos: MongoPosition): Promise<sendOpenOrderResult>
+    
+    protected abstract checkOpenOrder(pos: MongoPosition): Promise<boolean>
 
     protected async sendOpenOrder(pos: MongoPosition): Promise<sendOpenOrderResult> {
-        const res = getDefaultSendOpenOrderResult()
-        const openPrice = await this._logic.getPositionInfo(pos.openSide, pos.mongoIndex).openPrice
-        if ((
-            pos.openSide === "buy" &&
-            this.currentTicker.ask >= openPrice &&
-            openPrice > this.previousTicker.ask &&
-            this.multiPositionStatistics.buyAveragePrice < this.currentTicker.ask
-            ) || (
-            pos.openSide === "sell" &&
-            this.currentTicker.bid <= openPrice &&
-            openPrice < this.previousTicker.bid &&
-            this.multiPositionStatistics.sellAveragePrice > this.currentTicker.bid
-            )) {
-                return await this.doSendOpenOrder(pos)
-        }
-        return res
+        if (await this.checkOpenOrder(pos)) return await this.doSendOpenOrder(pos)
+        return getDefaultSendOpenOrderResult()
     }
 
     protected abstract doSendCloseOrder(pos: MongoPosition, force?: boolean): Promise<sendCloseOrderResult>
+
+    protected abstract checkCloseOrder(pos: MongoPosition): Promise<boolean>
+
+    protected abstract checkLosscutOrder(pos: MongoPosition): Promise<boolean>
 
     protected async sendCloseOrder(pos: MongoPosition, force?: boolean): Promise<sendCloseOrderResult> {
         const res = getDefaultSendCloseOrderResult()
@@ -63,22 +55,10 @@ export abstract class BotNampingClass extends BotMultiPositionClass {
         }
 
         // take profit
-        if ((
-            pos.openSide === "sell" && pos.openPrice * (1 - this.logicSettings.profitRate)  > this.currentTicker.ask 
-            ) || (
-            pos.openSide === "buy" && pos.openPrice * (1 + this.logicSettings.profitRate) < this.currentTicker.bid
-            )) {
-                return await this.doSendCloseOrder(pos)
-        }
+        if (await this.checkCloseOrder(pos)) return await this.doSendCloseOrder(pos)
 
         // losscut
-        if ((
-            pos.openSide === "sell" && pos.openPrice * (1 + this.logicSettings.losscutRate)  < this.currentTicker.ask 
-            ) || (
-            pos.openSide === "buy" && pos.openPrice * (1 - this.logicSettings.losscutRate) > this.currentTicker.bid
-            )) {
-                return await this.doSendCloseOrder(pos, true)
-        }
+        if (await this.checkLosscutOrder(pos)) return await this.doSendCloseOrder(pos, true)
         
         return res
     }

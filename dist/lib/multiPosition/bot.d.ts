@@ -9,6 +9,8 @@ export declare abstract class BotMultiPositionClass extends BotFrameClass {
     private _closedOrders;
     constructor(_params: MultiPositionBotParams);
     initialize(): Promise<void>;
+    protected abstract checkCancelOpenOrder(pos: MongoPosition): Promise<boolean>;
+    protected abstract checkCancelCloseOrder(pos: MongoPosition): Promise<boolean>;
     protected updateTrade(): Promise<void>;
     protected clearPosition(): Promise<void>;
     protected abstract getActiveOrders(orderIds: string[]): Promise<getActiveOrdersResult>;
