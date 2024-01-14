@@ -106,10 +106,10 @@ export abstract class BotMultiPositionClass extends BotFrameClass {
 
                     if (Object.keys(this._closedOrders).includes(pos.openOrderID)) {
                         const od = this._closedOrders[pos.openOrderID]
-                        pos.openOrderID = ''
                         pos.isOpened = true
                         pos.openPrice = od.price
                         pos.openSize = od.size
+                        pos.openOrderID = ''
                         await this.updatePosition(pos)
                         return
                     }

@@ -97,10 +97,11 @@ class BotMultiPositionClass extends bot_1.BotFrameClass {
                         return;
                     }
                     if (Object.keys(this._closedOrders).includes(pos.openOrderID)) {
-                        pos.openOrderID = '';
+                        const od = this._closedOrders[pos.openOrderID];
                         pos.isOpened = true;
-                        pos.openPrice = this._closedOrders[pos.openOrderID].price;
-                        pos.openSize = this._closedOrders[pos.openOrderID].size;
+                        pos.openPrice = od.price;
+                        pos.openSize = od.size;
+                        pos.openOrderID = '';
                         yield this.updatePosition(pos);
                         return;
                     }
