@@ -11,6 +11,7 @@
   },
   "author": "sawara7",
   "license": "MIT",
+  "bundleDependencies": [],
   "devDependencies": {
     "@types/jest": "^28.1.6",
     "@types/node": "^20.8.3",
