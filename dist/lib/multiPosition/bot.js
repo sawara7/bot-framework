@@ -135,9 +135,9 @@ class BotMultiPositionClass extends bot_1.BotFrameClass {
                         return;
                     }
                     if (Object.keys(this._closedOrders).includes(pos.closeOrderID)) {
-                        pos.closeOrderID = '';
                         pos.isClosed = true;
                         pos.closePrice = this._closedOrders[pos.closeOrderID].price;
+                        pos.closeOrderID = '';
                         yield this.updatePosition(pos);
                         return;
                     }

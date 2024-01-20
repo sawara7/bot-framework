@@ -147,9 +147,9 @@ export abstract class BotMultiPositionClass extends BotFrameClass {
                     }
 
                     if (Object.keys(this._closedOrders).includes(pos.closeOrderID)) {
-                        pos.closeOrderID = ''
                         pos.isClosed = true
                         pos.closePrice = this._closedOrders[pos.closeOrderID].price
+                        pos.closeOrderID = ''
                         await this.updatePosition(pos)
                         return
                     }
