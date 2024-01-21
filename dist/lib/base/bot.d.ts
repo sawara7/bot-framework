@@ -10,8 +10,8 @@ export declare abstract class BotFrameClass {
     private _previousTicker;
     private _currentTicker;
     constructor(_baseParams: BaseBotParams);
-    start(): Promise<void>;
-    protected initialize(): Promise<void>;
+    execute(): Promise<void>;
+    initialize(): Promise<void>;
     private isStopOrClearPosition;
     private getBotStatusFromRealtimeDbAndIsContinue;
     private loadBotStatus;

@@ -31,11 +31,10 @@ export abstract class BotFrameClass {
         this._botResult.logicName = this._baseParams.logicName
     }
 
-    async start(): Promise<void> {
-        await this.initialize()
-        while(this.isBackTest || await this.getBotStatusFromRealtimeDbAndIsContinue()) {
+    async execute(): Promise<void> {
+        if (this.isBackTest || await this.getBotStatusFromRealtimeDbAndIsContinue()) {
             try {
-                if (!this.isBackTest && await this.isStopOrClearPosition()) continue
+                if (!this.isBackTest && await this.isStopOrClearPosition()) return
                 await this.updateBadget()
                 this._previousTicker = this._currentTicker
                 await this.updateTicker()
@@ -63,7 +62,7 @@ export abstract class BotFrameClass {
         }
     }
 
-    protected async initialize(): Promise<void> {
+    async initialize(): Promise<void> {
         if (!this.isBackTest) {
             this._realtimeDB = await getRealTimeDatabase()
         }

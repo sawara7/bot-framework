@@ -25,13 +25,12 @@ class BotFrameClass {
         this._botResult.botName = this._baseParams.botName;
         this._botResult.logicName = this._baseParams.logicName;
     }
-    start() {
+    execute() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.initialize();
-            while (this.isBackTest || (yield this.getBotStatusFromRealtimeDbAndIsContinue())) {
+            if (this.isBackTest || (yield this.getBotStatusFromRealtimeDbAndIsContinue())) {
                 try {
                     if (!this.isBackTest && (yield this.isStopOrClearPosition()))
-                        continue;
+                        return;
                     yield this.updateBadget();
                     this._previousTicker = this._currentTicker;
                     yield this.updateTicker();
