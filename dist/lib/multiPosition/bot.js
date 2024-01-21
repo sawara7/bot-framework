@@ -290,7 +290,7 @@ class BotMultiPositionClass extends bot_1.BotFrameClass {
     }
     saveBotStatistics() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.saveToRealtimeDB(base_1.MONGO_PATH_BOTRESULT, this.multiPositionStatistics);
+            yield this.saveToRealtimeDB(base_1.MONGO_PATH_BOTSTATISTICS, this.multiPositionStatistics);
         });
     }
     get multiPositionStatistics() {

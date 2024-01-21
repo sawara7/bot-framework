@@ -19,7 +19,7 @@ import {
 import {
     BotFrameClass
 } from "../base/bot"
-import { MONGO_PATH_BOTRESULT } from "../base"
+import { MONGO_PATH_BOTRESULT, MONGO_PATH_BOTSTATISTICS } from "../base"
 
 export abstract class BotMultiPositionClass extends BotFrameClass {
     private _debugPositions: MongoPositionDict = {}
@@ -298,7 +298,7 @@ export abstract class BotMultiPositionClass extends BotFrameClass {
     }
 
     protected async saveBotStatistics(): Promise<void> {
-        await this.saveToRealtimeDB(MONGO_PATH_BOTRESULT, this.multiPositionStatistics)
+        await this.saveToRealtimeDB(MONGO_PATH_BOTSTATISTICS, this.multiPositionStatistics)
     }
 
     get multiPositionStatistics(): MultiPositionsStatistics {
