@@ -13,6 +13,7 @@ exports.BotMultiPositionClass = void 0;
 const utils_trade_1 = require("utils-trade");
 const types_1 = require("./types");
 const bot_1 = require("../base/bot");
+const base_1 = require("../base");
 class BotMultiPositionClass extends bot_1.BotFrameClass {
     constructor(_params) {
         super(_params);
@@ -285,6 +286,11 @@ class BotMultiPositionClass extends bot_1.BotFrameClass {
                         yield proc(pos);
                 }
             }
+        });
+    }
+    saveBotStatistics() {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.saveToRealtimeDB(base_1.MONGO_PATH_BOTRESULT, this.multiPositionStatistics);
         });
     }
     get multiPositionStatistics() {

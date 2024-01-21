@@ -1,3 +1,4 @@
+import { OrderSide } from "utils-trade"
 import { MongoPosition } from "../multiPosition"
 import { BaseBotNampingClass } from "./base"
 import { NampingBotParams } from "./types"
@@ -9,72 +10,47 @@ export abstract class BotNampingForwardClass extends BaseBotNampingClass {
 
     protected async checkCancelOpenOrder(pos: MongoPosition): Promise<boolean> {
         const openPrice = await this.logic.getPositionInfo(pos.openSide, pos.mongoIndex).openPrice
-        if ((
-            pos.openSide === "buy" && openPrice * (1+this.logicSettings.profitRate * 2) < this.previousTicker.ask
-            ) || (
-            pos.openSide === "sell" && openPrice * (1-this.logicSettings.profitRate * 2) > this.previousTicker.bid
-            )) {
-                return true
-        }
-        return false
+        return this.checkCancelLimitOrder(openPrice, pos.openSide)
     }
 
     protected async checkCancelCloseOrder(pos: MongoPosition): Promise<boolean> {
         const closePrice = this.logic.getPositionInfo(pos.openSide, pos.mongoIndex).closePrice
+        return this.checkCancelLimitOrder(closePrice, pos.openSide === "buy"? "sell": "buy")
+    }
+
+    private checkCancelLimitOrder(price: number, side: OrderSide) {
         if ((
-            pos.openSide === "buy" && closePrice * (1+this.logicSettings.profitRate * 2) < this.currentTicker.ask
+            side === "buy" && price < this.previousTicker.ask * (1-this.nampingParams.limitOrderLowerRate * 1.1)
             ) || (
-            pos.openSide === "sell" && closePrice * (1-this.logicSettings.profitRate * 2) > this.currentTicker.bid
+            side === "sell" && price > this.previousTicker.bid * (1+this.nampingParams.limitOrderUpperRate * 1.1)
             )) {
                 return true
         }
-        return false
+        return false  
     }
     
     protected async checkOpenOrder(pos: MongoPosition): Promise<boolean> {
         const openPrice = await this.logic.getPositionInfo(pos.openSide, pos.mongoIndex).openPrice
-        if ((
-            pos.openSide === "buy" &&
-            openPrice <= this.currentTicker.ask &&
-            openPrice >= this.currentTicker.ask * (1-this.logicSettings.profitRate * 1.5)
-            ) || (
-            pos.openSide === "sell" &&
-            openPrice >= this.currentTicker.bid &&
-            openPrice <= this.currentTicker.bid * (1+this.logicSettings.profitRate * 1.5)
-            )) {
-                return true
-        }
-        return false
+        return this.checkEnabledLimitOrder(openPrice, pos.openSide)
     }
 
     protected async checkCloseOrder(pos: MongoPosition): Promise<boolean> {
         const closePrice = this.logic.getPositionInfo(pos.openSide, pos.mongoIndex).closePrice
-        if ((
-            pos.openSide === "sell" &&
-            closePrice <= this.currentTicker.ask &&
-            closePrice >= this.currentTicker.ask * (1-this.logicSettings.profitRate * 1.5)
-            ) || (
-            pos.openSide === "buy" &&
-            closePrice >= this.currentTicker.bid &&
-            closePrice <= this.currentTicker.bid * (1+this.logicSettings.profitRate * 1.5)
-            )) {
-                return true
-        }
-        return false     
+        return this.checkEnabledLimitOrder(closePrice, pos.openSide === "buy"? "sell": "buy") 
     }
 
-    protected async checkLosscutOrder(pos: MongoPosition): Promise<boolean> {
-        const losscutPrice = this.logic.getPositionInfo(pos.openSide, pos.mongoIndex).losscutPrice
+    private checkEnabledLimitOrder(price: number, side: OrderSide): boolean {
         if ((
-            pos.openSide === "sell" &&
-            losscutPrice < this.currentTicker.ask
+            side === "buy" &&
+            price <= this.currentTicker.ask &&
+            price >= this.currentTicker.ask * (1-this.nampingParams.limitOrderLowerRate)
             ) || (
-            pos.openSide === "buy" &&
-            losscutPrice > this.currentTicker.bid
+            side === "sell" &&
+            price >= this.currentTicker.bid &&
+            price <= this.currentTicker.bid * (1+this.nampingParams.limitOrderUpperRate)
             )) {
                 return true
         }
         return false 
     }
-    
 }

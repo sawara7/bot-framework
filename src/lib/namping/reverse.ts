@@ -35,25 +35,14 @@ export abstract class BotNampingReverseClass extends BaseBotNampingClass {
 
     protected async checkCloseOrder(pos: MongoPosition): Promise<boolean> {
         // take profit
+        const closePrice = this.logic.getPositionInfo(pos.openSide, pos.mongoIndex).closePrice
         if ((
-            pos.openSide === "sell" && pos.openPrice * (1 - this.logicSettings.profitRate)  > this.currentTicker.ask 
+            pos.openSide === "sell" && closePrice > this.currentTicker.ask 
             ) || (
-            pos.openSide === "buy" && pos.openPrice * (1 + this.logicSettings.profitRate) < this.currentTicker.bid
+            pos.openSide === "buy" && closePrice < this.currentTicker.bid
             )) {
                 return true
         }
         return false      
-    }
-
-    protected async checkLosscutOrder(pos: MongoPosition): Promise<boolean> {
-        // losscut
-        if ((
-            pos.openSide === "sell" && pos.openPrice * (1 + this.logicSettings.losscutRate)  < this.currentTicker.ask 
-            ) || (
-            pos.openSide === "buy" && pos.openPrice * (1 - this.logicSettings.losscutRate) > this.currentTicker.bid
-            )) {
-                return true
-        } 
-        return false
     }
 }

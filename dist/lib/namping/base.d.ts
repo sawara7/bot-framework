@@ -12,8 +12,9 @@ export declare abstract class BaseBotNampingClass extends BotMultiPositionClass 
     protected sendOpenOrder(pos: MongoPosition): Promise<sendOpenOrderResult>;
     protected abstract doSendCloseOrder(pos: MongoPosition, force?: boolean): Promise<sendCloseOrderResult>;
     protected abstract checkCloseOrder(pos: MongoPosition): Promise<boolean>;
-    protected abstract checkLosscutOrder(pos: MongoPosition): Promise<boolean>;
     protected sendCloseOrder(pos: MongoPosition, force?: boolean): Promise<sendCloseOrderResult>;
+    protected checkLosscutOrder(pos: MongoPosition): Promise<boolean>;
+    protected get nampingParams(): NampingBotParams;
     protected get logic(): LogicNampingClass;
     protected get logicSettings(): LogicNampingSettings;
 }

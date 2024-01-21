@@ -7,5 +7,4 @@ export declare abstract class BotNampingReverseClass extends BaseBotNampingClass
     protected checkCancelCloseOrder(pos: MongoPosition): Promise<boolean>;
     protected checkOpenOrder(pos: MongoPosition): Promise<boolean>;
     protected checkCloseOrder(pos: MongoPosition): Promise<boolean>;
-    protected checkLosscutOrder(pos: MongoPosition): Promise<boolean>;
 }

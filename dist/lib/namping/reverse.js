@@ -43,16 +43,8 @@ class BotNampingReverseClass extends base_1.BaseBotNampingClass {
     checkCloseOrder(pos) {
         return __awaiter(this, void 0, void 0, function* () {
             // take profit
-            if ((pos.openSide === "sell" && pos.openPrice * (1 - this.logicSettings.profitRate) > this.currentTicker.ask) || (pos.openSide === "buy" && pos.openPrice * (1 + this.logicSettings.profitRate) < this.currentTicker.bid)) {
-                return true;
-            }
-            return false;
-        });
-    }
-    checkLosscutOrder(pos) {
-        return __awaiter(this, void 0, void 0, function* () {
-            // losscut
-            if ((pos.openSide === "sell" && pos.openPrice * (1 + this.logicSettings.losscutRate) < this.currentTicker.ask) || (pos.openSide === "buy" && pos.openPrice * (1 - this.logicSettings.losscutRate) > this.currentTicker.bid)) {
+            const closePrice = this.logic.getPositionInfo(pos.openSide, pos.mongoIndex).closePrice;
+            if ((pos.openSide === "sell" && closePrice > this.currentTicker.ask) || (pos.openSide === "buy" && closePrice < this.currentTicker.bid)) {
                 return true;
             }
             return false;

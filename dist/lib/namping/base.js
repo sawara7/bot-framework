@@ -51,6 +51,22 @@ class BaseBotNampingClass extends multiPosition_1.BotMultiPositionClass {
             return res;
         });
     }
+    checkLosscutOrder(pos) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (this.logicSettings.losscutRate === 0)
+                return false;
+            const losscutPrice = this.logic.getPositionInfo(pos.openSide, pos.mongoIndex).losscutPrice;
+            if ((pos.openSide === "sell" &&
+                losscutPrice < this.currentTicker.ask) || (pos.openSide === "buy" &&
+                losscutPrice > this.currentTicker.bid)) {
+                return true;
+            }
+            return false;
+        });
+    }
+    get nampingParams() {
+        return this._nampingParams;
+    }
     get logic() {
         return this._logic;
     }

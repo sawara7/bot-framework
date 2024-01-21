@@ -18,6 +18,7 @@ export declare abstract class BotFrameClass {
     private saveBotStatus;
     private loadBotResult;
     private saveBotResult;
+    protected abstract saveBotStatistics(): Promise<void>;
     protected loadFromMongoDB(path: string, filter?: any): Promise<any>;
     protected saveToMongoDB(path: string, data: any, filter?: any): Promise<void>;
     protected abstract clearPosition(): Promise<void>;
@@ -25,7 +26,7 @@ export declare abstract class BotFrameClass {
     protected abstract updateBadget(): Promise<void>;
     protected abstract updateTrade(): Promise<void>;
     private loadFromRealtimeDB;
-    private saveToRealtimeDB;
+    protected saveToRealtimeDB(path: string, data: Object): Promise<void>;
     protected get isBackTest(): boolean;
     protected get botResult(): BaseBotResult;
     protected get cumulativeProfit(): number;

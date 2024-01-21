@@ -4,6 +4,8 @@ export const MONGO_PATH_BOTSTATUS = 'botStatus'
 
 export const MONGO_PATH_BOTRESULT = 'botResult'
 
+export const MONGO_PATH_BOTSTATISTICS = 'botStatistics'
+
 export const botCurrencyList = [
     'JPY',
     'USD'
@@ -16,6 +18,7 @@ export interface BaseBotParams {
     baseCurrency: botCurrency
     mongoDbName: string
     isBackTest?: boolean
+    interval: number
 }
 
 export interface BaseBotStatus {

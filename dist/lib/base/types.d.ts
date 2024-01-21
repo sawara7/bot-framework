@@ -1,6 +1,7 @@
 import { Ticker } from "utils-trade";
 export declare const MONGO_PATH_BOTSTATUS = "botStatus";
 export declare const MONGO_PATH_BOTRESULT = "botResult";
+export declare const MONGO_PATH_BOTSTATISTICS = "botStatistics";
 export declare const botCurrencyList: readonly ["JPY", "USD"];
 export type botCurrency = typeof botCurrencyList[number];
 export interface BaseBotParams {
@@ -9,6 +10,7 @@ export interface BaseBotParams {
     baseCurrency: botCurrency;
     mongoDbName: string;
     isBackTest?: boolean;
+    interval: number;
 }
 export interface BaseBotStatus {
     isClear: boolean;

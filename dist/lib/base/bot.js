@@ -40,6 +40,7 @@ class BotFrameClass {
                         this._botStatus.message = 'Normal.';
                         yield this.saveBotStatus();
                         yield this.saveBotResult();
+                        yield this.saveBotStatistics();
                     }
                 }
                 catch (e) {
@@ -54,7 +55,7 @@ class BotFrameClass {
                     yield this.saveBotStatus();
                 }
                 finally {
-                    yield (0, utils_general_1.sleep)(100);
+                    yield (0, utils_general_1.sleep)(this._baseParams.interval);
                     if (!this.isBackTest)
                         console.log(this._baseParams.botName, new Date().toLocaleString());
                 }

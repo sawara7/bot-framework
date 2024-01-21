@@ -18,57 +18,42 @@ class BotNampingForwardClass extends base_1.BaseBotNampingClass {
     checkCancelOpenOrder(pos) {
         return __awaiter(this, void 0, void 0, function* () {
             const openPrice = yield this.logic.getPositionInfo(pos.openSide, pos.mongoIndex).openPrice;
-            if ((pos.openSide === "buy" && openPrice * (1 + this.logicSettings.profitRate * 2) < this.previousTicker.ask) || (pos.openSide === "sell" && openPrice * (1 - this.logicSettings.profitRate * 2) > this.previousTicker.bid)) {
-                return true;
-            }
-            return false;
+            return this.checkCancelLimitOrder(openPrice, pos.openSide);
         });
     }
     checkCancelCloseOrder(pos) {
         return __awaiter(this, void 0, void 0, function* () {
             const closePrice = this.logic.getPositionInfo(pos.openSide, pos.mongoIndex).closePrice;
-            if ((pos.openSide === "buy" && closePrice * (1 + this.logicSettings.profitRate * 2) < this.currentTicker.ask) || (pos.openSide === "sell" && closePrice * (1 - this.logicSettings.profitRate * 2) > this.currentTicker.bid)) {
-                return true;
-            }
-            return false;
+            return this.checkCancelLimitOrder(closePrice, pos.openSide === "buy" ? "sell" : "buy");
         });
+    }
+    checkCancelLimitOrder(price, side) {
+        if ((side === "buy" && price < this.previousTicker.ask * (1 - this.nampingParams.limitOrderLowerRate * 1.1)) || (side === "sell" && price > this.previousTicker.bid * (1 + this.nampingParams.limitOrderUpperRate * 1.1))) {
+            return true;
+        }
+        return false;
     }
     checkOpenOrder(pos) {
         return __awaiter(this, void 0, void 0, function* () {
             const openPrice = yield this.logic.getPositionInfo(pos.openSide, pos.mongoIndex).openPrice;
-            if ((pos.openSide === "buy" &&
-                openPrice <= this.currentTicker.ask &&
-                openPrice >= this.currentTicker.ask * (1 - this.logicSettings.profitRate * 1.5)) || (pos.openSide === "sell" &&
-                openPrice >= this.currentTicker.bid &&
-                openPrice <= this.currentTicker.bid * (1 + this.logicSettings.profitRate * 1.5))) {
-                return true;
-            }
-            return false;
+            return this.checkEnabledLimitOrder(openPrice, pos.openSide);
         });
     }
     checkCloseOrder(pos) {
         return __awaiter(this, void 0, void 0, function* () {
             const closePrice = this.logic.getPositionInfo(pos.openSide, pos.mongoIndex).closePrice;
-            if ((pos.openSide === "sell" &&
-                closePrice <= this.currentTicker.ask &&
-                closePrice >= this.currentTicker.ask * (1 - this.logicSettings.profitRate * 1.5)) || (pos.openSide === "buy" &&
-                closePrice >= this.currentTicker.bid &&
-                closePrice <= this.currentTicker.bid * (1 + this.logicSettings.profitRate * 1.5))) {
-                return true;
-            }
-            return false;
+            return this.checkEnabledLimitOrder(closePrice, pos.openSide === "buy" ? "sell" : "buy");
         });
     }
-    checkLosscutOrder(pos) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const losscutPrice = this.logic.getPositionInfo(pos.openSide, pos.mongoIndex).losscutPrice;
-            if ((pos.openSide === "sell" &&
-                losscutPrice < this.currentTicker.ask) || (pos.openSide === "buy" &&
-                losscutPrice > this.currentTicker.bid)) {
-                return true;
-            }
-            return false;
-        });
+    checkEnabledLimitOrder(price, side) {
+        if ((side === "buy" &&
+            price <= this.currentTicker.ask &&
+            price >= this.currentTicker.ask * (1 - this.nampingParams.limitOrderLowerRate)) || (side === "sell" &&
+            price >= this.currentTicker.bid &&
+            price <= this.currentTicker.bid * (1 + this.nampingParams.limitOrderUpperRate))) {
+            return true;
+        }
+        return false;
     }
 }
 exports.BotNampingForwardClass = BotNampingForwardClass;
