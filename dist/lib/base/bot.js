@@ -45,12 +45,7 @@ class BotFrameClass {
                 catch (e) {
                     const err = e;
                     console.log(this._baseParams.botName, err.name, err.message);
-                    this._botStatus = {
-                        isClear: false,
-                        isStop: true,
-                        isExit: false,
-                        message: err.name + '/' + err.message
-                    };
+                    this._botStatus.message = err.name + '/' + err.message;
                     yield this.saveBotStatus();
                 }
                 finally {

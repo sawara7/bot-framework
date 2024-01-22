@@ -48,12 +48,7 @@ export abstract class BotFrameClass {
             } catch(e) {
                 const err = e as Error
                 console.log(this._baseParams.botName, err.name, err.message)
-                this._botStatus = {
-                    isClear: false,
-                    isStop: true,
-                    isExit: false,
-                    message: err.name + '/' + err.message
-                }
+                this._botStatus.message = err.name + '/' + err.message
                 await this.saveBotStatus()
             } finally {
                 await sleep(this._baseParams.interval)
