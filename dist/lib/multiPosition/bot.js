@@ -214,14 +214,14 @@ class BotMultiPositionClass extends bot_1.BotFrameClass {
             let sellCap = 0;
             this._activeOrderIDs = [];
             yield this.positionLoop((pos) => __awaiter(this, void 0, void 0, function* () {
-                if (!pos.isOpened)
-                    return;
-                if (pos.isClosed)
-                    return;
                 if (pos.openOrderID !== '')
                     this._activeOrderIDs.push(pos.openOrderID);
                 if (pos.closeOrderID !== '')
                     this._activeOrderIDs.push(pos.closeOrderID);
+                if (!pos.isOpened)
+                    return;
+                if (pos.isClosed)
+                    return;
                 if (pos.openSide === "buy") {
                     result.buySize += pos.openSize;
                     buyCap += (pos.openSize * pos.openPrice);

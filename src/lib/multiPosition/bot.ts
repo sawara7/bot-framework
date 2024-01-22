@@ -235,10 +235,10 @@ export abstract class BotMultiPositionClass extends BotFrameClass {
         this._activeOrderIDs = []
         await this.positionLoop(
             async (pos: MongoPosition)=> {
-                if (!pos.isOpened) return
-                if (pos.isClosed) return
                 if (pos.openOrderID !== '') this._activeOrderIDs.push(pos.openOrderID)
                 if (pos.closeOrderID !== '') this._activeOrderIDs.push(pos.closeOrderID)
+                if (!pos.isOpened) return
+                if (pos.isClosed) return
                 if (pos.openSide === "buy") {
                     result.buySize += pos.openSize
                     buyCap += (pos.openSize * pos.openPrice)
