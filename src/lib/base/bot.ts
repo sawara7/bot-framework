@@ -87,6 +87,7 @@ export abstract class BotFrameClass {
     private async isStopOrClearPosition(): Promise<boolean> {
         if (this._botStatus.isStop) {
             this._botStatus.message = 'Stopping...'
+            await this.saveBotStatus()
             await sleep(1000)
             return true
         }
@@ -94,6 +95,7 @@ export abstract class BotFrameClass {
             await this.clearPosition()
             this._botStatus.isClear = false
             this._botStatus.message = 'Position cleared.'
+            await this.saveBotStatus()
             await sleep(1000)
             return true    
         }
