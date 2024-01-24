@@ -107,8 +107,8 @@ class BotMultiPositionClass extends bot_1.BotFrameClass {
                         return;
                     }
                     // orderが存在しない, もしくはキャンセル
-                    pos.openOrderID = '';
-                    yield this.updatePosition(pos);
+                    // pos.openOrderID = ''
+                    // await this.updatePosition(pos)
                     return;
                 }
                 if (pos.isOpened && !pos.isClosed && pos.closeOrderID === '') {
@@ -143,8 +143,8 @@ class BotMultiPositionClass extends bot_1.BotFrameClass {
                         return;
                     }
                     // orderが存在しない
-                    pos.closeOrderID = '';
-                    yield this.updatePosition(pos);
+                    // pos.closeOrderID = ''
+                    // await this.updatePosition(pos)
                     return;
                 }
                 if (pos.isOpened && pos.isClosed) {

@@ -116,8 +116,8 @@ export abstract class BotMultiPositionClass extends BotFrameClass {
                     }
 
                     // orderが存在しない, もしくはキャンセル
-                    pos.openOrderID = ''
-                    await this.updatePosition(pos)
+                    // pos.openOrderID = ''
+                    // await this.updatePosition(pos)
                     return
                 }
 
@@ -156,8 +156,8 @@ export abstract class BotMultiPositionClass extends BotFrameClass {
                     }
 
                     // orderが存在しない
-                    pos.closeOrderID = ''
-                    await this.updatePosition(pos)
+                    // pos.closeOrderID = ''
+                    // await this.updatePosition(pos)
                     return
                 }
 
