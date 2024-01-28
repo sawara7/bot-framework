@@ -107,8 +107,8 @@ class BotMultiPositionClass extends bot_1.BotFrameClass {
                         return;
                     }
                     // orderが存在しない, もしくはキャンセル
-                    pos.openOrderID = '';
-                    yield this.updatePosition(pos);
+                    // pos.openOrderID = ''
+                    // await this.updatePosition(pos)
                     return;
                 }
                 if (pos.isOpened && !pos.isClosed && pos.closeOrderID === '') {
@@ -143,8 +143,8 @@ class BotMultiPositionClass extends bot_1.BotFrameClass {
                         return;
                     }
                     // orderが存在しない
-                    pos.closeOrderID = '';
-                    yield this.updatePosition(pos);
+                    // pos.closeOrderID = ''
+                    // await this.updatePosition(pos)
                     return;
                 }
                 if (pos.isOpened && pos.isClosed) {
@@ -218,14 +218,14 @@ class BotMultiPositionClass extends bot_1.BotFrameClass {
             let sellCap = 0;
             this._activeOrderIDs = [];
             yield this.positionLoop((pos) => __awaiter(this, void 0, void 0, function* () {
-                if (!pos.isOpened)
-                    return;
-                if (pos.isClosed)
-                    return;
                 if (pos.openOrderID !== '')
                     this._activeOrderIDs.push(pos.openOrderID);
                 if (pos.closeOrderID !== '')
                     this._activeOrderIDs.push(pos.closeOrderID);
+                if (!pos.isOpened)
+                    return;
+                if (pos.isClosed)
+                    return;
                 if (pos.openSide === "buy") {
                     result.buySize += pos.openSize;
                     buyCap += (pos.openSize * pos.openPrice);

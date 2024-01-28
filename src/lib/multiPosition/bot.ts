@@ -116,8 +116,8 @@ export abstract class BotMultiPositionClass extends BotFrameClass {
                     }
 
                     // orderが存在しない, もしくはキャンセル
-                    pos.openOrderID = ''
-                    await this.updatePosition(pos)
+                    // pos.openOrderID = ''
+                    // await this.updatePosition(pos)
                     return
                 }
 
@@ -156,8 +156,8 @@ export abstract class BotMultiPositionClass extends BotFrameClass {
                     }
 
                     // orderが存在しない
-                    pos.closeOrderID = ''
-                    await this.updatePosition(pos)
+                    // pos.closeOrderID = ''
+                    // await this.updatePosition(pos)
                     return
                 }
 
@@ -239,10 +239,10 @@ export abstract class BotMultiPositionClass extends BotFrameClass {
         this._activeOrderIDs = []
         await this.positionLoop(
             async (pos: MongoPosition)=> {
-                if (!pos.isOpened) return
-                if (pos.isClosed) return
                 if (pos.openOrderID !== '') this._activeOrderIDs.push(pos.openOrderID)
                 if (pos.closeOrderID !== '') this._activeOrderIDs.push(pos.closeOrderID)
+                if (!pos.isOpened) return
+                if (pos.isClosed) return
                 if (pos.openSide === "buy") {
                     result.buySize += pos.openSize
                     buyCap += (pos.openSize * pos.openPrice)

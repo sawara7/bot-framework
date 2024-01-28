@@ -48,12 +48,7 @@ export abstract class BotFrameClass {
             } catch(e) {
                 const err = e as Error
                 console.log(this._baseParams.botName, err.name, err.message)
-                this._botStatus = {
-                    isClear: false,
-                    isStop: true,
-                    isExit: false,
-                    message: err.name + '/' + err.message
-                }
+                this._botStatus.message = err.name + '/' + err.message
                 await this.saveBotStatus()
             } finally {
                 await sleep(this._baseParams.interval)
@@ -92,6 +87,7 @@ export abstract class BotFrameClass {
     private async isStopOrClearPosition(): Promise<boolean> {
         if (this._botStatus.isStop) {
             this._botStatus.message = 'Stopping...'
+            await this.saveBotStatus()
             await sleep(1000)
             return true
         }
@@ -99,6 +95,7 @@ export abstract class BotFrameClass {
             await this.clearPosition()
             this._botStatus.isClear = false
             this._botStatus.message = 'Position cleared.'
+            await this.saveBotStatus()
             await sleep(1000)
             return true    
         }

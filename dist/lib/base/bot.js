@@ -45,12 +45,7 @@ class BotFrameClass {
                 catch (e) {
                     const err = e;
                     console.log(this._baseParams.botName, err.name, err.message);
-                    this._botStatus = {
-                        isClear: false,
-                        isStop: true,
-                        isExit: false,
-                        message: err.name + '/' + err.message
-                    };
+                    this._botStatus.message = err.name + '/' + err.message;
                     yield this.saveBotStatus();
                 }
                 finally {
@@ -88,6 +83,7 @@ class BotFrameClass {
         return __awaiter(this, void 0, void 0, function* () {
             if (this._botStatus.isStop) {
                 this._botStatus.message = 'Stopping...';
+                yield this.saveBotStatus();
                 yield (0, utils_general_1.sleep)(1000);
                 return true;
             }
@@ -95,6 +91,7 @@ class BotFrameClass {
                 yield this.clearPosition();
                 this._botStatus.isClear = false;
                 this._botStatus.message = 'Position cleared.';
+                yield this.saveBotStatus();
                 yield (0, utils_general_1.sleep)(1000);
                 return true;
             }
