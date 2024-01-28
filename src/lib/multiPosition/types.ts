@@ -44,7 +44,9 @@ export function getDefaultMultiPositionStatistics(): MultiPositionsStatistics {
 
 export interface MultiPositionBotParams extends BaseBotParams {
     targetSides: OrderSide[],
-    positionSize: number
+    positionSize: number,
+    feeLimitPercent: number,
+    feeMarketPercent: number,
 }
 
 export interface sendOpenOrderResult {

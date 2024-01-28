@@ -150,7 +150,11 @@ class BotMultiPositionClass extends bot_1.BotFrameClass {
                 if (pos.isOpened && pos.isClosed) {
                     // if Positionが完了した
                     // do Positionをリセットする
-                    this.cumulativeProfit += (0, utils_trade_1.getUnrealizedPL)(pos.openSide, this.currentTicker, pos.openPrice, pos.openSize);
+                    const openFeeRate = (pos.openOrderType === "limit" ? this._params.feeLimitPercent : this._params.feeMarketPercent) / 100;
+                    const openFee = pos.openPrice * pos.openSize * openFeeRate;
+                    const closeFeeRate = (pos.closeOrderType === "limit" ? this._params.feeLimitPercent : this._params.feeMarketPercent) / 100;
+                    const closeFee = pos.closePrice * pos.openSize * closeFeeRate;
+                    this.cumulativeProfit += (0, utils_trade_1.getUnrealizedPL)(pos.openSide, this.currentTicker, pos.openPrice, pos.openSize) - openFee - closeFee;
                     pos.isOpened = false;
                     pos.isClosed = false;
                     pos.closePrice = 0;

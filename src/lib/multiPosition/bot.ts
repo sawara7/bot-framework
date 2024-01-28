@@ -19,7 +19,7 @@ import {
 import {
     BotFrameClass
 } from "../base/bot"
-import { MONGO_PATH_BOTRESULT, MONGO_PATH_BOTSTATISTICS } from "../base"
+import { MONGO_PATH_BOTSTATISTICS } from "../base"
 
 export abstract class BotMultiPositionClass extends BotFrameClass {
     private _debugPositions: MongoPositionDict = {}
@@ -164,7 +164,11 @@ export abstract class BotMultiPositionClass extends BotFrameClass {
                 if (pos.isOpened && pos.isClosed){
                     // if Positionが完了した
                     // do Positionをリセットする
-                    this.cumulativeProfit += getUnrealizedPL(pos.openSide, this.currentTicker, pos.openPrice, pos.openSize)
+                    const openFeeRate = (pos.openOrderType === "limit"? this._params.feeLimitPercent: this._params.feeMarketPercent) / 100
+                    const openFee =  pos.openPrice * pos.openSize * openFeeRate
+                    const closeFeeRate = (pos.closeOrderType === "limit"? this._params.feeLimitPercent: this._params.feeMarketPercent) / 100
+                    const closeFee = pos.closePrice * pos.openSize * closeFeeRate
+                    this.cumulativeProfit += getUnrealizedPL(pos.openSide, this.currentTicker, pos.openPrice, pos.openSize) - openFee - closeFee
                     pos.isOpened = false
                     pos.isClosed = false
                     pos.closePrice = 0
