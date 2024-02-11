@@ -26,6 +26,8 @@ class BotManagerClass {
                 for (const bot of this._bots) {
                     yield bot.execute();
                 }
+                if (this.OnAfterExecute)
+                    this.OnAfterExecute();
             }
         });
     }
