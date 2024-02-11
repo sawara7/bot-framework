@@ -157,7 +157,7 @@ export abstract class BotFrameClass {
         }
     }
 
-    protected abstract clearPosition(): Promise<void>
+    abstract clearPosition(): Promise<void>
 
     protected abstract updateTicker(): Promise<void>
 

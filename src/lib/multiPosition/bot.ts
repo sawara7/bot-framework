@@ -181,7 +181,7 @@ export abstract class BotMultiPositionClass extends BotFrameClass {
         )  
     }
 
-    protected async clearPosition(): Promise<void> {
+    async clearPosition(): Promise<void> {
         await this.updateTicker()
         await this.updateMultiPositionStatisticsAndUpdateActiveOrders()
         const res = await this.getActiveOrders(this._activeOrderIDs)
