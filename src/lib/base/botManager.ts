@@ -16,7 +16,7 @@ export class BotManagerClass {
             for (const bot of this._bots) {
                 await bot.execute()
             }
-            if (this.OnAfterExecute) this.OnAfterExecute()
+            if (this.OnAfterExecute) await this.OnAfterExecute()
         }
     }
 }
