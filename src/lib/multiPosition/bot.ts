@@ -90,10 +90,8 @@ export abstract class BotMultiPositionClass extends BotFrameClass {
                 }
 
                 if (!pos.isOpened && !pos.isClosed && pos.openOrderID !== ''){
-                    // if Open注文が成約したか
-                    // do Open状態にする
-                    // 注文リストで約定したか確認する
-                    // do Open状態にする
+
+                    // 注文が有効
                     if (this._activeOrders.includes(pos.openOrderID)) {
                         if (await this.checkCancelOpenOrder(pos)) {
                             const res = await this.cancelOrder(pos)
@@ -105,6 +103,7 @@ export abstract class BotMultiPositionClass extends BotFrameClass {
                         return
                     }
 
+                    // 注文が約定
                     if (Object.keys(this._closedOrders).includes(pos.openOrderID)) {
                         const od = this._closedOrders[pos.openOrderID]
                         pos.isOpened = true
@@ -115,9 +114,9 @@ export abstract class BotMultiPositionClass extends BotFrameClass {
                         return
                     }
 
-                    // orderが存在しない, もしくはキャンセル
-                    // pos.openOrderID = ''
-                    // await this.updatePosition(pos)
+                    // 注文が存在しない
+                    pos.openOrderID = ''
+                    await this.updatePosition(pos)
                     return
                 }
 
@@ -134,8 +133,8 @@ export abstract class BotMultiPositionClass extends BotFrameClass {
                 }
 
                 if (pos.isOpened && !pos.isClosed && pos.closeOrderID !== ''){
-                    // if Close注文が成約したか
-                    // do Close状態にする
+                    
+                    // 注文が有効
                     if (this._activeOrders.includes(pos.closeOrderID)) {
                         if (await this.checkCancelCloseOrder(pos)) {
                             const res = await this.cancelOrder(pos)
@@ -147,6 +146,7 @@ export abstract class BotMultiPositionClass extends BotFrameClass {
                         return
                     }
 
+                    // 注文が約定
                     if (Object.keys(this._closedOrders).includes(pos.closeOrderID)) {
                         pos.isClosed = true
                         pos.closePrice = this._closedOrders[pos.closeOrderID].price
@@ -155,9 +155,9 @@ export abstract class BotMultiPositionClass extends BotFrameClass {
                         return
                     }
 
-                    // orderが存在しない
-                    // pos.closeOrderID = ''
-                    // await this.updatePosition(pos)
+                    // 注文がない
+                    pos.closeOrderID = ''
+                    await this.updatePosition(pos)
                     return
                 }
 

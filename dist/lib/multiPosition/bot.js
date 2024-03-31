@@ -83,10 +83,7 @@ class BotMultiPositionClass extends bot_1.BotFrameClass {
                     return;
                 }
                 if (!pos.isOpened && !pos.isClosed && pos.openOrderID !== '') {
-                    // if Open注文が成約したか
-                    // do Open状態にする
-                    // 注文リストで約定したか確認する
-                    // do Open状態にする
+                    // 注文が有効
                     if (this._activeOrders.includes(pos.openOrderID)) {
                         if (yield this.checkCancelOpenOrder(pos)) {
                             const res = yield this.cancelOrder(pos);
@@ -97,6 +94,7 @@ class BotMultiPositionClass extends bot_1.BotFrameClass {
                         }
                         return;
                     }
+                    // 注文が約定
                     if (Object.keys(this._closedOrders).includes(pos.openOrderID)) {
                         const od = this._closedOrders[pos.openOrderID];
                         pos.isOpened = true;
@@ -106,9 +104,9 @@ class BotMultiPositionClass extends bot_1.BotFrameClass {
                         yield this.updatePosition(pos);
                         return;
                     }
-                    // orderが存在しない, もしくはキャンセル
-                    // pos.openOrderID = ''
-                    // await this.updatePosition(pos)
+                    // 注文が存在しない
+                    pos.openOrderID = '';
+                    yield this.updatePosition(pos);
                     return;
                 }
                 if (pos.isOpened && !pos.isClosed && pos.closeOrderID === '') {
@@ -123,8 +121,7 @@ class BotMultiPositionClass extends bot_1.BotFrameClass {
                     return;
                 }
                 if (pos.isOpened && !pos.isClosed && pos.closeOrderID !== '') {
-                    // if Close注文が成約したか
-                    // do Close状態にする
+                    // 注文が有効
                     if (this._activeOrders.includes(pos.closeOrderID)) {
                         if (yield this.checkCancelCloseOrder(pos)) {
                             const res = yield this.cancelOrder(pos);
@@ -135,6 +132,7 @@ class BotMultiPositionClass extends bot_1.BotFrameClass {
                         }
                         return;
                     }
+                    // 注文が約定
                     if (Object.keys(this._closedOrders).includes(pos.closeOrderID)) {
                         pos.isClosed = true;
                         pos.closePrice = this._closedOrders[pos.closeOrderID].price;
@@ -142,9 +140,9 @@ class BotMultiPositionClass extends bot_1.BotFrameClass {
                         yield this.updatePosition(pos);
                         return;
                     }
-                    // orderが存在しない
-                    // pos.closeOrderID = ''
-                    // await this.updatePosition(pos)
+                    // 注文がない
+                    pos.closeOrderID = '';
+                    yield this.updatePosition(pos);
                     return;
                 }
                 if (pos.isOpened && pos.isClosed) {

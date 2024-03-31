@@ -27,7 +27,7 @@ class BotManagerClass {
                     yield bot.execute();
                 }
                 if (this.OnAfterExecute)
-                    this.OnAfterExecute();
+                    yield this.OnAfterExecute();
             }
         });
     }
