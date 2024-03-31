@@ -206,6 +206,16 @@ class BotMultiPositionClass extends bot_1.BotFrameClass {
                     }
                     return;
                 }
+                if (!pos.isOpened && !pos.isClosed && pos.closeOrderID !== '') {
+                    if (this._activeOrders.includes(pos.closeOrderID)) {
+                        const res = yield this.cancelOrder(pos);
+                        if (res.success) {
+                            pos.closeOrderID = '';
+                            yield this.updatePosition(pos);
+                        }
+                    }
+                    return;
+                }
             }));
         });
     }

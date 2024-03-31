@@ -90,6 +90,7 @@ class BotFrameClass {
             if (this._botStatus.isClear) {
                 yield this.clearPosition();
                 this._botStatus.isClear = false;
+                this._botStatus.isStop = true;
                 this._botStatus.message = 'Position cleared.';
                 yield this.saveBotStatus();
                 yield (0, utils_general_1.sleep)(1000);

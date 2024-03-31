@@ -94,6 +94,7 @@ export abstract class BotFrameClass {
         if (this._botStatus.isClear) {
             await this.clearPosition()
             this._botStatus.isClear = false
+            this._botStatus.isStop = true
             this._botStatus.message = 'Position cleared.'
             await this.saveBotStatus()
             await sleep(1000)

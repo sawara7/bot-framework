@@ -222,6 +222,16 @@ export abstract class BotMultiPositionClass extends BotFrameClass {
                     }
                     return
                 }
+                if (!pos.isOpened && !pos.isClosed && pos.closeOrderID !== ''){
+                    if (this._activeOrders.includes(pos.closeOrderID)) {
+                        const res = await this.cancelOrder(pos)
+                        if (res.success) {
+                            pos.closeOrderID = ''
+                            await this.updatePosition(pos)
+                        }
+                    }
+                    return
+                }
             }
         )  
     }
