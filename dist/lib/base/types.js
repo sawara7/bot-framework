@@ -1,6 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getBaseBotResult = exports.getBaseBotStatus = exports.botCurrencyList = exports.MONGO_PATH_BOTSTATISTICS = exports.MONGO_PATH_BOTRESULT = exports.MONGO_PATH_BOTSTATUS = void 0;
+exports.botCurrencyList = exports.MONGO_PATH_BOTSTATISTICS = exports.MONGO_PATH_BOTRESULT = exports.MONGO_PATH_BOTSTATUS = void 0;
+exports.getBaseBotStatus = getBaseBotStatus;
+exports.getBaseBotResult = getBaseBotResult;
 const utils_trade_1 = require("utils-trade");
 exports.MONGO_PATH_BOTSTATUS = 'botStatus';
 exports.MONGO_PATH_BOTRESULT = 'botResult';
@@ -17,7 +19,6 @@ function getBaseBotStatus() {
         message: '-'
     };
 }
-exports.getBaseBotStatus = getBaseBotStatus;
 function getBaseBotResult() {
     return {
         botName: '',
@@ -29,4 +30,3 @@ function getBaseBotResult() {
         ticker: (0, utils_trade_1.getDefaultTicker)()
     };
 }
-exports.getBaseBotResult = getBaseBotResult;

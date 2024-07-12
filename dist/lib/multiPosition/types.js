@@ -1,6 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getDefaultSendCloseOrderResult = exports.getDefaultSendOpenOrderResult = exports.getDefaultMultiPositionStatistics = exports.MONGO_PATH_POSITIONS = void 0;
+exports.MONGO_PATH_POSITIONS = void 0;
+exports.getDefaultMultiPositionStatistics = getDefaultMultiPositionStatistics;
+exports.getDefaultSendOpenOrderResult = getDefaultSendOpenOrderResult;
+exports.getDefaultSendCloseOrderResult = getDefaultSendCloseOrderResult;
 exports.MONGO_PATH_POSITIONS = 'Positions';
 function getDefaultMultiPositionStatistics() {
     return {
@@ -13,7 +16,6 @@ function getDefaultMultiPositionStatistics() {
         sellAveragePrice: 0
     };
 }
-exports.getDefaultMultiPositionStatistics = getDefaultMultiPositionStatistics;
 function getDefaultSendOpenOrderResult() {
     return {
         success: false,
@@ -21,7 +23,6 @@ function getDefaultSendOpenOrderResult() {
         orderType: 'limit'
     };
 }
-exports.getDefaultSendOpenOrderResult = getDefaultSendOpenOrderResult;
 function getDefaultSendCloseOrderResult() {
     return {
         success: false,
@@ -29,4 +30,3 @@ function getDefaultSendCloseOrderResult() {
         orderType: 'limit'
     };
 }
-exports.getDefaultSendCloseOrderResult = getDefaultSendCloseOrderResult;
