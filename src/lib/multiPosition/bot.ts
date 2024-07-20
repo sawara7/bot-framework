@@ -90,7 +90,6 @@ export abstract class BotMultiPositionClass extends BotFrameClass {
                 }
 
                 if (!pos.isOpened && !pos.isClosed && pos.openOrderID !== ''){
-
                     // 注文が有効
                     if (this._activeOrders.includes(pos.openOrderID)) {
                         if (await this.checkCancelOpenOrder(pos)) {
@@ -133,7 +132,6 @@ export abstract class BotMultiPositionClass extends BotFrameClass {
                 }
 
                 if (pos.isOpened && !pos.isClosed && pos.closeOrderID !== ''){
-                    
                     // 注文が有効
                     if (this._activeOrders.includes(pos.closeOrderID)) {
                         if (await this.checkCancelCloseOrder(pos)) {
