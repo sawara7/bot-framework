@@ -161,6 +161,13 @@ class BotFrameClass {
             }
         });
     }
+    saveToMongoDBInsert(path, data, filter) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!this.isBackTest && this._mongoDB) {
+                yield this._mongoDB.insert(path, data);
+            }
+        });
+    }
     loadFromRealtimeDB(path) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!this._realtimeDB)

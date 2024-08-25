@@ -158,6 +158,12 @@ export abstract class BotFrameClass {
         }
     }
 
+    protected async saveToMongoDBInsert(path: string, data: any, filter?: any): Promise<void> {
+        if (!this.isBackTest && this._mongoDB) {
+            await this._mongoDB.insert(path, data)
+        }
+    }
+
     abstract clearPosition(): Promise<void>
 
     protected abstract updateTicker(): Promise<void>
