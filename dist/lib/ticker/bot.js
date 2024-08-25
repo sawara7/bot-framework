@@ -43,7 +43,7 @@ class TickerCollectorCustomeClass extends bot_1.BotFrameClass {
     }
     updateBadget() {
         return __awaiter(this, void 0, void 0, function* () {
-            // do nothing
+            this.currentBadget = 1;
         });
     }
     updateTrade() {

@@ -35,7 +35,7 @@ export  abstract class TickerCollectorCustomeClass extends BotFrameClass {
     }
 
     protected async updateBadget(): Promise<void> {
-        // do nothing
+        this.currentBadget = 1
     }
 
     protected async updateTrade(): Promise<void> {
