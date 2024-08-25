@@ -4,6 +4,7 @@ import {
 import {
     BotFrameClass
 } from "../base/bot"
+import { Ticker } from "utils-trade"
 
 const MONGO_PATH_TICKER = 'ticker'
 
@@ -16,7 +17,7 @@ export  abstract class TickerCollectorCustomeClass extends BotFrameClass {
         await super.initialize()
     }
 
-    protected abstract updateSingleTicker(key: string): Promise<void> 
+    protected abstract updateSingleTicker(key: string): Promise<Ticker> 
 
     protected async updateTicker(): Promise<void> {
         for (const k of this._params.syumbols) {
