@@ -22,7 +22,7 @@ export  abstract class TickerCollectorCustomeClass extends BotFrameClass {
     protected async updateTicker(): Promise<void> {
         for (const k of this._params.syumbols) {
             const tk = await this.updateSingleTicker(k)
-            await this.saveToMongoDB(this.getTickerPath(k), tk as Object)
+            await this.saveToMongoDB(this.getTickerPath(k), Object.assign({}, tk))
         }  
     }
 
