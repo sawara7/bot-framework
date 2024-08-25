@@ -4,3 +4,5 @@ export * from './lib/base'
 export * from './lib/multiPosition'
 // namping
 export * from './lib/namping'
+// ticker
+export * from './lib/ticker'

@@ -20,3 +20,5 @@ __exportStar(require("./lib/base"), exports);
 __exportStar(require("./lib/multiPosition"), exports);
 // namping
 __exportStar(require("./lib/namping"), exports);
+// ticker
+__exportStar(require("./lib/ticker"), exports);
