@@ -41,6 +41,16 @@ class TickerCollectorCustomeClass extends bot_1.BotFrameClass {
             // do nothing    
         });
     }
+    updateBadget() {
+        return __awaiter(this, void 0, void 0, function* () {
+            // do nothing
+        });
+    }
+    updateTrade() {
+        return __awaiter(this, void 0, void 0, function* () {
+            // do nothing
+        });
+    }
     clearPosition() {
         return __awaiter(this, void 0, void 0, function* () {
             // do nothing      

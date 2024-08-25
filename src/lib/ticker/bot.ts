@@ -7,7 +7,7 @@ import {
 
 const MONGO_PATH_TICKER = 'ticker'
 
-export abstract class TickerCollectorCustomeClass extends BotFrameClass {
+export  abstract class TickerCollectorCustomeClass extends BotFrameClass {
     constructor(private _params: TickerCollectorCustomeClassParams) {
         super(_params)
     }
@@ -31,6 +31,14 @@ export abstract class TickerCollectorCustomeClass extends BotFrameClass {
 
     protected async saveBotStatistics(): Promise<void> {
         // do nothing    
+    }
+
+    protected async updateBadget(): Promise<void> {
+        // do nothing
+    }
+
+    protected async updateTrade(): Promise<void> {
+        // do nothing
     }
 
     async clearPosition(): Promise<void> {

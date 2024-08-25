@@ -8,5 +8,7 @@ export declare abstract class TickerCollectorCustomeClass extends BotFrameClass 
     protected updateTicker(): Promise<void>;
     protected getTickerPath(key: string): string;
     protected saveBotStatistics(): Promise<void>;
+    protected updateBadget(): Promise<void>;
+    protected updateTrade(): Promise<void>;
     clearPosition(): Promise<void>;
 }
