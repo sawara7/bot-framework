@@ -36,5 +36,15 @@ class TickerCollectorCustomeClass extends bot_1.BotFrameClass {
     getTickerPath(key) {
         return MONGO_PATH_TICKER + '/' + key;
     }
+    saveBotStatistics() {
+        return __awaiter(this, void 0, void 0, function* () {
+            // do nothing    
+        });
+    }
+    clearPosition() {
+        return __awaiter(this, void 0, void 0, function* () {
+            // do nothing      
+        });
+    }
 }
 exports.TickerCollectorCustomeClass = TickerCollectorCustomeClass;

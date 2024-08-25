@@ -28,4 +28,12 @@ export abstract class TickerCollectorCustomeClass extends BotFrameClass {
     protected getTickerPath(key: string): string {
         return MONGO_PATH_TICKER + '/' + key
     }
+
+    protected async saveBotStatistics(): Promise<void> {
+        // do nothing    
+    }
+
+    async clearPosition(): Promise<void> {
+        // do nothing      
+    }
 }
