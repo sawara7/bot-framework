@@ -24,12 +24,16 @@ export  abstract class TickerStatisticsCustomeClass extends BotFrameClass {
         const timestamp = Date.now()
         const minTimestamp = timestamp - maxSpan
         for (const k of this._params.symbols) {
-            const tks = await this.mongoDB.find(this.getTickerPath(k), {
-                "timeStamp": {
-                    $gt: minTimestamp,
-                    $lt: timestamp
-                }
-            })
+            const tks = await this.mongoDB.find(
+                this.getTickerPath(k),
+                Object.assign({},{
+                        "timeStamp": {
+                            $gt: minTimestamp,
+                            $lt: timestamp
+                        }
+                    }
+                )
+            )
             console.log(tks.data?.length)
             if (tks.result && tks.data as Ticker[]){
                 const res = this.updateSingleStatics((await tks).data as Ticker[], this._params.timeSpan)
