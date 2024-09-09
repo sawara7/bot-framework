@@ -21,11 +21,13 @@ export  abstract class TickerStatisticsCustomeClass extends BotFrameClass {
 
     protected async updateTicker(): Promise<void> {
         const maxSpan = Math.max(...this._params.timeSpan)
-        const minTimestamp = Date.now() - maxSpan
+        const timestamp = Date.now()
+        const minTimestamp = timestamp - maxSpan
         for (const k of this._params.symbols) {
             const tks = await this.mongoDB.find(this.getTickerPath(k), {
                 "timeStamp": {
-                    $gt: minTimestamp
+                    $gt: minTimestamp,
+                    $lt: timestamp
                 }
             })
             console.log(tks.data?.length)
