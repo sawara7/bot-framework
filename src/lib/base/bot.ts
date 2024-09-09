@@ -152,7 +152,7 @@ export abstract class BotFrameClass {
         }        
     }
 
-    protected async saveToMongoDB(path: string, data: any, filter?: any): Promise<void> {
+    protected async saveToMongoDB(path: string, data: any, filter: any = {}): Promise<void> {
         if (!this.isBackTest && this._mongoDB) {
             await this._mongoDB.upsert(path, filter, data)
         }

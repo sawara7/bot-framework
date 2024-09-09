@@ -154,8 +154,8 @@ class BotFrameClass {
             }
         });
     }
-    saveToMongoDB(path, data, filter) {
-        return __awaiter(this, void 0, void 0, function* () {
+    saveToMongoDB(path_1, data_1) {
+        return __awaiter(this, arguments, void 0, function* (path, data, filter = {}) {
             if (!this.isBackTest && this._mongoDB) {
                 yield this._mongoDB.upsert(path, filter, data);
             }
