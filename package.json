@@ -1,6 +1,6 @@
 {
   "name": "bot-framework",
-  "version": "0.0.30",
+  "version": "0.0.31",
   "main": "dist/index.js",
   "scripts": {
     "build": "ncu -u && npm install && npm update && tsc",
