@@ -39,18 +39,13 @@ class TickerStatisticsCustomeClass extends bot_1.BotFrameClass {
                 });
                 if (tks.result && tks.data) {
                     const res = this.updateSingleStatics((yield tks).data, this._params.timeSpan);
-                    yield this.saveToMongoDB(this.getStatisticsPath(k) + "/average", res.average);
-                    yield this.saveToMongoDB(this.getStatisticsPath(k) + "/sampleSize", res.sampleSize);
-                    yield this.saveToMongoDB(this.getStatisticsPath(k) + "/stdv", res.stdv);
+                    yield this.saveToMongoDB(MONGO_PATH_STATISTICS, res);
                 }
             }
         });
     }
     getTickerPath(key) {
         return MONGO_PATH_TICKER + '/' + key;
-    }
-    getStatisticsPath(key) {
-        return MONGO_PATH_STATISTICS + '/' + key;
     }
     saveBotStatistics() {
         return __awaiter(this, void 0, void 0, function* () {

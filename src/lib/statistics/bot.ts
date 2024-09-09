@@ -34,9 +34,7 @@ export  abstract class TickerStatisticsCustomeClass extends BotFrameClass {
                 )
             if (tks.result && tks.data as Ticker[]){
                 const res = this.updateSingleStatics((await tks).data as Ticker[], this._params.timeSpan)
-                await this.saveToMongoDB(this.getStatisticsPath(k) + "/average", res.average)
-                await this.saveToMongoDB(this.getStatisticsPath(k) + "/sampleSize", res.sampleSize)
-                await this.saveToMongoDB(this.getStatisticsPath(k) + "/stdv", res.stdv)
+                await this.saveToMongoDB(MONGO_PATH_STATISTICS, res)
             }
 
         }  
@@ -44,10 +42,6 @@ export  abstract class TickerStatisticsCustomeClass extends BotFrameClass {
 
     protected getTickerPath(key: string): string {
         return MONGO_PATH_TICKER + '/' + key
-    }
-
-    protected getStatisticsPath(key: string): string {
-        return MONGO_PATH_STATISTICS + '/' + key
     }
 
     protected async saveBotStatistics(): Promise<void> {
