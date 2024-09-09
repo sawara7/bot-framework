@@ -22,13 +22,12 @@ export  abstract class TickerStatisticsCustomeClass extends BotFrameClass {
     protected async updateTicker(): Promise<void> {
         const maxSpan = Math.max(...this._params.timeSpan)
         const minTimestamp = Date.now() - maxSpan
-        console.log(maxSpan)
         for (const k of this._params.symbols) {
-            const tks = await this.mongoDB.find(this.getTickerPath(k), Object.assign({}, {
-                timeStamp: {
+            const tks = await this.mongoDB.find(this.getTickerPath(k), {
+                "timeStamp": {
                     $gt: minTimestamp
                 }
-            }))
+            })
             console.log(tks.data?.length)
             if (tks.result && tks.data as Ticker[]){
                 const res = this.updateSingleStatics((await tks).data as Ticker[], this._params.timeSpan)
