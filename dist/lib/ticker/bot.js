@@ -27,9 +27,9 @@ class TickerCollectorCustomeClass extends bot_1.BotFrameClass {
     }
     updateTicker() {
         return __awaiter(this, void 0, void 0, function* () {
-            for (const k of this._params.syumbols) {
+            for (const k of this._params.symbols) {
                 const tk = yield this.updateSingleTicker(k);
-                yield this.saveToMongoDBInsert(this.getTickerPath(k), Object.assign({}, tk));
+                yield this.saveToMongoDB(this.getTickerPath(k), tk);
             }
         });
     }

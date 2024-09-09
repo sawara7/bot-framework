@@ -6,3 +6,5 @@ export * from './lib/multiPosition'
 export * from './lib/namping'
 // ticker
 export * from './lib/ticker'
+// statistics
+export * from './lib/statistics'

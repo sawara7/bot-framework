@@ -22,3 +22,5 @@ __exportStar(require("./lib/multiPosition"), exports);
 __exportStar(require("./lib/namping"), exports);
 // ticker
 __exportStar(require("./lib/ticker"), exports);
+// statistics
+__exportStar(require("./lib/statistics"), exports);
