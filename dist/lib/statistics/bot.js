@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.TickerStatisticsCustomeClass = void 0;
 const bot_1 = require("../base/bot");
 const MONGO_PATH_TICKER = 'ticker';
+const MONGO_PATH_STATISTICS = 'statistics';
 class TickerStatisticsCustomeClass extends bot_1.BotFrameClass {
     constructor(_params) {
         super(_params);
@@ -34,9 +35,9 @@ class TickerStatisticsCustomeClass extends bot_1.BotFrameClass {
             for (const k of this._params.symbols) {
                 console.log(this.getTickerPath(k));
                 const tks = yield this.mongoDB.find(this.getTickerPath(k), {
-                // timeStamp: {
-                //     $gt: minTimestamp
-                // }
+                    timeStamp: {
+                        $gt: minTimestamp
+                    }
                 });
                 console.log((_a = tks.data) === null || _a === void 0 ? void 0 : _a.length);
                 if (tks.result && tks.data) {
@@ -48,6 +49,9 @@ class TickerStatisticsCustomeClass extends bot_1.BotFrameClass {
     }
     getTickerPath(key) {
         return MONGO_PATH_TICKER + '/' + key;
+    }
+    getStatisticsPath(key) {
+        return MONGO_PATH_STATISTICS + '/' + key;
     }
     saveBotStatistics() {
         return __awaiter(this, void 0, void 0, function* () {

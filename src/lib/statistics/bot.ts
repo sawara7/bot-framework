@@ -7,6 +7,7 @@ import {
 import { Ticker } from "utils-trade"
 
 const MONGO_PATH_TICKER = 'ticker'
+const MONGO_PATH_STATISTICS = 'statistics'
 
 export  abstract class TickerStatisticsCustomeClass extends BotFrameClass {
     constructor(private _params: TickerStatisticsCustomeParams) {
@@ -27,9 +28,9 @@ export  abstract class TickerStatisticsCustomeClass extends BotFrameClass {
             console.log(this.getTickerPath(k))
             const tks = await this.mongoDB.find(
                 this.getTickerPath(k), {
-                        // timeStamp: {
-                        //     $gt: minTimestamp
-                        // }
+                        timeStamp: {
+                            $gt: minTimestamp
+                        }
                     }
                 )
             console.log(tks.data?.length)
@@ -43,6 +44,10 @@ export  abstract class TickerStatisticsCustomeClass extends BotFrameClass {
 
     protected getTickerPath(key: string): string {
         return MONGO_PATH_TICKER + '/' + key
+    }
+
+    protected getStatisticsPath(key: string): string {
+        return MONGO_PATH_STATISTICS + '/' + key
     }
 
     protected async saveBotStatistics(): Promise<void> {
