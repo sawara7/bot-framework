@@ -26,9 +26,9 @@ export  abstract class TickerStatisticsCustomeClass extends BotFrameClass {
         for (const k of this._params.symbols) {
             const tks = await this.mongoDB.find(
                 this.getTickerPath(k), {
-                        timeStamp: {
-                            $gt: minTimestamp
-                        }
+                        // timeStamp: {
+                        //     $gt: minTimestamp
+                        // }
                     }
                 )
             console.log(tks.data?.length)

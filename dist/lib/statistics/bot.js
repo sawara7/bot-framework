@@ -33,9 +33,9 @@ class TickerStatisticsCustomeClass extends bot_1.BotFrameClass {
             const minTimestamp = timestamp - maxSpan;
             for (const k of this._params.symbols) {
                 const tks = yield this.mongoDB.find(this.getTickerPath(k), {
-                    timeStamp: {
-                        $gt: minTimestamp
-                    }
+                // timeStamp: {
+                //     $gt: minTimestamp
+                // }
                 });
                 console.log((_a = tks.data) === null || _a === void 0 ? void 0 : _a.length);
                 if (tks.result && tks.data) {
