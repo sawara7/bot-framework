@@ -34,7 +34,7 @@ export  abstract class TickerStatisticsCustomeClass extends BotFrameClass {
                 )
             if (tks.result && tks.data as Ticker[]){
                 const res = this.updateSingleStatics((await tks).data as Ticker[], this._params.timeSpan)
-                await this.saveToMongoDB(this.getStatisticsPath(k), Object.assign({}, res))
+                await this.saveToMongoDB(this.getStatisticsPath(k), res)
             }
 
         }  
