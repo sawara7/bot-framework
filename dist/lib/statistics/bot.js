@@ -42,7 +42,7 @@ class TickerStatisticsCustomeClass extends bot_1.BotFrameClass {
                 console.log((_a = tks.data) === null || _a === void 0 ? void 0 : _a.length);
                 if (tks.result && tks.data) {
                     const res = this.updateSingleStatics((yield tks).data, this._params.timeSpan);
-                    yield this.saveToMongoDB(this.getStatisticsPath(k), Object.assign({}, res));
+                    yield this.saveToMongoDBInsert(this.getStatisticsPath(k), Object.assign({}, res));
                 }
             }
         });
