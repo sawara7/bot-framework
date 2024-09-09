@@ -18,7 +18,7 @@ export  abstract class TickerStatisticsCustomeClass extends BotFrameClass {
         await super.initialize()
     }
 
-    protected abstract updateSingleStatics(tickers: Ticker[], spans: number[]): Promise<TickerStatisticsType> 
+    protected abstract updateSingleStatics(tickers: Ticker[], spans: number[]): TickerStatisticsType 
 
     protected async updateTicker(): Promise<void> {
         const maxSpan = Math.max(...this._params.timeSpan)

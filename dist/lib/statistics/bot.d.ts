@@ -5,7 +5,7 @@ export declare abstract class TickerStatisticsCustomeClass extends BotFrameClass
     private _params;
     constructor(_params: TickerStatisticsCustomeParams);
     initialize(): Promise<void>;
-    protected abstract updateSingleStatics(tickers: Ticker[], spans: number[]): Promise<TickerStatisticsType>;
+    protected abstract updateSingleStatics(tickers: Ticker[], spans: number[]): TickerStatisticsType;
     protected updateTicker(): Promise<void>;
     protected getTickerPath(key: string): string;
     protected getStatisticsPath(key: string): string;
