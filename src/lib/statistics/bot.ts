@@ -32,11 +32,12 @@ export  abstract class TickerStatisticsCustomeClass extends BotFrameClass {
                         }
                     }
                 )
-            if (tks.result && tks.data as Ticker[]){
+            if (tks.result && tks.data && tks.data as Ticker[] && tks.data.length > 2){
+                const tk = tks.data[0] as Ticker
                 const res = this.updateSingleStatics((await tks).data as Ticker[], this._params.timeSpan)
-                await this.saveToMongoDB(MONGO_PATH_STATISTICS, res)
+                res.pair = tk.pair
+                await this.saveToMongoDB(MONGO_PATH_STATISTICS, res, {pair: tk.pair})
             }
-
         }  
     }
 
