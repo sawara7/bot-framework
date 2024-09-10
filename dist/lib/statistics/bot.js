@@ -41,7 +41,7 @@ class TickerStatisticsCustomeClass extends bot_1.BotFrameClass {
                     const tk = tks.data[0];
                     const res = this.updateSingleStatics((yield tks).data, this._params.timeSpan);
                     res.pair = tk.pair;
-                    yield this.saveToMongoDB(MONGO_PATH_STATISTICS, res, { $set: { pair: tk.pair } });
+                    yield this.saveToMongoDB(MONGO_PATH_STATISTICS, res, { pair: tk.pair });
                 }
             }
         });
