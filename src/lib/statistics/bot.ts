@@ -36,7 +36,7 @@ export  abstract class TickerStatisticsCustomeClass extends BotFrameClass {
                 const tk = tks.data[0] as Ticker
                 const res = this.updateSingleStatics((await tks).data as Ticker[], this._params.timeSpan)
                 res.pair = tk.pair
-                await this.saveToMongoDB(MONGO_PATH_STATISTICS, res, {pair: tk.pair})
+                await this.saveToMongoDB(MONGO_PATH_STATISTICS, res, {$set:{pair: tk.pair}})
             }
         }  
     }
