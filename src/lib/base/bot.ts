@@ -177,8 +177,9 @@ export abstract class BotFrameClass {
         return await this._realtimeDB.get(await this._realtimeDB.getReference(path + "/" + this._baseParams.botName))
     }
 
-    protected async saveToRealtimeDB(path: string, data: Object): Promise<void> {
+    protected async saveToRealtimeDB(path: string, data: Object, setBotName: boolean = true): Promise<void> {
         if (!this._realtimeDB) throw new Error("no realtime db.")
+        const s = setBotName? this._baseParams.botName: ''
         await this._realtimeDB.set(path + '/' + this._baseParams.botName, data)
     }
 

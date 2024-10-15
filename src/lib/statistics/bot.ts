@@ -57,7 +57,7 @@ export  abstract class TickerStatisticsCustomeClass extends BotFrameClass {
                 await this.saveToMongoDB(MONGO_PATH_STATISTICS, res, {pair: tk.pair})
             }
         }
-        await this.saveToRealtimeDB('tickerStatistics', ress)
+        await this.saveToRealtimeDB('tickerStatistics', ress, false)
     }
 
     protected getTickerPath(key: string): string {

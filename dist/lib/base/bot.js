@@ -175,10 +175,11 @@ class BotFrameClass {
             return yield this._realtimeDB.get(yield this._realtimeDB.getReference(path + "/" + this._baseParams.botName));
         });
     }
-    saveToRealtimeDB(path, data) {
-        return __awaiter(this, void 0, void 0, function* () {
+    saveToRealtimeDB(path_1, data_1) {
+        return __awaiter(this, arguments, void 0, function* (path, data, setBotName = true) {
             if (!this._realtimeDB)
                 throw new Error("no realtime db.");
+            const s = setBotName ? this._baseParams.botName : '';
             yield this._realtimeDB.set(path + '/' + this._baseParams.botName, data);
         });
     }

@@ -27,7 +27,7 @@ export declare abstract class BotFrameClass {
     protected abstract updateBadget(): Promise<void>;
     protected abstract updateTrade(): Promise<void>;
     private loadFromRealtimeDB;
-    protected saveToRealtimeDB(path: string, data: Object): Promise<void>;
+    protected saveToRealtimeDB(path: string, data: Object, setBotName?: boolean): Promise<void>;
     protected get isBackTest(): boolean;
     protected get botResult(): BaseBotResult;
     protected get cumulativeProfit(): number;
