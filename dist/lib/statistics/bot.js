@@ -11,6 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TickerStatisticsCustomeClass = void 0;
 const bot_1 = require("../base/bot");
+const __1 = require("../..");
 const MONGO_PATH_TICKER = 'ticker';
 const MONGO_PATH_STATISTICS = 'statistics';
 class TickerStatisticsCustomeClass extends bot_1.BotFrameClass {
@@ -42,6 +43,7 @@ class TickerStatisticsCustomeClass extends bot_1.BotFrameClass {
                     const res = this.updateSingleStatics((yield tks).data, this._params.timeSpan);
                     res.pair = tk.pair;
                     yield this.saveToMongoDB(MONGO_PATH_STATISTICS, res, { pair: tk.pair });
+                    yield this.saveToRealtimeDB(__1.MONGO_PATH_BOTSTATISTICS, res);
                 }
             }
         });
@@ -51,7 +53,7 @@ class TickerStatisticsCustomeClass extends bot_1.BotFrameClass {
     }
     saveBotStatistics() {
         return __awaiter(this, void 0, void 0, function* () {
-            // do nothing    
+            // do nothing
         });
     }
     updateBadget() {

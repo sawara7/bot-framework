@@ -5,6 +5,7 @@ import {
     BotFrameClass
 } from "../base/bot"
 import { Ticker } from "utils-trade"
+import { MONGO_PATH_BOTSTATISTICS } from "../.."
 
 const MONGO_PATH_TICKER = 'ticker'
 const MONGO_PATH_STATISTICS = 'statistics'
@@ -37,6 +38,7 @@ export  abstract class TickerStatisticsCustomeClass extends BotFrameClass {
                 const res = this.updateSingleStatics((await tks).data as Ticker[], this._params.timeSpan)
                 res.pair = tk.pair
                 await this.saveToMongoDB(MONGO_PATH_STATISTICS, res, {pair: tk.pair})
+                await this.saveToRealtimeDB(MONGO_PATH_BOTSTATISTICS, res)
             }
         }  
     }
@@ -46,7 +48,7 @@ export  abstract class TickerStatisticsCustomeClass extends BotFrameClass {
     }
 
     protected async saveBotStatistics(): Promise<void> {
-        // do nothing    
+        // do nothing
     }
 
     protected async updateBadget(): Promise<void> {
