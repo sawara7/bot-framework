@@ -63,7 +63,7 @@ export abstract class BotFrameClass {
         }
 
         if (!this.isBackTest) {
-            this._mongoDB = new MongodbManagerClass(this._baseParams.mongoDbName)
+            this._mongoDB = new MongodbManagerClass(this._baseParams.mongoDbName, this._baseParams.db)
             await this._mongoDB.connect()
         }
 

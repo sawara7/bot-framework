@@ -12,6 +12,7 @@ export interface BaseBotParams {
     mongoDbName: string
     isBackTest?: boolean
     interval: number
+    db: string
 }
 
 export interface BaseBotStatus {

@@ -65,7 +65,7 @@ class BotFrameClass {
                 // this._realtimeDB = await getRealTimeDatabase()
             }
             if (!this.isBackTest) {
-                this._mongoDB = new utils_mongodb_1.MongodbManagerClass(this._baseParams.mongoDbName);
+                this._mongoDB = new utils_mongodb_1.MongodbManagerClass(this._baseParams.mongoDbName, this._baseParams.db);
                 yield this._mongoDB.connect();
             }
             if (!this.isBackTest) {
