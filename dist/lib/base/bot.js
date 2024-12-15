@@ -10,7 +10,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BotFrameClass = void 0;
-const utils_firebase_server_1 = require("utils-firebase-server");
+// import {
+//     RealtimeDatabaseClass,
+//     getRealTimeDatabase
+// } from "utils-firebase-server"
 const utils_mongodb_1 = require("utils-mongodb");
 const utils_trade_1 = require("utils-trade");
 const types_1 = require("./types");
@@ -59,7 +62,7 @@ class BotFrameClass {
     initialize() {
         return __awaiter(this, void 0, void 0, function* () {
             if (!this.isBackTest) {
-                this._realtimeDB = yield (0, utils_firebase_server_1.getRealTimeDatabase)();
+                // this._realtimeDB = await getRealTimeDatabase()
             }
             if (!this.isBackTest) {
                 this._mongoDB = new utils_mongodb_1.MongodbManagerClass(this._baseParams.mongoDbName);
@@ -101,10 +104,10 @@ class BotFrameClass {
     }
     getBotStatusFromRealtimeDbAndIsContinue() {
         return __awaiter(this, void 0, void 0, function* () {
-            if (!this._realtimeDB)
-                throw new Error("no realtime db.");
-            this._botStatus = (yield this._realtimeDB.get(yield this._realtimeDB.getReference("botStatus/" + this._baseParams.botName)));
-            return !this._botStatus.isExit;
+            // if (!this._realtimeDB) throw new Error("no realtime db.")
+            // this._botStatus = await this._realtimeDB.get(await this._realtimeDB.getReference("botStatus/" + this._baseParams.botName)) as BaseBotStatus
+            // return !this._botStatus.isExit
+            return true;
         });
     }
     loadBotStatus(initialized) {
@@ -170,17 +173,16 @@ class BotFrameClass {
     }
     loadFromRealtimeDB(path) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (!this._realtimeDB)
-                throw new Error("no realtime db.");
-            return yield this._realtimeDB.get(yield this._realtimeDB.getReference(path + "/" + this._baseParams.botName));
+            // if (!this._realtimeDB) throw new Error("no realtime db.")
+            // return await this._realtimeDB.get(await this._realtimeDB.getReference(path + "/" + this._baseParams.botName))
+            return null;
         });
     }
     saveToRealtimeDB(path_1, data_1) {
         return __awaiter(this, arguments, void 0, function* (path, data, setBotName = true) {
-            if (!this._realtimeDB)
-                throw new Error("no realtime db.");
-            const s = setBotName ? this._baseParams.botName : '';
-            yield this._realtimeDB.set(path + '/' + this._baseParams.botName, data);
+            // if (!this._realtimeDB) throw new Error("no realtime db.")
+            // const s = setBotName? this._baseParams.botName: ''
+            // await this._realtimeDB.set(path + '/' + this._baseParams.botName, data)
         });
     }
     get isBackTest() {

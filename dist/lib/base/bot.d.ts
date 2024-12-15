@@ -3,7 +3,6 @@ import { Ticker } from "utils-trade";
 import { BaseBotParams, BaseBotResult } from "./types";
 export declare abstract class BotFrameClass {
     private _baseParams;
-    private _realtimeDB;
     private _mongoDB;
     private _botStatus;
     private _botResult;

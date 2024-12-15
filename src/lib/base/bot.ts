@@ -1,7 +1,7 @@
-import {
-    RealtimeDatabaseClass,
-    getRealTimeDatabase
-} from "utils-firebase-server"
+// import {
+//     RealtimeDatabaseClass,
+//     getRealTimeDatabase
+// } from "utils-firebase-server"
 import { MongodbManagerClass } from "utils-mongodb"
 import {
     Ticker,
@@ -19,7 +19,7 @@ import {
 import { sleep } from "utils-general"
 
 export abstract class BotFrameClass {
-    private _realtimeDB: RealtimeDatabaseClass | undefined
+    // private _realtimeDB: RealtimeDatabaseClass | undefined
     private _mongoDB: MongodbManagerClass | undefined
     private _botStatus: BaseBotStatus = getBaseBotStatus()
     private _botResult: BaseBotResult = getBaseBotResult()
@@ -59,7 +59,7 @@ export abstract class BotFrameClass {
 
     async initialize(): Promise<void> {
         if (!this.isBackTest) {
-            this._realtimeDB = await getRealTimeDatabase()
+            // this._realtimeDB = await getRealTimeDatabase()
         }
 
         if (!this.isBackTest) {
@@ -104,9 +104,10 @@ export abstract class BotFrameClass {
     }
 
     private async getBotStatusFromRealtimeDbAndIsContinue(): Promise<boolean> {
-        if (!this._realtimeDB) throw new Error("no realtime db.")
-        this._botStatus = await this._realtimeDB.get(await this._realtimeDB.getReference("botStatus/" + this._baseParams.botName)) as BaseBotStatus
-        return !this._botStatus.isExit
+        // if (!this._realtimeDB) throw new Error("no realtime db.")
+        // this._botStatus = await this._realtimeDB.get(await this._realtimeDB.getReference("botStatus/" + this._baseParams.botName)) as BaseBotStatus
+        // return !this._botStatus.isExit
+        return true
     }
 
     private async loadBotStatus(initialized?: boolean): Promise<void> {
@@ -173,14 +174,15 @@ export abstract class BotFrameClass {
     protected abstract updateTrade(): Promise<void>
 
     private async loadFromRealtimeDB(path: string): Promise<Object | null> {
-        if (!this._realtimeDB) throw new Error("no realtime db.")
-        return await this._realtimeDB.get(await this._realtimeDB.getReference(path + "/" + this._baseParams.botName))
+        // if (!this._realtimeDB) throw new Error("no realtime db.")
+        // return await this._realtimeDB.get(await this._realtimeDB.getReference(path + "/" + this._baseParams.botName))
+        return null
     }
 
     protected async saveToRealtimeDB(path: string, data: Object, setBotName: boolean = true): Promise<void> {
-        if (!this._realtimeDB) throw new Error("no realtime db.")
-        const s = setBotName? this._baseParams.botName: ''
-        await this._realtimeDB.set(path + '/' + this._baseParams.botName, data)
+        // if (!this._realtimeDB) throw new Error("no realtime db.")
+        // const s = setBotName? this._baseParams.botName: ''
+        // await this._realtimeDB.set(path + '/' + this._baseParams.botName, data)
     }
 
     protected get isBackTest(): boolean {
