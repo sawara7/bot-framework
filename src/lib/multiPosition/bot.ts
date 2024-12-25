@@ -21,6 +21,7 @@ import {
 } from "../base/bot"
 import { MONGO_PATH_BOTSTATISTICS } from "../base"
 
+const MONGO_PATH_UNREALIZEDPL = 'unrealizedPL'
 export abstract class BotMultiPositionClass extends BotFrameClass {
     private _debugPositions: MongoPositionDict = {}
     private _multiPositionsStatistics : MultiPositionsStatistics = getDefaultMultiPositionStatistics()
@@ -166,13 +167,19 @@ export abstract class BotMultiPositionClass extends BotFrameClass {
                     const openFee =  pos.openPrice * pos.openSize * openFeeRate
                     const closeFeeRate = (pos.closeOrderType === "limit"? this._params.feeLimitPercent: this._params.feeMarketPercent) / 100
                     const closeFee = pos.closePrice * pos.openSize * closeFeeRate
-                    this.cumulativeProfit += getUnrealizedPL(pos.openSide, this.currentTicker, pos.openPrice, pos.openSize) - openFee - closeFee
+                    const unrealizedPL = getUnrealizedPL(pos.openSide, this.currentTicker, pos.openPrice, pos.openSize) - openFee - closeFee
+                    this.cumulativeProfit += unrealizedPL
                     pos.isOpened = false
                     pos.isClosed = false
                     pos.closePrice = 0
                     pos.openPrice = 0
                     pos.openSize = 0
                     await this.updatePosition(pos)
+                    await this.saveToMongoDBInsert(
+                        MONGO_PATH_UNREALIZEDPL,{
+                            date: Date.now(),
+                            unrealizedPL: unrealizedPL
+                        })
                     return
                 }
             }

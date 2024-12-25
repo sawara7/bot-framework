@@ -125,7 +125,7 @@ class BotFrameClass {
     }
     saveBotStatus() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.saveToRealtimeDB(types_1.MONGO_PATH_BOTSTATUS, this._botStatus);
+            yield this.saveToMongoDB(types_1.MONGO_PATH_BOTSTATUS, this._botStatus);
         });
     }
     loadBotResult(initialized) {

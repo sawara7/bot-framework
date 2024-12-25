@@ -14,6 +14,7 @@ const utils_trade_1 = require("utils-trade");
 const types_1 = require("./types");
 const bot_1 = require("../base/bot");
 const base_1 = require("../base");
+const MONGO_PATH_UNREALIZEDPL = 'unrealizedPL';
 class BotMultiPositionClass extends bot_1.BotFrameClass {
     constructor(_params) {
         super(_params);
@@ -152,13 +153,18 @@ class BotMultiPositionClass extends bot_1.BotFrameClass {
                     const openFee = pos.openPrice * pos.openSize * openFeeRate;
                     const closeFeeRate = (pos.closeOrderType === "limit" ? this._params.feeLimitPercent : this._params.feeMarketPercent) / 100;
                     const closeFee = pos.closePrice * pos.openSize * closeFeeRate;
-                    this.cumulativeProfit += (0, utils_trade_1.getUnrealizedPL)(pos.openSide, this.currentTicker, pos.openPrice, pos.openSize) - openFee - closeFee;
+                    const unrealizedPL = (0, utils_trade_1.getUnrealizedPL)(pos.openSide, this.currentTicker, pos.openPrice, pos.openSize) - openFee - closeFee;
+                    this.cumulativeProfit += unrealizedPL;
                     pos.isOpened = false;
                     pos.isClosed = false;
                     pos.closePrice = 0;
                     pos.openPrice = 0;
                     pos.openSize = 0;
                     yield this.updatePosition(pos);
+                    yield this.saveToMongoDBInsert(MONGO_PATH_UNREALIZEDPL, {
+                        date: Date.now(),
+                        unrealizedPL: unrealizedPL
+                    });
                     return;
                 }
             }));

@@ -123,7 +123,7 @@ export abstract class BotFrameClass {
     }
 
     private async saveBotStatus(): Promise<void> {
-        await this.saveToRealtimeDB(MONGO_PATH_BOTSTATUS, this._botStatus)
+        await this.saveToMongoDB(MONGO_PATH_BOTSTATUS, this._botStatus)
     }
 
     private async loadBotResult(initialized?: boolean): Promise<void> {
