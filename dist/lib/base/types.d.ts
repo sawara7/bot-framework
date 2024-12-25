@@ -16,6 +16,7 @@ export interface BaseBotStatus {
     isStop: boolean;
     isExit: boolean;
     message: string;
+    startDate: number;
 }
 export declare function getBaseBotStatus(): BaseBotStatus;
 export interface BaseBotResult {

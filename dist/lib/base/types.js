@@ -12,7 +12,8 @@ function getBaseBotStatus() {
         isClear: false,
         isStop: false,
         isExit: false,
-        message: '-'
+        message: '-',
+        startDate: Date.now()
     };
 }
 function getBaseBotResult() {

@@ -20,6 +20,7 @@ export interface BaseBotStatus {
     isStop: boolean
     isExit: boolean
     message: string
+    startDate: number
 }
 
 export function getBaseBotStatus(): BaseBotStatus {
@@ -27,7 +28,8 @@ export function getBaseBotStatus(): BaseBotStatus {
         isClear: false,
         isStop: false,
         isExit: false,
-        message: '-'
+        message: '-',
+        startDate: Date.now()
     }
 }
 
