@@ -1,7 +1,7 @@
 import { OrderSide, OrderType } from "utils-trade";
 import { BaseBotParams } from "../base/types";
 
-export const MONGO_PATH_POSITIONS = 'Positions'
+export const MONGO_PATH_POSITIONS = 'positions'
 
 export interface MongoPosition {
     mongoID: string

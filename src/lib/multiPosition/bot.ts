@@ -56,7 +56,10 @@ export abstract class BotMultiPositionClass extends BotFrameClass {
                     if (this.isBackTest) {
                         this._debugPositions[s+i] = mongoPos
                     } else {
-                        await this.mongoDB.insert(MONGO_PATH_POSITIONS, mongoPos)
+                        await this.mongoDB.insert(
+                            MONGO_PATH_POSITIONS + '-' + this._params.mongoDbName,
+                            mongoPos
+                            )
                     }
                 }
             }
@@ -278,7 +281,7 @@ export abstract class BotMultiPositionClass extends BotFrameClass {
     private async getPositions(): Promise<MongoPositionDict> {
         if (!this.isBackTest) {
             const result: MongoPositionDict = {}
-            const res = await this.mongoDB.find(MONGO_PATH_POSITIONS)
+            const res = await this.mongoDB.find(MONGO_PATH_POSITIONS + '-' + this._params.mongoDbName)
             if (!res.result || !res.data) throw new Error('get positions error')
             for (const pos of res.data as MongoPosition[]) {
                 result[pos.mongoID] = pos
@@ -290,7 +293,7 @@ export abstract class BotMultiPositionClass extends BotFrameClass {
 
     private async getPosition(id: string): Promise<MongoPosition[]> {
         if (!this.isBackTest) {
-            const res = await this.mongoDB.find(MONGO_PATH_POSITIONS, {mongoID: id})
+            const res = await this.mongoDB.find(MONGO_PATH_POSITIONS + '-' + this._params.mongoDbName, {mongoID: id})
             const data = res.data as MongoPosition[]
             return data
         }
@@ -300,7 +303,7 @@ export abstract class BotMultiPositionClass extends BotFrameClass {
 
     private async updatePosition(pos: MongoPosition): Promise<void> {
         if (!this.isBackTest){
-            await this.mongoDB.update(MONGO_PATH_POSITIONS, {mongoID: pos.mongoID}, pos)
+            await this.mongoDB.update(MONGO_PATH_POSITIONS + '-' + this._params.mongoDbName, {mongoID: pos.mongoID}, pos)
         } else {
             this._debugPositions[pos.mongoID] = pos
         }

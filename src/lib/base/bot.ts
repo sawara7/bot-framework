@@ -18,6 +18,7 @@ import {
 } from "./types"
 import { sleep } from "utils-general"
 
+const DB_BOTSTATUS = 'botStatus'
 export abstract class BotFrameClass {
     // private _realtimeDB: RealtimeDatabaseClass | undefined
     private _mongoDB: MongodbManagerClass | undefined
@@ -63,7 +64,7 @@ export abstract class BotFrameClass {
         }
 
         if (!this.isBackTest) {
-            this._mongoDB = new MongodbManagerClass(this._baseParams.mongoDbName, this._baseParams.db)
+            this._mongoDB = new MongodbManagerClass(DB_BOTSTATUS, this._baseParams.db)
             await this._mongoDB.connect()
         }
 
