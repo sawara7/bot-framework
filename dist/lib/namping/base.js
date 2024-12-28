@@ -43,18 +43,18 @@ class BaseBotNampingClass extends multiPosition_1.BotMultiPositionClass {
                 return yield this.doSendCloseOrder(pos, true);
             }
             // take profit
-            if (yield this.checkCloseOrder(pos))
+            if (this.logicSettings.profitRate > 0 &&
+                (yield this.checkCloseOrder(pos)))
                 return yield this.doSendCloseOrder(pos);
             // losscut
-            if (yield this.checkLosscutOrder(pos))
+            if (this.logicSettings.losscutRate > 0 &&
+                (yield this.checkLosscutOrder(pos)))
                 return yield this.doSendCloseOrder(pos, true);
             return res;
         });
     }
     checkLosscutOrder(pos) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (this.logicSettings.losscutRate === 0)
-                return false;
             const losscutPrice = this.logic.getPositionInfo(pos.openSide, pos.mongoIndex).losscutPrice;
             if ((pos.openSide === "sell" &&
                 losscutPrice < this.currentTicker.ask) || (pos.openSide === "buy" &&

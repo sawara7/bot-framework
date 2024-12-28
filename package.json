@@ -17,8 +17,8 @@
     "typescript": "^5.7.2"
   },
   "dependencies": {
-    "logic-namping": "github:sawara7/logic-namping",
     "simple-statistics": "^7.8.7",
+    "logic-namping": "github:sawara7/logic-namping",
     "utils-mongodb": "github:sawara7/utils-mongodb",
     "utils-general": "github:sawara7/utils-general",
     "utils-trade": "github:sawara7/utils-trade"

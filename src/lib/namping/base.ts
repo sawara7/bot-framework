@@ -53,16 +53,21 @@ export abstract class BaseBotNampingClass extends BotMultiPositionClass {
         }
 
         // take profit
-        if (await this.checkCloseOrder(pos)) return await this.doSendCloseOrder(pos)
+        if (
+            this.logicSettings.profitRate > 0 &&
+            await this.checkCloseOrder(pos)
+            ) return await this.doSendCloseOrder(pos)
 
         // losscut
-        if (await this.checkLosscutOrder(pos)) return await this.doSendCloseOrder(pos, true)
+        if (
+            this.logicSettings.losscutRate > 0 &&
+            await this.checkLosscutOrder(pos)
+            ) return await this.doSendCloseOrder(pos, true)
         
         return res
     }
 
     protected async checkLosscutOrder(pos: MongoPosition): Promise<boolean> {
-        if (this.logicSettings.losscutRate === 0) return false
         const losscutPrice = this.logic.getPositionInfo(pos.openSide, pos.mongoIndex).losscutPrice
         if ((
             pos.openSide === "sell" &&
