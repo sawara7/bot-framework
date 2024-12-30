@@ -53,7 +53,7 @@ class BotMultiPositionClass extends bot_1.BotFrameClass {
                             this._debugPositions[s + i] = mongoPos;
                         }
                         else {
-                            yield this.mongoDB.insert(types_1.MONGO_PATH_POSITIONS, mongoPos);
+                            yield this.saveToMongoDB(this.positionTableName, mongoPos);
                         }
                     }
                 }
@@ -261,7 +261,7 @@ class BotMultiPositionClass extends bot_1.BotFrameClass {
         return __awaiter(this, void 0, void 0, function* () {
             if (!this.isBackTest) {
                 const result = {};
-                const res = yield this.mongoDB.find(types_1.MONGO_PATH_POSITIONS);
+                const res = yield this.mongoDB.find(this.positionTableName);
                 if (!res.result || !res.data)
                     throw new Error('get positions error');
                 for (const pos of res.data) {
@@ -275,7 +275,7 @@ class BotMultiPositionClass extends bot_1.BotFrameClass {
     getPosition(id) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!this.isBackTest) {
-                const res = yield this.mongoDB.find(types_1.MONGO_PATH_POSITIONS, { mongoID: id });
+                const res = yield this.mongoDB.find(this.positionTableName, { mongoID: id });
                 const data = res.data;
                 return data;
             }
@@ -287,7 +287,7 @@ class BotMultiPositionClass extends bot_1.BotFrameClass {
     updatePosition(pos) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!this.isBackTest) {
-                yield this.mongoDB.update(types_1.MONGO_PATH_POSITIONS, { mongoID: pos.mongoID }, pos);
+                yield this.mongoDB.update(this.positionTableName, { mongoID: pos.mongoID }, pos);
             }
             else {
                 this._debugPositions[pos.mongoID] = pos;
@@ -313,6 +313,9 @@ class BotMultiPositionClass extends bot_1.BotFrameClass {
     }
     get multiPositionStatistics() {
         return this._multiPositionsStatistics;
+    }
+    get positionTableName() {
+        return types_1.MONGO_PATH_POSITIONS + '-' + this._params.mongoDbName;
     }
 }
 exports.BotMultiPositionClass = BotMultiPositionClass;

@@ -25,4 +25,5 @@ export declare abstract class BotMultiPositionClass extends BotFrameClass {
     private positionLoop;
     protected saveBotStatistics(): Promise<void>;
     get multiPositionStatistics(): MultiPositionsStatistics;
+    private get positionTableName();
 }
