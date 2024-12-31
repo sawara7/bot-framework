@@ -58,7 +58,8 @@ export abstract class BotMultiPositionClass extends BotFrameClass {
                     } else {
                         await this.saveToMongoDB(
                             this.positionTableName,
-                            mongoPos
+                            mongoPos,
+                            {mongoID: mongoPos.mongoID}
                             )
                     }
                 }

@@ -62,6 +62,7 @@ class BotFrameClass {
     }
     initialize() {
         return __awaiter(this, void 0, void 0, function* () {
+            this._botStatus.botName = this._baseParams.botName;
             if (!this.isBackTest) {
                 // this._realtimeDB = await getRealTimeDatabase()
             }
@@ -113,7 +114,7 @@ class BotFrameClass {
     }
     loadBotStatus(initialized) {
         return __awaiter(this, void 0, void 0, function* () {
-            const res = yield this.loadFromRealtimeDB(types_1.MONGO_PATH_BOTSTATUS);
+            const res = yield this.loadFromMongoDB(types_1.MONGO_PATH_BOTSTATUS, { botName: this._baseParams.botName });
             if (res == null) {
                 if (initialized) {
                     yield this.saveBotStatus();
@@ -126,7 +127,7 @@ class BotFrameClass {
     }
     saveBotStatus() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.saveToMongoDB(types_1.MONGO_PATH_BOTSTATUS, this._botStatus);
+            yield this.saveToMongoDB(types_1.MONGO_PATH_BOTSTATUS, this._botStatus, { botName: this._baseParams.botName });
         });
     }
     loadBotResult(initialized) {

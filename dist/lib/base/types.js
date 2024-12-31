@@ -9,6 +9,7 @@ exports.MONGO_PATH_BOTRESULT = 'botResult';
 exports.MONGO_PATH_BOTSTATISTICS = 'botStatistics';
 function getBaseBotStatus() {
     return {
+        botName: '',
         isClear: false,
         isStop: false,
         isExit: false,

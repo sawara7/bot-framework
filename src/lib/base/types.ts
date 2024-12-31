@@ -16,6 +16,7 @@ export interface BaseBotParams {
 }
 
 export interface BaseBotStatus {
+    botName: string
     isClear: boolean
     isStop: boolean
     isExit: boolean
@@ -25,6 +26,7 @@ export interface BaseBotStatus {
 
 export function getBaseBotStatus(): BaseBotStatus {
     return {
+        botName: '',
         isClear: false,
         isStop: false,
         isExit: false,

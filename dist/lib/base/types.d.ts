@@ -12,6 +12,7 @@ export interface BaseBotParams {
     db: string;
 }
 export interface BaseBotStatus {
+    botName: string;
     isClear: boolean;
     isStop: boolean;
     isExit: boolean;

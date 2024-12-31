@@ -53,7 +53,7 @@ class BotMultiPositionClass extends bot_1.BotFrameClass {
                             this._debugPositions[s + i] = mongoPos;
                         }
                         else {
-                            yield this.saveToMongoDB(this.positionTableName, mongoPos);
+                            yield this.saveToMongoDB(this.positionTableName, mongoPos, { mongoID: mongoPos.mongoID });
                         }
                     }
                 }

@@ -59,6 +59,7 @@ export abstract class BotFrameClass {
     }
 
     async initialize(): Promise<void> {
+        this._botStatus.botName = this._baseParams.botName
         if (!this.isBackTest) {
             // this._realtimeDB = await getRealTimeDatabase()
         }
@@ -112,7 +113,7 @@ export abstract class BotFrameClass {
     }
 
     private async loadBotStatus(initialized?: boolean): Promise<void> {
-        const res = await this.loadFromRealtimeDB(MONGO_PATH_BOTSTATUS) 
+        const res = await this.loadFromMongoDB(MONGO_PATH_BOTSTATUS, {botName: this._baseParams.botName}) 
         if (res == null) {
             if (initialized) {
                 await this.saveBotStatus()
@@ -124,7 +125,7 @@ export abstract class BotFrameClass {
     }
 
     private async saveBotStatus(): Promise<void> {
-        await this.saveToMongoDB(MONGO_PATH_BOTSTATUS, this._botStatus)
+        await this.saveToMongoDB(MONGO_PATH_BOTSTATUS, this._botStatus, {botName: this._baseParams.botName})
     }
 
     private async loadBotResult(initialized?: boolean): Promise<void> {
