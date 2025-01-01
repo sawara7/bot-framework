@@ -38,6 +38,7 @@ class BotFrameClass {
                     this._previousTicker = this._currentTicker;
                     yield this.updateTicker();
                     yield this.updateTrade();
+                    console.log(!this.isBackTest);
                     if (!this.isBackTest) {
                         this._botStatus.message = 'Normal.';
                         yield this.saveBotStatus();

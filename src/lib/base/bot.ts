@@ -44,6 +44,7 @@ export abstract class BotFrameClass {
                 this._previousTicker = this._currentTicker
                 await this.updateTicker()
                 await this.updateTrade()
+                console.log(!this.isBackTest)
                 if (!this.isBackTest) {
                     this._botStatus.message = 'Normal.'
                     await this.saveBotStatus()
