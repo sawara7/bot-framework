@@ -119,8 +119,11 @@ export abstract class BotFrameClass {
     }
 
     private async loadBotStatus(initialized?: boolean): Promise<void> {
-        const res = await this.loadFromMongoDB(MONGODB_TABLE_BOTSTATUS, {botName: this._baseParams.botName}) 
-        if (res == null) {
+        const res = await this.loadFromMongoDB(
+            MONGODB_TABLE_BOTSTATUS,
+            {botName: this._baseParams.botName}
+            ) 
+        if (res == null || (Array.isArray(res) && res.length === 0)) {
             if (initialized) {
                 await this.saveBotStatus()
                 return
@@ -131,10 +134,9 @@ export abstract class BotFrameClass {
     }
 
     private async saveBotStatus(): Promise<void> {
-        console.log(JSON.stringify(this._botStatus))
         await this.saveToMongoDBUpsert(
             MONGODB_TABLE_BOTSTATUS,
-            JSON.stringify(this._botStatus),
+            this._botStatus,
             {botName: this._baseParams.botName}
             )
     }

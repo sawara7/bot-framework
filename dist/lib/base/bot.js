@@ -114,7 +114,7 @@ class BotFrameClass {
     loadBotStatus(initialized) {
         return __awaiter(this, void 0, void 0, function* () {
             const res = yield this.loadFromMongoDB(types_1.MONGODB_TABLE_BOTSTATUS, { botName: this._baseParams.botName });
-            if (res == null) {
+            if (res == null || (Array.isArray(res) && res.length === 0)) {
                 if (initialized) {
                     yield this.saveBotStatus();
                     return;
@@ -126,8 +126,7 @@ class BotFrameClass {
     }
     saveBotStatus() {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log(JSON.stringify(this._botStatus));
-            yield this.saveToMongoDBUpsert(types_1.MONGODB_TABLE_BOTSTATUS, JSON.stringify(this._botStatus), { botName: this._baseParams.botName });
+            yield this.saveToMongoDBUpsert(types_1.MONGODB_TABLE_BOTSTATUS, this._botStatus, { botName: this._baseParams.botName });
         });
     }
     loadBotResult(initialized) {
