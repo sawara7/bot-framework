@@ -128,7 +128,7 @@ class BotFrameClass {
     saveBotStatus() {
         return __awaiter(this, void 0, void 0, function* () {
             console.log(types_1.MONGODB_TABLE_BOTSTATUS, this._botStatus, { botName: this._baseParams.botName });
-            yield this.saveToMongoDBUpsert(types_1.MONGODB_TABLE_BOTSTATUS, this._botStatus, { botName: this._baseParams.botName });
+            yield this.saveToMongoDBUpsert(types_1.MONGODB_TABLE_BOTSTATUS, Object.assign(this._botStatus), { botName: this._baseParams.botName });
         });
     }
     loadBotResult(initialized) {
