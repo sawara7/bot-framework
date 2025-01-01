@@ -133,10 +133,7 @@ export abstract class BotFrameClass {
     private async saveBotStatus(): Promise<void> {
         await this.saveToMongoDBUpsert(
             MONGODB_TABLE_BOTSTATUS,
-            {
-                botName: this._baseParams.botName,
-                message: 'test'
-            },
+            JSON.stringify(this._botStatus),
             {botName: this._baseParams.botName}
             )
     }
