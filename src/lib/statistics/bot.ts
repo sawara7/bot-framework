@@ -5,7 +5,7 @@ import {
     BotFrameClass
 } from "../base/bot"
 import { Ticker } from "utils-trade"
-import { MONGO_PATH_BOTSTATISTICS } from "../.."
+import { MONGODB_TABLE_BOTSTATISTICS } from "../.."
 import { floor } from "utils-general"
 
 const MONGO_PATH_TICKER = 'ticker'
@@ -54,7 +54,7 @@ export  abstract class TickerStatisticsCustomeClass extends BotFrameClass {
                 for (const i in res.slope) {
                     res.slope[i] = floor(res.slope[i], 2)
                 }
-                await this.saveToMongoDB(MONGO_PATH_STATISTICS, res, {pair: tk.pair})
+                await this.saveToMongoDBUpsert(MONGO_PATH_STATISTICS, res, {pair: tk.pair})
             }
         }
         await this.saveToRealtimeDB('tickerStatistics', ress, false)

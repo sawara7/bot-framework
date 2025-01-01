@@ -19,7 +19,7 @@ export declare abstract class BotFrameClass {
     private saveBotResult;
     protected abstract saveBotStatistics(): Promise<void>;
     protected loadFromMongoDB(path: string, filter?: any): Promise<any>;
-    protected saveToMongoDB(path: string, data: any, filter?: any): Promise<void>;
+    protected saveToMongoDBUpsert(path: string, data: any, filter?: any): Promise<void>;
     protected saveToMongoDBInsert(path: string, data: any, filter?: any): Promise<void>;
     abstract clearPosition(): Promise<void>;
     protected abstract updateTicker(): Promise<void>;

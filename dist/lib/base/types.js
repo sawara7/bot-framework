@@ -1,12 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.MONGO_PATH_BOTSTATISTICS = exports.MONGO_PATH_BOTRESULT = exports.MONGO_PATH_BOTSTATUS = void 0;
+exports.MONGODB_TABLE_UNREALIZEDPL = exports.MONGODB_TABLE_BOTSTATISTICS = exports.MONGODB_TABLE_BOTRESULT = exports.MONGODB_TABLE_BOTSTATUS = exports.MONGODB_DB_BOTSTATUS = void 0;
 exports.getBaseBotStatus = getBaseBotStatus;
 exports.getBaseBotResult = getBaseBotResult;
 const utils_trade_1 = require("utils-trade");
-exports.MONGO_PATH_BOTSTATUS = 'botStatus';
-exports.MONGO_PATH_BOTRESULT = 'botResult';
-exports.MONGO_PATH_BOTSTATISTICS = 'botStatistics';
+exports.MONGODB_DB_BOTSTATUS = 'botStatus';
+exports.MONGODB_TABLE_BOTSTATUS = 'botStatus';
+exports.MONGODB_TABLE_BOTRESULT = 'botResult';
+exports.MONGODB_TABLE_BOTSTATISTICS = 'botStatistics';
+exports.MONGODB_TABLE_UNREALIZEDPL = 'unrealizedPL';
 function getBaseBotStatus() {
     return {
         botName: '',

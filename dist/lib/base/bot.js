@@ -18,7 +18,6 @@ const utils_mongodb_1 = require("utils-mongodb");
 const utils_trade_1 = require("utils-trade");
 const types_1 = require("./types");
 const utils_general_1 = require("utils-general");
-const DB_BOTSTATUS = 'botStatus';
 class BotFrameClass {
     constructor(_baseParams) {
         this._baseParams = _baseParams;
@@ -67,7 +66,7 @@ class BotFrameClass {
                 // this._realtimeDB = await getRealTimeDatabase()
             }
             if (!this.isBackTest) {
-                this._mongoDB = new utils_mongodb_1.MongodbManagerClass(DB_BOTSTATUS, this._baseParams.db);
+                this._mongoDB = new utils_mongodb_1.MongodbManagerClass(types_1.MONGODB_DB_BOTSTATUS, this._baseParams.db);
                 yield this._mongoDB.connect();
             }
             if (!this.isBackTest) {
@@ -114,7 +113,7 @@ class BotFrameClass {
     }
     loadBotStatus(initialized) {
         return __awaiter(this, void 0, void 0, function* () {
-            const res = yield this.loadFromMongoDB(types_1.MONGO_PATH_BOTSTATUS, { botName: this._baseParams.botName });
+            const res = yield this.loadFromMongoDB(types_1.MONGODB_TABLE_BOTSTATUS, { botName: this._baseParams.botName });
             if (res == null) {
                 if (initialized) {
                     yield this.saveBotStatus();
@@ -127,12 +126,12 @@ class BotFrameClass {
     }
     saveBotStatus() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.saveToMongoDB(types_1.MONGO_PATH_BOTSTATUS, this._botStatus, { botName: this._baseParams.botName });
+            yield this.saveToMongoDBUpsert(types_1.MONGODB_TABLE_BOTSTATUS, this._botStatus, { botName: this._baseParams.botName });
         });
     }
     loadBotResult(initialized) {
         return __awaiter(this, void 0, void 0, function* () {
-            const res = yield this.loadFromRealtimeDB(types_1.MONGO_PATH_BOTRESULT);
+            const res = yield this.loadFromRealtimeDB(types_1.MONGODB_TABLE_BOTRESULT);
             if (res == null) {
                 if (initialized) {
                     yield this.saveBotResult();
@@ -147,29 +146,29 @@ class BotFrameClass {
         return __awaiter(this, void 0, void 0, function* () {
             this._botResult.ticker = this.currentTicker;
             this._botResult.updateTimestamp = new Date().toLocaleString();
-            yield this.saveToRealtimeDB(types_1.MONGO_PATH_BOTRESULT, this.botResult);
+            yield this.saveToRealtimeDB(types_1.MONGODB_TABLE_BOTRESULT, this.botResult);
         });
     }
     loadFromMongoDB(path, filter) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (!this.isBackTest && this._mongoDB) {
-                const res = yield this._mongoDB.find(path, filter);
+            if (!this.isBackTest && this.mongoDB) {
+                const res = yield this.mongoDB.find(path, filter);
                 if (res.result)
                     return res.data;
             }
         });
     }
-    saveToMongoDB(path_1, data_1) {
+    saveToMongoDBUpsert(path_1, data_1) {
         return __awaiter(this, arguments, void 0, function* (path, data, filter = {}) {
-            if (!this.isBackTest && this._mongoDB) {
-                yield this._mongoDB.upsert(path, filter, data);
+            if (!this.isBackTest && this.mongoDB) {
+                yield this.mongoDB.upsert(path, filter, data);
             }
         });
     }
     saveToMongoDBInsert(path, data, filter) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (!this.isBackTest && this._mongoDB) {
-                yield this._mongoDB.insert(path, data);
+            if (!this.isBackTest && this.mongoDB) {
+                yield this.mongoDB.insert(path, data);
             }
         });
     }

@@ -58,7 +58,7 @@ class TickerStatisticsCustomeClass extends bot_1.BotFrameClass {
                     for (const i in res.slope) {
                         res.slope[i] = (0, utils_general_1.floor)(res.slope[i], 2);
                     }
-                    yield this.saveToMongoDB(MONGO_PATH_STATISTICS, res, { pair: tk.pair });
+                    yield this.saveToMongoDBUpsert(MONGO_PATH_STATISTICS, res, { pair: tk.pair });
                 }
             }
             yield this.saveToRealtimeDB('tickerStatistics', ress, false);

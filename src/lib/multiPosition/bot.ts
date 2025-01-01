@@ -9,6 +9,7 @@ import {
     MongoPositionRefProc,
     MultiPositionBotParams,
     MultiPositionsStatistics,
+    UnrealizedPL,
     getActiveOrdersResult,
     getClosedOrdersResult,
     getDefaultMultiPositionStatistics,
@@ -19,9 +20,12 @@ import {
 import {
     BotFrameClass
 } from "../base/bot"
-import { MONGO_PATH_BOTSTATISTICS } from "../base"
+import {
+    MONGODB_TABLE_BOTSTATISTICS,
+    MONGODB_TABLE_UNREALIZEDPL
+} from "../base"
 
-const MONGO_PATH_UNREALIZEDPL = 'unrealizedPL'
+
 export abstract class BotMultiPositionClass extends BotFrameClass {
     private _debugPositions: MongoPositionDict = {}
     private _multiPositionsStatistics : MultiPositionsStatistics = getDefaultMultiPositionStatistics()
@@ -56,7 +60,7 @@ export abstract class BotMultiPositionClass extends BotFrameClass {
                     if (this.isBackTest) {
                         this._debugPositions[s+i] = mongoPos
                     } else {
-                        await this.saveToMongoDB(
+                        await this.saveToMongoDBUpsert(
                             this.positionTableName,
                             mongoPos,
                             {mongoID: mongoPos.mongoID}
@@ -179,11 +183,12 @@ export abstract class BotMultiPositionClass extends BotFrameClass {
                     pos.openPrice = 0
                     pos.openSize = 0
                     await this.updatePosition(pos)
-                    await this.saveToMongoDBInsert(
-                        MONGO_PATH_UNREALIZEDPL,{
-                            date: Date.now(),
-                            unrealizedPL: unrealizedPL
-                        })
+                    const upl: UnrealizedPL = {
+                        date: Date.now(),
+                        unrealizedPL: unrealizedPL,
+                        botName: this._params.botName
+                    }
+                    await this.saveToMongoDBInsert(MONGODB_TABLE_UNREALIZEDPL, upl)
                     return
                 }
             }
@@ -325,7 +330,7 @@ export abstract class BotMultiPositionClass extends BotFrameClass {
     }
 
     protected async saveBotStatistics(): Promise<void> {
-        await this.saveToRealtimeDB(MONGO_PATH_BOTSTATISTICS, this.multiPositionStatistics)
+        await this.saveToRealtimeDB(MONGODB_TABLE_BOTSTATISTICS, this.multiPositionStatistics)
     }
 
     get multiPositionStatistics(): MultiPositionsStatistics {

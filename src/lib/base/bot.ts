@@ -2,7 +2,9 @@
 //     RealtimeDatabaseClass,
 //     getRealTimeDatabase
 // } from "utils-firebase-server"
-import { MongodbManagerClass } from "utils-mongodb"
+import {
+    MongodbManagerClass
+} from "utils-mongodb"
 import {
     Ticker,
     getDefaultTicker
@@ -11,14 +13,16 @@ import {
     BaseBotParams,
     BaseBotResult,
     BaseBotStatus,
-    MONGO_PATH_BOTRESULT,
-    MONGO_PATH_BOTSTATUS,
+    MONGODB_DB_BOTSTATUS,
+    MONGODB_TABLE_BOTRESULT,
+    MONGODB_TABLE_BOTSTATUS,
     getBaseBotResult,
     getBaseBotStatus
 } from "./types"
-import { sleep } from "utils-general"
+import {
+    sleep
+} from "utils-general"
 
-const DB_BOTSTATUS = 'botStatus'
 export abstract class BotFrameClass {
     // private _realtimeDB: RealtimeDatabaseClass | undefined
     private _mongoDB: MongodbManagerClass | undefined
@@ -65,7 +69,9 @@ export abstract class BotFrameClass {
         }
 
         if (!this.isBackTest) {
-            this._mongoDB = new MongodbManagerClass(DB_BOTSTATUS, this._baseParams.db)
+            this._mongoDB = new MongodbManagerClass(
+                MONGODB_DB_BOTSTATUS,
+                this._baseParams.db)
             await this._mongoDB.connect()
         }
 
@@ -113,7 +119,7 @@ export abstract class BotFrameClass {
     }
 
     private async loadBotStatus(initialized?: boolean): Promise<void> {
-        const res = await this.loadFromMongoDB(MONGO_PATH_BOTSTATUS, {botName: this._baseParams.botName}) 
+        const res = await this.loadFromMongoDB(MONGODB_TABLE_BOTSTATUS, {botName: this._baseParams.botName}) 
         if (res == null) {
             if (initialized) {
                 await this.saveBotStatus()
@@ -125,11 +131,15 @@ export abstract class BotFrameClass {
     }
 
     private async saveBotStatus(): Promise<void> {
-        await this.saveToMongoDB(MONGO_PATH_BOTSTATUS, this._botStatus, {botName: this._baseParams.botName})
+        await this.saveToMongoDBUpsert(
+            MONGODB_TABLE_BOTSTATUS,
+            this._botStatus,
+            {botName: this._baseParams.botName}
+            )
     }
 
     private async loadBotResult(initialized?: boolean): Promise<void> {
-        const res = await this.loadFromRealtimeDB(MONGO_PATH_BOTRESULT)
+        const res = await this.loadFromRealtimeDB(MONGODB_TABLE_BOTRESULT)
         if (res == null) {
             if (initialized) {
                 await this.saveBotResult()
@@ -143,27 +153,27 @@ export abstract class BotFrameClass {
     private async saveBotResult(): Promise<void> {
         this._botResult.ticker = this.currentTicker
         this._botResult.updateTimestamp = new Date().toLocaleString()
-        await this.saveToRealtimeDB(MONGO_PATH_BOTRESULT, this.botResult)
+        await this.saveToRealtimeDB(MONGODB_TABLE_BOTRESULT, this.botResult)
     }
 
     protected abstract saveBotStatistics(): Promise<void>
 
     protected async loadFromMongoDB(path: string, filter?:any): Promise<any> {
-        if (!this.isBackTest && this._mongoDB) {
-            const res = await this._mongoDB.find(path, filter)
+        if (!this.isBackTest && this.mongoDB) {
+            const res = await this.mongoDB.find(path, filter)
             if (res.result) return res.data
         }        
     }
 
-    protected async saveToMongoDB(path: string, data: any, filter: any = {}): Promise<void> {
-        if (!this.isBackTest && this._mongoDB) {
-            await this._mongoDB.upsert(path, filter, data)
+    protected async saveToMongoDBUpsert(path: string, data: any, filter: any = {}): Promise<void> {
+        if (!this.isBackTest && this.mongoDB) {
+            await this.mongoDB.upsert(path, filter, data)
         }
     }
 
     protected async saveToMongoDBInsert(path: string, data: any, filter?: any): Promise<void> {
-        if (!this.isBackTest && this._mongoDB) {
-            await this._mongoDB.insert(path, data)
+        if (!this.isBackTest && this.mongoDB) {
+            await this.mongoDB.insert(path, data)
         }
     }
 

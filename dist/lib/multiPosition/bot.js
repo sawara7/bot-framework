@@ -14,7 +14,6 @@ const utils_trade_1 = require("utils-trade");
 const types_1 = require("./types");
 const bot_1 = require("../base/bot");
 const base_1 = require("../base");
-const MONGO_PATH_UNREALIZEDPL = 'unrealizedPL';
 class BotMultiPositionClass extends bot_1.BotFrameClass {
     constructor(_params) {
         super(_params);
@@ -53,7 +52,7 @@ class BotMultiPositionClass extends bot_1.BotFrameClass {
                             this._debugPositions[s + i] = mongoPos;
                         }
                         else {
-                            yield this.saveToMongoDB(this.positionTableName, mongoPos, { mongoID: mongoPos.mongoID });
+                            yield this.saveToMongoDBUpsert(this.positionTableName, mongoPos, { mongoID: mongoPos.mongoID });
                         }
                     }
                 }
@@ -161,10 +160,12 @@ class BotMultiPositionClass extends bot_1.BotFrameClass {
                     pos.openPrice = 0;
                     pos.openSize = 0;
                     yield this.updatePosition(pos);
-                    yield this.saveToMongoDBInsert(MONGO_PATH_UNREALIZEDPL, {
+                    const upl = {
                         date: Date.now(),
-                        unrealizedPL: unrealizedPL
-                    });
+                        unrealizedPL: unrealizedPL,
+                        botName: this._params.botName
+                    };
+                    yield this.saveToMongoDBInsert(base_1.MONGODB_TABLE_UNREALIZEDPL, upl);
                     return;
                 }
             }));
@@ -308,7 +309,7 @@ class BotMultiPositionClass extends bot_1.BotFrameClass {
     }
     saveBotStatistics() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.saveToRealtimeDB(base_1.MONGO_PATH_BOTSTATISTICS, this.multiPositionStatistics);
+            yield this.saveToRealtimeDB(base_1.MONGODB_TABLE_BOTSTATISTICS, this.multiPositionStatistics);
         });
     }
     get multiPositionStatistics() {
