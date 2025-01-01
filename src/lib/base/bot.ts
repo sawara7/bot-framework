@@ -44,7 +44,6 @@ export abstract class BotFrameClass {
                 this._previousTicker = this._currentTicker
                 await this.updateTicker()
                 await this.updateTrade()
-                console.log(!this.isBackTest)
                 if (!this.isBackTest) {
                     this._botStatus.message = 'Normal.'
                     await this.saveBotStatus()
@@ -132,10 +131,9 @@ export abstract class BotFrameClass {
     }
 
     private async saveBotStatus(): Promise<void> {
-        console.log(MONGODB_TABLE_BOTSTATUS, this._botStatus,{botName: this._baseParams.botName})
         await this.saveToMongoDBUpsert(
             MONGODB_TABLE_BOTSTATUS,
-            Object.assign(this._botStatus),
+            {botName: this._baseParams.botName},
             {botName: this._baseParams.botName}
             )
     }

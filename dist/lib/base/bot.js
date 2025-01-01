@@ -38,7 +38,6 @@ class BotFrameClass {
                     this._previousTicker = this._currentTicker;
                     yield this.updateTicker();
                     yield this.updateTrade();
-                    console.log(!this.isBackTest);
                     if (!this.isBackTest) {
                         this._botStatus.message = 'Normal.';
                         yield this.saveBotStatus();
@@ -127,8 +126,7 @@ class BotFrameClass {
     }
     saveBotStatus() {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log(types_1.MONGODB_TABLE_BOTSTATUS, this._botStatus, { botName: this._baseParams.botName });
-            yield this.saveToMongoDBUpsert(types_1.MONGODB_TABLE_BOTSTATUS, Object.assign(this._botStatus), { botName: this._baseParams.botName });
+            yield this.saveToMongoDBUpsert(types_1.MONGODB_TABLE_BOTSTATUS, { botName: this._baseParams.botName }, { botName: this._baseParams.botName });
         });
     }
     loadBotResult(initialized) {
