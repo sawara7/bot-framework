@@ -11,7 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TickerCollectorCustomeClass = void 0;
 const bot_1 = require("../base/bot");
-const MONGO_PATH_TICKER = 'ticker';
+const base_1 = require("../base");
 class TickerCollectorCustomeClass extends bot_1.BotFrameClass {
     constructor(_params) {
         super(_params);
@@ -29,12 +29,9 @@ class TickerCollectorCustomeClass extends bot_1.BotFrameClass {
         return __awaiter(this, void 0, void 0, function* () {
             for (const k of this._params.symbols) {
                 const tk = yield this.updateSingleTicker(k);
-                yield this.saveToMongoDBInsert(this.getTickerPath(k), Object.assign({}, tk));
+                yield this.saveToMongoDBInsert((0, base_1.getTickerPath)(k), Object.assign({}, tk));
             }
         });
-    }
-    getTickerPath(key) {
-        return MONGO_PATH_TICKER + '/' + key;
     }
     saveBotStatistics() {
         return __awaiter(this, void 0, void 0, function* () {

@@ -11,9 +11,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TickerStatisticsCustomeClass = void 0;
 const bot_1 = require("../base/bot");
+const __1 = require("../..");
 const utils_general_1 = require("utils-general");
-const MONGO_PATH_TICKER = 'ticker';
-const MONGO_PATH_STATISTICS = 'statistics';
 class TickerStatisticsCustomeClass extends bot_1.BotFrameClass {
     constructor(_params) {
         super(_params);
@@ -34,7 +33,7 @@ class TickerStatisticsCustomeClass extends bot_1.BotFrameClass {
             const minTimestamp = timestamp - maxSpan;
             const ress = {};
             for (const k of this._params.symbols) {
-                const tks = yield this.mongoDB.find(this.getTickerPath(k), {
+                const tks = yield this.mongoDB.find((0, __1.getTickerPath)(k), {
                     timeStamp: {
                         $gt: minTimestamp
                     }
@@ -58,14 +57,10 @@ class TickerStatisticsCustomeClass extends bot_1.BotFrameClass {
                     for (const i in res.slope) {
                         res.slope[i] = (0, utils_general_1.floor)(res.slope[i], 2);
                     }
-                    yield this.saveToMongoDBUpsert(MONGO_PATH_STATISTICS, res, { pair: tk.pair });
+                    yield this.saveToMongoDBUpsert(__1.MONGODB_TABLE_STATISTICS, res, { pair: tk.pair });
                 }
             }
-            yield this.saveToRealtimeDB('tickerStatistics', ress, false);
         });
-    }
-    getTickerPath(key) {
-        return MONGO_PATH_TICKER + '/' + key;
     }
     saveBotStatistics() {
         return __awaiter(this, void 0, void 0, function* () {

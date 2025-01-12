@@ -21,7 +21,7 @@ import {
     BotFrameClass
 } from "../base/bot"
 import {
-    MONGODB_TABLE_BOTSTATISTICS,
+    MONGODB_TABLE_STATISTICS,
     MONGODB_TABLE_UNREALIZEDPL
 } from "../base"
 
@@ -330,7 +330,7 @@ export abstract class BotMultiPositionClass extends BotFrameClass {
     }
 
     protected async saveBotStatistics(): Promise<void> {
-        await this.saveToRealtimeDB(MONGODB_TABLE_BOTSTATISTICS, this.multiPositionStatistics)
+        await this.saveToRealtimeDB(MONGODB_TABLE_STATISTICS, this.multiPositionStatistics)
     }
 
     get multiPositionStatistics(): MultiPositionsStatistics {

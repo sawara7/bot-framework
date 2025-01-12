@@ -5,8 +5,7 @@ import {
     BotFrameClass
 } from "../base/bot"
 import { Ticker } from "utils-trade"
-
-const MONGO_PATH_TICKER = 'ticker'
+import { getTickerPath } from "../base"
 
 export  abstract class TickerCollectorCustomeClass extends BotFrameClass {
     constructor(private _params: TickerCollectorCustomeClassParams) {
@@ -22,12 +21,8 @@ export  abstract class TickerCollectorCustomeClass extends BotFrameClass {
     protected async updateTicker(): Promise<void> {
         for (const k of this._params.symbols) {
             const tk = await this.updateSingleTicker(k)
-            await this.saveToMongoDBInsert(this.getTickerPath(k), Object.assign({}, tk))
+            await this.saveToMongoDBInsert(getTickerPath(k), Object.assign({}, tk))
         }  
-    }
-
-    protected getTickerPath(key: string): string {
-        return MONGO_PATH_TICKER + '/' + key
     }
 
     protected async saveBotStatistics(): Promise<void> {

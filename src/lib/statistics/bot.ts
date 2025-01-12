@@ -1,15 +1,16 @@
 import {
-    TickerStatisticsCustomeParams, TickerStatisticsType,
+    TickerStatisticsCustomeParams,
+    TickerStatisticsType,
 } from "./types"
 import {
     BotFrameClass
 } from "../base/bot"
 import { Ticker } from "utils-trade"
-import { MONGODB_TABLE_BOTSTATISTICS } from "../.."
+import {
+    MONGODB_TABLE_STATISTICS,
+    getTickerPath
+} from "../.."
 import { floor } from "utils-general"
-
-const MONGO_PATH_TICKER = 'ticker'
-const MONGO_PATH_STATISTICS = 'statistics'
 
 export  abstract class TickerStatisticsCustomeClass extends BotFrameClass {
     constructor(private _params: TickerStatisticsCustomeParams) {
@@ -29,7 +30,7 @@ export  abstract class TickerStatisticsCustomeClass extends BotFrameClass {
         const ress:{[pair: string]: any} = {}
         for (const k of this._params.symbols) {
             const tks = await this.mongoDB.find(
-                this.getTickerPath(k), {
+                getTickerPath(k), {
                         timeStamp: {
                             $gt: minTimestamp
                         }
@@ -54,14 +55,9 @@ export  abstract class TickerStatisticsCustomeClass extends BotFrameClass {
                 for (const i in res.slope) {
                     res.slope[i] = floor(res.slope[i], 2)
                 }
-                await this.saveToMongoDBUpsert(MONGO_PATH_STATISTICS, res, {pair: tk.pair})
+                await this.saveToMongoDBUpsert(MONGODB_TABLE_STATISTICS, res, {pair: tk.pair})
             }
         }
-        await this.saveToRealtimeDB('tickerStatistics', ress, false)
-    }
-
-    protected getTickerPath(key: string): string {
-        return MONGO_PATH_TICKER + '/' + key
     }
 
     protected async saveBotStatistics(): Promise<void> {
