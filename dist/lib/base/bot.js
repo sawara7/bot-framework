@@ -30,10 +30,8 @@ class BotFrameClass {
     }
     execute() {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log('test');
             if (this.isBackTest || (yield this.getBotStatusFromRealtimeDbAndIsContinue())) {
                 try {
-                    console.log('test1');
                     if (!this.isBackTest && (yield this.isStopOrClearPosition()))
                         return;
                     yield this.updateBadget();
@@ -41,12 +39,9 @@ class BotFrameClass {
                     yield this.updateTicker();
                     yield this.updateTrade();
                     if (!this.isBackTest) {
-                        console.log('test2');
                         this._botStatus.message = 'Normal.';
                         yield this.saveBotStatus();
-                        console.log('test3');
                         yield this.saveBotResult();
-                        console.log('test4');
                         yield this.saveBotStatistics();
                     }
                 }
