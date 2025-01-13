@@ -331,9 +331,6 @@ export abstract class BotMultiPositionClass extends BotFrameClass {
     }
 
     protected async saveBotStatistics(): Promise<void> {
-        console.log(MONGODB_TABLE_BOTSTATISTICS,
-            this.multiPositionStatistics,
-            {botName: this._params.botName})
         await this.saveToMongoDBUpsert(
             MONGODB_TABLE_BOTSTATISTICS,
             this.multiPositionStatistics,

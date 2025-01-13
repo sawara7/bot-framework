@@ -38,18 +38,22 @@ export abstract class BotFrameClass {
     }
 
     async execute(): Promise<void> {
+        console.log('test')
         if (this.isBackTest || await this.getBotStatusFromRealtimeDbAndIsContinue()) {
             try {
+                console.log('test1')
                 if (!this.isBackTest && await this.isStopOrClearPosition()) return
                 await this.updateBadget()
                 this._previousTicker = this._currentTicker
                 await this.updateTicker()
                 await this.updateTrade()
                 if (!this.isBackTest) {
+                    console.log('test2')
                     this._botStatus.message = 'Normal.'
                     await this.saveBotStatus()
+                    console.log('test3')
                     await this.saveBotResult()
-                    console.log(MONGODB_TABLE_BOTSTATISTICS)
+                    console.log('test4')
                     await this.saveBotStatistics()
                 }
             } catch(e) {
