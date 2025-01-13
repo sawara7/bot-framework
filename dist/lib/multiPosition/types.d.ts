@@ -20,6 +20,7 @@ export type MongoPositionDict = {
     [id: string]: MongoPosition;
 };
 export interface MultiPositionsStatistics {
+    botName: string;
     buySize: number;
     buyPositionNum: number;
     sellSize: number;

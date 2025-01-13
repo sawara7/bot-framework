@@ -7,6 +7,7 @@ exports.getDefaultSendCloseOrderResult = getDefaultSendCloseOrderResult;
 exports.MONGO_PATH_POSITIONS = 'positions';
 function getDefaultMultiPositionStatistics() {
     return {
+        botName: '',
         unrealized: 0,
         buySize: 0,
         buyPositionNum: 0,

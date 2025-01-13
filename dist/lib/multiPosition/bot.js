@@ -232,6 +232,7 @@ class BotMultiPositionClass extends bot_1.BotFrameClass {
             let buyCap = 0;
             let sellCap = 0;
             this._activeOrderIDs = [];
+            result.botName = this._params.botName;
             yield this.positionLoop((pos) => __awaiter(this, void 0, void 0, function* () {
                 if (pos.openOrderID !== '')
                     this._activeOrderIDs.push(pos.openOrderID);
