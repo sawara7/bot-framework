@@ -165,7 +165,7 @@ class BotMultiPositionClass extends bot_1.BotFrameClass {
                         unrealizedPL: unrealizedPL,
                         botName: this._params.botName
                     };
-                    yield this.saveToMongoDBInsert(base_1.MONGODB_TABLE_UNREALIZEDPL, upl);
+                    yield this.saveToMongoDBInsert(base_1.MONGODB_TABLE_CUMULATIVEPL, upl);
                     return;
                 }
             }));

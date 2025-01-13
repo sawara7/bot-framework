@@ -5,7 +5,7 @@ export const MONGODB_TABLE_BOTSTATUS = 'status'
 export const MONGODB_TABLE_BOTRESULT = 'result'
 export const MONGODB_TABLE_TICKER = 'ticker'
 export const MONGODB_TABLE_STATISTICS = 'statistics'
-export const MONGODB_TABLE_UNREALIZEDPL = 'unrealizedPL'
+export const MONGODB_TABLE_CUMULATIVEPL = 'cumulativePL'
 export interface BaseBotParams {
     botName: string
     logicName: string

@@ -22,7 +22,7 @@ import {
 } from "../base/bot"
 import {
     MONGODB_TABLE_STATISTICS,
-    MONGODB_TABLE_UNREALIZEDPL
+    MONGODB_TABLE_CUMULATIVEPL
 } from "../base"
 
 
@@ -188,7 +188,7 @@ export abstract class BotMultiPositionClass extends BotFrameClass {
                         unrealizedPL: unrealizedPL,
                         botName: this._params.botName
                     }
-                    await this.saveToMongoDBInsert(MONGODB_TABLE_UNREALIZEDPL, upl)
+                    await this.saveToMongoDBInsert(MONGODB_TABLE_CUMULATIVEPL, upl)
                     return
                 }
             }

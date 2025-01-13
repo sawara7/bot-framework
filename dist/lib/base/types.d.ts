@@ -4,7 +4,7 @@ export declare const MONGODB_TABLE_BOTSTATUS = "status";
 export declare const MONGODB_TABLE_BOTRESULT = "result";
 export declare const MONGODB_TABLE_TICKER = "ticker";
 export declare const MONGODB_TABLE_STATISTICS = "statistics";
-export declare const MONGODB_TABLE_UNREALIZEDPL = "unrealizedPL";
+export declare const MONGODB_TABLE_CUMULATIVEPL = "cumulativePL";
 export interface BaseBotParams {
     botName: string;
     logicName: string;

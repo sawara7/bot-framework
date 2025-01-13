@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.MONGODB_TABLE_UNREALIZEDPL = exports.MONGODB_TABLE_STATISTICS = exports.MONGODB_TABLE_TICKER = exports.MONGODB_TABLE_BOTRESULT = exports.MONGODB_TABLE_BOTSTATUS = exports.MONGODB_DB_BOTSTATUS = void 0;
+exports.MONGODB_TABLE_CUMULATIVEPL = exports.MONGODB_TABLE_STATISTICS = exports.MONGODB_TABLE_TICKER = exports.MONGODB_TABLE_BOTRESULT = exports.MONGODB_TABLE_BOTSTATUS = exports.MONGODB_DB_BOTSTATUS = void 0;
 exports.getBaseBotStatus = getBaseBotStatus;
 exports.getBaseBotResult = getBaseBotResult;
 exports.getTickerPath = getTickerPath;
@@ -10,7 +10,7 @@ exports.MONGODB_TABLE_BOTSTATUS = 'status';
 exports.MONGODB_TABLE_BOTRESULT = 'result';
 exports.MONGODB_TABLE_TICKER = 'ticker';
 exports.MONGODB_TABLE_STATISTICS = 'statistics';
-exports.MONGODB_TABLE_UNREALIZEDPL = 'unrealizedPL';
+exports.MONGODB_TABLE_CUMULATIVEPL = 'cumulativePL';
 function getBaseBotStatus() {
     return {
         botName: '',
