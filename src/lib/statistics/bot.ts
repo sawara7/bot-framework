@@ -40,9 +40,10 @@ export  abstract class TickerStatisticsCustomeClass extends BotFrameClass {
                 const tk = tks.data[0] as Ticker
                 const res = this.updateSingleStatics((await tks).data as Ticker[], this._params.timeSpan)
                 res.pair = tk.pair
+                res.timeStamp = Date.now()
                 ress[res.pair] = res
-                res.ask = floor(res.average[0], 2)
-                res.bid = floor(res.average[0], 2)
+                res.ask = floor(tk.ask, 2)
+                res.bid = floor(tk.bid, 2)
                 for (const i in res.average) {
                     res.average[i] = floor(res.average[i], 2)
                 }

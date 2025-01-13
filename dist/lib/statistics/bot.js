@@ -42,9 +42,10 @@ class TickerStatisticsCustomeClass extends bot_1.BotFrameClass {
                     const tk = tks.data[0];
                     const res = this.updateSingleStatics((yield tks).data, this._params.timeSpan);
                     res.pair = tk.pair;
+                    res.timeStamp = Date.now();
                     ress[res.pair] = res;
-                    res.ask = (0, utils_general_1.floor)(res.average[0], 2);
-                    res.bid = (0, utils_general_1.floor)(res.average[0], 2);
+                    res.ask = (0, utils_general_1.floor)(tk.ask, 2);
+                    res.bid = (0, utils_general_1.floor)(tk.bid, 2);
                     for (const i in res.average) {
                         res.average[i] = (0, utils_general_1.floor)(res.average[i], 2);
                     }
