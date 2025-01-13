@@ -21,6 +21,7 @@ export type MongoPositionRefProc = (pos: MongoPosition) => void;
 export type MongoPositionDict = {[id: string]: MongoPosition}
 
 export interface MultiPositionsStatistics {
+    botName: string
     buySize: number
     buyPositionNum: number
     sellSize: number
@@ -32,6 +33,7 @@ export interface MultiPositionsStatistics {
 
 export function getDefaultMultiPositionStatistics(): MultiPositionsStatistics {
     return {
+        botName: '',
         unrealized: 0,
         buySize: 0,
         buyPositionNum: 0,

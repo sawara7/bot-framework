@@ -261,6 +261,7 @@ export abstract class BotMultiPositionClass extends BotFrameClass {
         let buyCap = 0
         let sellCap = 0
         this._activeOrderIDs = []
+        result.botName = this._params.botName
         await this.positionLoop(
             async (pos: MongoPosition)=> {
                 if (pos.openOrderID !== '') this._activeOrderIDs.push(pos.openOrderID)
