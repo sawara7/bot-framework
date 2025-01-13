@@ -97,8 +97,8 @@ export interface sendCancelOrderResult {
     success: boolean
 }
 
-export interface UnrealizedPL {
+export interface CumulativePL {
     date: number;
-    unrealizedPL: number;
+    cumulativePL: number;
     botName: string;
 }

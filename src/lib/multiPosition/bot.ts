@@ -9,7 +9,7 @@ import {
     MongoPositionRefProc,
     MultiPositionBotParams,
     MultiPositionsStatistics,
-    UnrealizedPL,
+    CumulativePL,
     getActiveOrdersResult,
     getClosedOrdersResult,
     getDefaultMultiPositionStatistics,
@@ -21,8 +21,8 @@ import {
     BotFrameClass
 } from "../base/bot"
 import {
-    MONGODB_TABLE_STATISTICS,
-    MONGODB_TABLE_CUMULATIVEPL
+    MONGODB_TABLE_CUMULATIVEPL,
+    MONGODB_TABLE_BOTSTATISTICS
 } from "../base"
 
 
@@ -183,9 +183,9 @@ export abstract class BotMultiPositionClass extends BotFrameClass {
                     pos.openPrice = 0
                     pos.openSize = 0
                     await this.updatePosition(pos)
-                    const upl: UnrealizedPL = {
+                    const upl: CumulativePL = {
                         date: Date.now(),
-                        unrealizedPL: unrealizedPL,
+                        cumulativePL: unrealizedPL,
                         botName: this._params.botName
                     }
                     await this.saveToMongoDBInsert(MONGODB_TABLE_CUMULATIVEPL, upl)
@@ -330,7 +330,11 @@ export abstract class BotMultiPositionClass extends BotFrameClass {
     }
 
     protected async saveBotStatistics(): Promise<void> {
-        await this.saveToRealtimeDB(MONGODB_TABLE_STATISTICS, this.multiPositionStatistics)
+        await this.saveToMongoDBUpsert(
+            MONGODB_TABLE_BOTSTATISTICS,
+            this.multiPositionStatistics,
+            {botName: this._params.botName}
+            )
     }
 
     get multiPositionStatistics(): MultiPositionsStatistics {

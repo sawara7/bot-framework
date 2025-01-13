@@ -2,8 +2,9 @@ import { Ticker, botCurrency } from "utils-trade";
 export declare const MONGODB_DB_BOTSTATUS = "botStatus";
 export declare const MONGODB_TABLE_BOTSTATUS = "status";
 export declare const MONGODB_TABLE_BOTRESULT = "result";
+export declare const MONGODB_TABLE_BOTSTATISTICS = "botStatistics";
 export declare const MONGODB_TABLE_TICKER = "ticker";
-export declare const MONGODB_TABLE_STATISTICS = "statistics";
+export declare const MONGODB_TABLE_TICKERSTATISTICS = "statistics";
 export declare const MONGODB_TABLE_CUMULATIVEPL = "cumulativePL";
 export interface BaseBotParams {
     botName: string;

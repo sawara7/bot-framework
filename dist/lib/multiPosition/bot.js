@@ -162,7 +162,7 @@ class BotMultiPositionClass extends bot_1.BotFrameClass {
                     yield this.updatePosition(pos);
                     const upl = {
                         date: Date.now(),
-                        unrealizedPL: unrealizedPL,
+                        cumulativePL: unrealizedPL,
                         botName: this._params.botName
                     };
                     yield this.saveToMongoDBInsert(base_1.MONGODB_TABLE_CUMULATIVEPL, upl);
@@ -309,7 +309,7 @@ class BotMultiPositionClass extends bot_1.BotFrameClass {
     }
     saveBotStatistics() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.saveToRealtimeDB(base_1.MONGODB_TABLE_STATISTICS, this.multiPositionStatistics);
+            yield this.saveToMongoDBUpsert(base_1.MONGODB_TABLE_BOTSTATISTICS, this.multiPositionStatistics, { botName: this._params.botName });
         });
     }
     get multiPositionStatistics() {
