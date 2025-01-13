@@ -146,7 +146,7 @@ class BotFrameClass {
         return __awaiter(this, void 0, void 0, function* () {
             this._botResult.ticker = this.currentTicker;
             this._botResult.updateTimestamp = new Date().toLocaleString();
-            yield this.saveToRealtimeDB(types_1.MONGODB_TABLE_BOTRESULT, this.botResult);
+            yield this.saveToMongoDBUpsert(types_1.MONGODB_TABLE_BOTRESULT, this.botResult, { botName: this._baseParams.botName });
         });
     }
     loadFromMongoDB(path, filter) {

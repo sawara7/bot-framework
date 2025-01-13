@@ -156,7 +156,11 @@ export abstract class BotFrameClass {
     private async saveBotResult(): Promise<void> {
         this._botResult.ticker = this.currentTicker
         this._botResult.updateTimestamp = new Date().toLocaleString()
-        await this.saveToRealtimeDB(MONGODB_TABLE_BOTRESULT, this.botResult)
+        await this.saveToMongoDBUpsert(
+            MONGODB_TABLE_BOTRESULT,
+            this.botResult,
+            {botName: this._baseParams.botName}
+            )
     }
 
     protected abstract saveBotStatistics(): Promise<void>
