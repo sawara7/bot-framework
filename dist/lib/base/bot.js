@@ -42,6 +42,7 @@ class BotFrameClass {
                         this._botStatus.message = 'Normal.';
                         yield this.saveBotStatus();
                         yield this.saveBotResult();
+                        console.log(types_1.MONGODB_TABLE_BOTSTATISTICS);
                         yield this.saveBotStatistics();
                     }
                 }

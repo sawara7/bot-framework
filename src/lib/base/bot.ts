@@ -15,6 +15,7 @@ import {
     BaseBotStatus,
     MONGODB_DB_BOTSTATUS,
     MONGODB_TABLE_BOTRESULT,
+    MONGODB_TABLE_BOTSTATISTICS,
     MONGODB_TABLE_BOTSTATUS,
     getBaseBotResult,
     getBaseBotStatus
@@ -48,6 +49,7 @@ export abstract class BotFrameClass {
                     this._botStatus.message = 'Normal.'
                     await this.saveBotStatus()
                     await this.saveBotResult()
+                    console.log(MONGODB_TABLE_BOTSTATISTICS)
                     await this.saveBotStatistics()
                 }
             } catch(e) {
