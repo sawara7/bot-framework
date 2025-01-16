@@ -119,7 +119,7 @@ class BotFrameClass {
                 }
                 throw new Error('failed load botStatus');
             }
-            this._botStatus = res;
+            this._botStatus = res[0];
         });
     }
     saveBotStatus() {

@@ -121,7 +121,7 @@ export abstract class BotFrameClass {
         const res = await this.loadFromMongoDB(
             MONGODB_TABLE_BOTSTATUS,
             {botName: this._baseParams.botName}
-            ) 
+            )
         if (res == null || (Array.isArray(res) && res.length === 0)) {
             if (initialized) {
                 await this.saveBotStatus()
@@ -129,7 +129,7 @@ export abstract class BotFrameClass {
             }
             throw new Error('failed load botStatus')
         }
-        this._botStatus = res as BaseBotStatus
+        this._botStatus = res[0] as BaseBotStatus
     }
 
     private async saveBotStatus(): Promise<void> {
