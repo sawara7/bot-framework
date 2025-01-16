@@ -12,7 +12,7 @@ export declare abstract class BotFrameClass {
     execute(): Promise<void>;
     initialize(): Promise<void>;
     private isStopOrClearPosition;
-    private getBotStatusFromRealtimeDbAndIsContinue;
+    private getBotStatusAndIsContinue;
     private loadBotStatus;
     private saveBotStatus;
     private loadBotResult;

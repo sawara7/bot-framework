@@ -38,7 +38,7 @@ export abstract class BotFrameClass {
     }
 
     async execute(): Promise<void> {
-        if (this.isBackTest || await this.getBotStatusFromRealtimeDbAndIsContinue()) {
+        if (this.isBackTest || await this.getBotStatusAndIsContinue()) {
             try {
                 if (!this.isBackTest && await this.isStopOrClearPosition()) return
                 await this.updateBadget()
@@ -112,11 +112,9 @@ export abstract class BotFrameClass {
         return false
     }
 
-    private async getBotStatusFromRealtimeDbAndIsContinue(): Promise<boolean> {
-        // if (!this._realtimeDB) throw new Error("no realtime db.")
-        // this._botStatus = await this._realtimeDB.get(await this._realtimeDB.getReference("botStatus/" + this._baseParams.botName)) as BaseBotStatus
-        // return !this._botStatus.isExit
-        return true
+    private async getBotStatusAndIsContinue(): Promise<boolean> {
+        await this.loadBotStatus()
+        return !this._botStatus.isExit
     }
 
     private async loadBotStatus(initialized?: boolean): Promise<void> {

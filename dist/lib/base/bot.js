@@ -30,7 +30,7 @@ class BotFrameClass {
     }
     execute() {
         return __awaiter(this, void 0, void 0, function* () {
-            if (this.isBackTest || (yield this.getBotStatusFromRealtimeDbAndIsContinue())) {
+            if (this.isBackTest || (yield this.getBotStatusAndIsContinue())) {
                 try {
                     if (!this.isBackTest && (yield this.isStopOrClearPosition()))
                         return;
@@ -103,12 +103,10 @@ class BotFrameClass {
             return false;
         });
     }
-    getBotStatusFromRealtimeDbAndIsContinue() {
+    getBotStatusAndIsContinue() {
         return __awaiter(this, void 0, void 0, function* () {
-            // if (!this._realtimeDB) throw new Error("no realtime db.")
-            // this._botStatus = await this._realtimeDB.get(await this._realtimeDB.getReference("botStatus/" + this._baseParams.botName)) as BaseBotStatus
-            // return !this._botStatus.isExit
-            return true;
+            yield this.loadBotStatus();
+            return !this._botStatus.isExit;
         });
     }
     loadBotStatus(initialized) {
