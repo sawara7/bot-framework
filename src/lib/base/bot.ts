@@ -38,9 +38,7 @@ export abstract class BotFrameClass {
     }
 
     async execute(): Promise<void> {
-        console.log("test")
         if (this.isBackTest || await this.getBotStatusAndIsContinue()) {
-            console.log("test2")
             try {
                 if (!this.isBackTest && await this.isStopOrClearPosition()) return
                 await this.updateBadget()
@@ -115,7 +113,6 @@ export abstract class BotFrameClass {
     }
 
     private async getBotStatusAndIsContinue(): Promise<boolean> {
-        console.log("test3")
         await this.loadBotStatus()
         return !this._botStatus.isExit
     }

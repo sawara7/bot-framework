@@ -30,9 +30,7 @@ class BotFrameClass {
     }
     execute() {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log("test");
             if (this.isBackTest || (yield this.getBotStatusAndIsContinue())) {
-                console.log("test2");
                 try {
                     if (!this.isBackTest && (yield this.isStopOrClearPosition()))
                         return;
@@ -107,7 +105,6 @@ class BotFrameClass {
     }
     getBotStatusAndIsContinue() {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log("test3");
             yield this.loadBotStatus();
             return !this._botStatus.isExit;
         });
