@@ -97,7 +97,6 @@ export abstract class BotFrameClass {
             MONGODB_TABLE_BOTSTATUS,
             {botName: this._baseParams.botName}
             )
-        console.log(res)
         if (res == null || (Array.isArray(res) && res.length === 0)) {
             if (initialized) {
                 await this.saveBotStatus()

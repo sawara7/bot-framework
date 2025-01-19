@@ -93,7 +93,6 @@ class BotFrameClass {
     loadBotStatus(initialized) {
         return __awaiter(this, void 0, void 0, function* () {
             const res = yield this.loadFromMongoDB(utils_trade_1.MONGODB_TABLE_BOTSTATUS, { botName: this._baseParams.botName });
-            console.log(res);
             if (res == null || (Array.isArray(res) && res.length === 0)) {
                 if (initialized) {
                     yield this.saveBotStatus();
