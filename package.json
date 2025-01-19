@@ -4,7 +4,7 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "ncu -u && pnpm install && pnpm update && tsc",
-    "commit": "git commit -am 'commit' && npm version patch && git push"
+    "commit": "git commit -am 'commit' && pnpm version patch && git push"
   },
   "author": "sawara7",
   "license": "MIT",

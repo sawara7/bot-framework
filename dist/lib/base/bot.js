@@ -33,6 +33,7 @@ class BotFrameClass {
                     if (!this.isBackTest) {
                         this._botStatus.message = 'Normal.';
                         this._botStatus.lastDate = Date.now();
+                        this._botStatus.dbName = this._baseParams.mongoDbName;
                         yield this.saveBotStatus();
                     }
                 }
