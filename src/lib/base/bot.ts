@@ -1,40 +1,29 @@
-// import {
-//     RealtimeDatabaseClass,
-//     getRealTimeDatabase
-// } from "utils-firebase-server"
 import {
     MongodbManagerClass
 } from "utils-mongodb"
 import {
-    Ticker,
-    getDefaultTicker
-} from "utils-trade"
-import {
-    BaseBotParams,
-    BaseBotResult,
-    BaseBotStatus,
-    MONGODB_DB_BOTSTATUS,
-    MONGODB_TABLE_BOTRESULT,
-    MONGODB_TABLE_BOTSTATISTICS,
-    MONGODB_TABLE_BOTSTATUS,
-    getBaseBotResult,
-    getBaseBotStatus
+    BaseBotParams
 } from "./types"
 import {
     sleep
 } from "utils-general"
+import {
+    Ticker,
+    getDefaultTicker,
+    BaseBotStatus,
+    getBaseBotStatus,
+    MONGODB_DB_BOTSTATUS,
+    MONGODB_TABLE_BOTSTATUS
+} from "utils-trade"
 
 export abstract class BotFrameClass {
     // private _realtimeDB: RealtimeDatabaseClass | undefined
     private _mongoDB: MongodbManagerClass | undefined
     private _botStatus: BaseBotStatus = getBaseBotStatus()
-    private _botResult: BaseBotResult = getBaseBotResult()
     private _previousTicker: Ticker = getDefaultTicker()
     private _currentTicker: Ticker = getDefaultTicker()
 
     constructor(private _baseParams: BaseBotParams) {
-        this._botResult.botName = this._baseParams.botName
-        this._botResult.logicName = this._baseParams.logicName
     }
 
     async execute(): Promise<void> {
@@ -48,7 +37,6 @@ export abstract class BotFrameClass {
                 if (!this.isBackTest) {
                     this._botStatus.message = 'Normal.'
                     await this.saveBotStatus()
-                    await this.saveBotResult()
                     await this.saveBotStatistics()
                 }
             } catch(e) {
@@ -66,10 +54,6 @@ export abstract class BotFrameClass {
     async initialize(): Promise<void> {
         this._botStatus.botName = this._baseParams.botName
         if (!this.isBackTest) {
-            // this._realtimeDB = await getRealTimeDatabase()
-        }
-
-        if (!this.isBackTest) {
             this._mongoDB = new MongodbManagerClass(
                 MONGODB_DB_BOTSTATUS,
                 this._baseParams.db)
@@ -78,19 +62,9 @@ export abstract class BotFrameClass {
 
         if (!this.isBackTest) {
             await this.loadBotStatus(true)
-            await this.loadBotResult(true)
         }
 
         await this.updateTicker()
-
-        if (this._botResult.initialBadget === 0) {
-            await this.updateBadget()
-            this._botResult.initialBadget = this._botResult.currentBadget
-        }
-
-        if (isNaN(this._botResult.initialBadget) || this._botResult.initialBadget === 0) {
-            throw new Error('Update initial badget error.')
-        }
     }
 
     private async isStopOrClearPosition(): Promise<boolean> {
@@ -141,28 +115,6 @@ export abstract class BotFrameClass {
             )
     }
 
-    private async loadBotResult(initialized?: boolean): Promise<void> {
-        const res = await this.loadFromRealtimeDB(MONGODB_TABLE_BOTRESULT)
-        if (res == null) {
-            if (initialized) {
-                await this.saveBotResult()
-                return
-            }
-            throw new Error('failed load botResult')
-        }
-        this._botResult = res as BaseBotResult
-    }
-
-    private async saveBotResult(): Promise<void> {
-        this._botResult.ticker = this.currentTicker
-        this._botResult.updateTimestamp = new Date().toLocaleString()
-        await this.saveToMongoDBUpsert(
-            MONGODB_TABLE_BOTRESULT,
-            this.botResult,
-            {botName: this._baseParams.botName}
-            )
-    }
-
     protected abstract saveBotStatistics(): Promise<void>
 
     protected async loadFromMongoDB(path: string, filter?:any): Promise<any> {
@@ -192,44 +144,8 @@ export abstract class BotFrameClass {
 
     protected abstract updateTrade(): Promise<void>
 
-    private async loadFromRealtimeDB(path: string): Promise<Object | null> {
-        // if (!this._realtimeDB) throw new Error("no realtime db.")
-        // return await this._realtimeDB.get(await this._realtimeDB.getReference(path + "/" + this._baseParams.botName))
-        return null
-    }
-
-    protected async saveToRealtimeDB(path: string, data: Object, setBotName: boolean = true): Promise<void> {
-        // if (!this._realtimeDB) throw new Error("no realtime db.")
-        // const s = setBotName? this._baseParams.botName: ''
-        // await this._realtimeDB.set(path + '/' + this._baseParams.botName, data)
-    }
-
     protected get isBackTest(): boolean {
         return this._baseParams.isBackTest? true: false
-    }
-
-    protected get botResult(): BaseBotResult {
-        return this._botResult
-    }
-
-    protected get cumulativeProfit(): number {
-        return this._botResult.cumulativeProfit
-    }
-
-    protected set cumulativeProfit(value: number) {
-        this._botResult.cumulativeProfit = value
-    }
-
-    protected get currentBadget(): number {
-        return this._botResult.currentBadget
-    }
-
-    protected set currentBadget(badget: number) {
-        this._botResult.currentBadget = badget
-    }
-
-    protected get initialBadget(): number {
-        return this._botResult.initialBadget
     }
 
     protected get currentTicker(): Ticker {

@@ -16,12 +16,13 @@ class BaseBotNampingClass extends multiPosition_1.BotMultiPositionClass {
     constructor(_nampingParams) {
         super(_nampingParams);
         this._nampingParams = _nampingParams;
+        this.currentBadget = 0;
         this._logic = new logic_namping_1.LogicNampingClass(this._nampingParams.logicParams);
     }
     updateBadget() {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.isBackTest) {
-                this.currentBadget = this.initialBadget + this.cumulativeProfit; // + this.unrealized
+                // this.currentBadget = this.initialBadget + this.cumulativeProfit // + this.unrealized
             }
             else {
                 this.currentBadget = yield this.getBadget();

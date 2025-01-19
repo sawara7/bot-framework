@@ -1,12 +1,14 @@
-import { MongoPosition, MultiPositionBotParams, MultiPositionsStatistics, getActiveOrdersResult, getClosedOrdersResult, sendCancelOrderResult, sendCloseOrderResult, sendOpenOrderResult } from "./types";
+import { MultiPositionBotParams, getActiveOrdersResult, getClosedOrdersResult, sendCancelOrderResult, sendCloseOrderResult, sendOpenOrderResult } from "./types";
 import { BotFrameClass } from "../base/bot";
+import { MongoPosition } from "utils-trade";
 export declare abstract class BotMultiPositionClass extends BotFrameClass {
     private _params;
     private _debugPositions;
-    private _multiPositionsStatistics;
     private _activeOrderIDs;
     private _activeOrders;
     private _closedOrders;
+    buyAveragePrice: number;
+    sellAveragePrice: number;
     constructor(_params: MultiPositionBotParams);
     initialize(): Promise<void>;
     protected abstract checkCancelOpenOrder(pos: MongoPosition): Promise<boolean>;
@@ -23,7 +25,5 @@ export declare abstract class BotMultiPositionClass extends BotFrameClass {
     private getPosition;
     private updatePosition;
     private positionLoop;
-    protected saveBotStatistics(): Promise<void>;
-    get multiPositionStatistics(): MultiPositionsStatistics;
     private get positionTableName();
 }

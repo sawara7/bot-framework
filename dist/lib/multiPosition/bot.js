@@ -10,19 +10,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BotMultiPositionClass = void 0;
-const utils_trade_1 = require("utils-trade");
-const types_1 = require("./types");
 const bot_1 = require("../base/bot");
-const base_1 = require("../base");
+const utils_trade_1 = require("utils-trade");
 class BotMultiPositionClass extends bot_1.BotFrameClass {
     constructor(_params) {
         super(_params);
         this._params = _params;
         this._debugPositions = {};
-        this._multiPositionsStatistics = (0, types_1.getDefaultMultiPositionStatistics)();
         this._activeOrderIDs = [];
         this._activeOrders = [];
         this._closedOrders = {};
+        this.buyAveragePrice = 0;
+        this.sellAveragePrice = 0;
     }
     initialize() {
         const _super = Object.create(null, {
@@ -152,8 +151,7 @@ class BotMultiPositionClass extends bot_1.BotFrameClass {
                     const openFee = pos.openPrice * pos.openSize * openFeeRate;
                     const closeFeeRate = (pos.closeOrderType === "limit" ? this._params.feeLimitPercent : this._params.feeMarketPercent) / 100;
                     const closeFee = pos.closePrice * pos.openSize * closeFeeRate;
-                    const unrealizedPL = (0, utils_trade_1.getUnrealizedPL)(pos.openSide, this.currentTicker, pos.openPrice, pos.openSize) - openFee - closeFee;
-                    this.cumulativeProfit += unrealizedPL;
+                    const pl = (0, utils_trade_1.getUnrealizedPL)(pos.openSide, this.currentTicker, pos.openPrice, pos.openSize) - openFee - closeFee;
                     pos.isOpened = false;
                     pos.isClosed = false;
                     pos.closePrice = 0;
@@ -162,10 +160,10 @@ class BotMultiPositionClass extends bot_1.BotFrameClass {
                     yield this.updatePosition(pos);
                     const upl = {
                         date: Date.now(),
-                        cumulativePL: unrealizedPL,
+                        cumulativePL: pl,
                         botName: this._params.botName
                     };
-                    yield this.saveToMongoDBInsert(base_1.MONGODB_TABLE_CUMULATIVEPL, upl);
+                    yield this.saveToMongoDBInsert(utils_trade_1.MONGODB_TABLE_CUMULATIVEPL, upl);
                     return;
                 }
             }));
@@ -186,7 +184,7 @@ class BotMultiPositionClass extends bot_1.BotFrameClass {
             yield this.positionLoop((pos) => __awaiter(this, void 0, void 0, function* () {
                 if (pos.isOpened && !pos.isClosed && pos.closeOrderID === '') {
                     // if Open状態でClose注文していない
-                    // do Close注文す
+                    // do Close注文する
                     const res = yield this.sendCloseOrder(pos, true);
                     if (res.success) {
                         pos.closeOrderID = res.orderID;
@@ -228,11 +226,11 @@ class BotMultiPositionClass extends bot_1.BotFrameClass {
     }
     updateMultiPositionStatisticsAndUpdateActiveOrders() {
         return __awaiter(this, void 0, void 0, function* () {
-            let result = (0, types_1.getDefaultMultiPositionStatistics)();
             let buyCap = 0;
             let sellCap = 0;
+            let buySize = 0;
+            let sellSize = 0;
             this._activeOrderIDs = [];
-            result.botName = this._params.botName;
             yield this.positionLoop((pos) => __awaiter(this, void 0, void 0, function* () {
                 if (pos.openOrderID !== '')
                     this._activeOrderIDs.push(pos.openOrderID);
@@ -243,20 +241,16 @@ class BotMultiPositionClass extends bot_1.BotFrameClass {
                 if (pos.isClosed)
                     return;
                 if (pos.openSide === "buy") {
-                    result.buySize += pos.openSize;
+                    buySize += pos.openSize;
                     buyCap += (pos.openSize * pos.openPrice);
-                    result.buyPositionNum++;
                 }
                 else if (pos.openSide === "sell") {
-                    result.sellSize += pos.openSize;
+                    sellSize += pos.openSize;
                     sellCap += (pos.openSize * pos.openPrice);
-                    result.sellPositionNum++;
                 }
-                result.unrealized += (0, utils_trade_1.getUnrealizedPL)(pos.openSide, this.currentTicker, pos.openPrice, pos.openSize);
             }));
-            result.buyAveragePrice = result.buySize > 0 ? buyCap / result.buySize : 0;
-            result.sellAveragePrice = result.sellSize > 0 ? sellCap / result.sellSize : 1000000000;
-            this._multiPositionsStatistics = result;
+            this.buyAveragePrice = buySize > 0 ? buyCap / buySize : 0;
+            this.sellAveragePrice = sellSize > 0 ? sellCap / sellSize : 1000000000;
         });
     }
     getPositions() {
@@ -308,16 +302,8 @@ class BotMultiPositionClass extends bot_1.BotFrameClass {
             }
         });
     }
-    saveBotStatistics() {
-        return __awaiter(this, void 0, void 0, function* () {
-            yield this.saveToMongoDBUpsert(base_1.MONGODB_TABLE_BOTSTATISTICS, this.multiPositionStatistics, { botName: this._params.botName });
-        });
-    }
-    get multiPositionStatistics() {
-        return this._multiPositionsStatistics;
-    }
     get positionTableName() {
-        return types_1.MONGO_PATH_POSITIONS + '-' + this._params.mongoDbName;
+        return utils_trade_1.MONGODB_TABLE_POSITIONS + '-' + this._params.mongoDbName;
     }
 }
 exports.BotMultiPositionClass = BotMultiPositionClass;

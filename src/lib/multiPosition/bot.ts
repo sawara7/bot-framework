@@ -1,18 +1,8 @@
-import { 
-    getUnrealizedPL
-} from "utils-trade"
 import {
     ClosedOrderDict,
-    MONGO_PATH_POSITIONS,
-    MongoPosition,
-    MongoPositionDict,
-    MongoPositionRefProc,
     MultiPositionBotParams,
-    MultiPositionsStatistics,
-    CumulativePL,
     getActiveOrdersResult,
     getClosedOrdersResult,
-    getDefaultMultiPositionStatistics,
     sendCancelOrderResult,
     sendCloseOrderResult,
     sendOpenOrderResult
@@ -22,16 +12,22 @@ import {
 } from "../base/bot"
 import {
     MONGODB_TABLE_CUMULATIVEPL,
-    MONGODB_TABLE_BOTSTATISTICS
-} from "../base"
+    MONGODB_TABLE_POSITIONS,
+    MongoPosition,
+    MongoPositionDict,
+    MongoPositionRefProc,
+    CumulativePL,
+    getUnrealizedPL
+} from "utils-trade"
 
 
 export abstract class BotMultiPositionClass extends BotFrameClass {
     private _debugPositions: MongoPositionDict = {}
-    private _multiPositionsStatistics : MultiPositionsStatistics = getDefaultMultiPositionStatistics()
     private _activeOrderIDs: string[] = []
     private _activeOrders: string[] = []
     private _closedOrders: ClosedOrderDict = {}
+    public buyAveragePrice = 0
+    public sellAveragePrice = 0
 
     constructor(private _params: MultiPositionBotParams) {
         super(_params)
@@ -175,8 +171,7 @@ export abstract class BotMultiPositionClass extends BotFrameClass {
                     const openFee =  pos.openPrice * pos.openSize * openFeeRate
                     const closeFeeRate = (pos.closeOrderType === "limit"? this._params.feeLimitPercent: this._params.feeMarketPercent) / 100
                     const closeFee = pos.closePrice * pos.openSize * closeFeeRate
-                    const unrealizedPL = getUnrealizedPL(pos.openSide, this.currentTicker, pos.openPrice, pos.openSize) - openFee - closeFee
-                    this.cumulativeProfit += unrealizedPL
+                    const pl = getUnrealizedPL(pos.openSide, this.currentTicker, pos.openPrice, pos.openSize) - openFee - closeFee
                     pos.isOpened = false
                     pos.isClosed = false
                     pos.closePrice = 0
@@ -185,7 +180,7 @@ export abstract class BotMultiPositionClass extends BotFrameClass {
                     await this.updatePosition(pos)
                     const upl: CumulativePL = {
                         date: Date.now(),
-                        cumulativePL: unrealizedPL,
+                        cumulativePL: pl,
                         botName: this._params.botName
                     }
                     await this.saveToMongoDBInsert(MONGODB_TABLE_CUMULATIVEPL, upl)
@@ -209,7 +204,7 @@ export abstract class BotMultiPositionClass extends BotFrameClass {
             async (pos: MongoPosition)=> {
                 if (pos.isOpened && !pos.isClosed && pos.closeOrderID === ''){
                     // if Open状態でClose注文していない
-                    // do Close注文す
+                    // do Close注文する
                     const res = await this.sendCloseOrder(pos, true)
                     if (res.success) {
                         pos.closeOrderID = res.orderID
@@ -256,12 +251,13 @@ export abstract class BotMultiPositionClass extends BotFrameClass {
     protected abstract sendCloseOrder(pos: MongoPosition, force?: boolean): Promise<sendCloseOrderResult>
     protected abstract cancelOrder(pos: MongoPosition): Promise<sendCancelOrderResult>
 
+
     private async updateMultiPositionStatisticsAndUpdateActiveOrders(): Promise<void> {
-        let result = getDefaultMultiPositionStatistics()
         let buyCap = 0
         let sellCap = 0
+        let buySize = 0
+        let sellSize = 0
         this._activeOrderIDs = []
-        result.botName = this._params.botName
         await this.positionLoop(
             async (pos: MongoPosition)=> {
                 if (pos.openOrderID !== '') this._activeOrderIDs.push(pos.openOrderID)
@@ -269,20 +265,16 @@ export abstract class BotMultiPositionClass extends BotFrameClass {
                 if (!pos.isOpened) return
                 if (pos.isClosed) return
                 if (pos.openSide === "buy") {
-                    result.buySize += pos.openSize
+                    buySize += pos.openSize
                     buyCap += (pos.openSize * pos.openPrice)
-                    result.buyPositionNum++
                 } else if (pos.openSide === "sell") {
-                    result.sellSize += pos.openSize
+                    sellSize += pos.openSize
                     sellCap += (pos.openSize * pos.openPrice)
-                    result.sellPositionNum++  
                 }
-                result.unrealized += getUnrealizedPL(pos.openSide, this.currentTicker, pos.openPrice, pos.openSize)
             }
         )
-        result.buyAveragePrice = result.buySize > 0? buyCap / result.buySize: 0
-        result.sellAveragePrice = result.sellSize > 0? sellCap / result.sellSize: 1000000000
-        this._multiPositionsStatistics = result
+        this.buyAveragePrice = buySize > 0? buyCap / buySize: 0
+        this.sellAveragePrice = sellSize > 0? sellCap / sellSize: 1000000000
     }
 
     private async getPositions(): Promise<MongoPositionDict> {
@@ -330,20 +322,8 @@ export abstract class BotMultiPositionClass extends BotFrameClass {
         }
     }
 
-    protected async saveBotStatistics(): Promise<void> {
-        await this.saveToMongoDBUpsert(
-            MONGODB_TABLE_BOTSTATISTICS,
-            this.multiPositionStatistics,
-            {botName: this._params.botName}
-            )
-    }
-
-    get multiPositionStatistics(): MultiPositionsStatistics {
-        return this._multiPositionsStatistics
-    }
-
     private get positionTableName(): string {
-        return MONGO_PATH_POSITIONS + '-' + this._params.mongoDbName
+        return MONGODB_TABLE_POSITIONS + '-' + this._params.mongoDbName
     }
 
 }

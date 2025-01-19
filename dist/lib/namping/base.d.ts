@@ -1,9 +1,11 @@
-import { BotMultiPositionClass, MongoPosition, sendCloseOrderResult, sendOpenOrderResult } from "../multiPosition";
+import { BotMultiPositionClass, sendCloseOrderResult, sendOpenOrderResult } from "../multiPosition";
 import { LogicNampingClass, LogicNampingSettings } from "logic-namping";
 import { NampingBotParams } from "./types";
+import { MongoPosition } from "utils-trade";
 export declare abstract class BaseBotNampingClass extends BotMultiPositionClass {
     private _nampingParams;
     private _logic;
+    currentBadget: number;
     constructor(_nampingParams: NampingBotParams);
     protected abstract getBadget(): Promise<number>;
     protected updateBadget(): Promise<void>;

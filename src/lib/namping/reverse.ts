@@ -1,4 +1,4 @@
-import { MongoPosition } from "../multiPosition"
+import { MongoPosition } from "utils-trade"
 import { BaseBotNampingClass } from "./base"
 import { NampingBotParams } from "./types"
 
@@ -21,12 +21,12 @@ export abstract class BotNampingReverseClass extends BaseBotNampingClass {
             pos.openSide === "buy" &&
             this.currentTicker.ask >= openPrice &&
             openPrice > this.previousTicker.ask &&
-            this.multiPositionStatistics.buyAveragePrice < this.currentTicker.ask
+            this.buyAveragePrice < this.currentTicker.ask
             ) || (
             pos.openSide === "sell" &&
             this.currentTicker.bid <= openPrice &&
             openPrice < this.previousTicker.bid &&
-            this.multiPositionStatistics.sellAveragePrice > this.currentTicker.bid
+            this.sellAveragePrice > this.currentTicker.bid
             )) {
                 return true
         }

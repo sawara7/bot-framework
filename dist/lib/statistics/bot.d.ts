@@ -1,6 +1,6 @@
-import { TickerStatisticsCustomeParams, TickerStatisticsType } from "./types";
+import { TickerStatisticsCustomeParams } from "./types";
 import { BotFrameClass } from "../base/bot";
-import { Ticker } from "utils-trade";
+import { Ticker, TickerStatisticsType } from "utils-trade";
 export declare abstract class TickerStatisticsCustomeClass extends BotFrameClass {
     private _params;
     constructor(_params: TickerStatisticsCustomeParams);

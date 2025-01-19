@@ -1,5 +1,4 @@
-import { OrderSide } from "utils-trade"
-import { MongoPosition } from "../multiPosition"
+import { OrderSide, MongoPosition } from "utils-trade"
 import { BaseBotNampingClass } from "./base"
 import { NampingBotParams } from "./types"
 

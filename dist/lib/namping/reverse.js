@@ -31,10 +31,10 @@ class BotNampingReverseClass extends base_1.BaseBotNampingClass {
             if ((pos.openSide === "buy" &&
                 this.currentTicker.ask >= openPrice &&
                 openPrice > this.previousTicker.ask &&
-                this.multiPositionStatistics.buyAveragePrice < this.currentTicker.ask) || (pos.openSide === "sell" &&
+                this.buyAveragePrice < this.currentTicker.ask) || (pos.openSide === "sell" &&
                 this.currentTicker.bid <= openPrice &&
                 openPrice < this.previousTicker.bid &&
-                this.multiPositionStatistics.sellAveragePrice > this.currentTicker.bid)) {
+                this.sellAveragePrice > this.currentTicker.bid)) {
                 return true;
             }
             return false;

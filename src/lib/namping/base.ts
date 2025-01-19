@@ -1,6 +1,5 @@
 import {
     BotMultiPositionClass,
-    MongoPosition,
     getDefaultSendCloseOrderResult,
     getDefaultSendOpenOrderResult,
     sendCloseOrderResult,
@@ -13,9 +12,13 @@ import {
 import {
     NampingBotParams
 } from "./types"
+import {
+    MongoPosition
+} from "utils-trade"
 
 export abstract class BaseBotNampingClass extends BotMultiPositionClass {
     private _logic: LogicNampingClass
+    public currentBadget: number = 0
 
     constructor(private _nampingParams: NampingBotParams) {
         super(_nampingParams)
@@ -26,7 +29,7 @@ export abstract class BaseBotNampingClass extends BotMultiPositionClass {
 
     protected async updateBadget(): Promise<void> {
         if (this.isBackTest) {
-            this.currentBadget = this.initialBadget + this.cumulativeProfit // + this.unrealized
+            // this.currentBadget = this.initialBadget + this.cumulativeProfit // + this.unrealized
         } else {
             this.currentBadget = await this.getBadget()
         }

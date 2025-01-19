@@ -1,15 +1,15 @@
 import {
-    TickerStatisticsCustomeParams,
-    TickerStatisticsType,
+    TickerStatisticsCustomeParams
 } from "./types"
 import {
     BotFrameClass
 } from "../base/bot"
-import { Ticker } from "utils-trade"
 import {
+    Ticker,
     MONGODB_TABLE_TICKERSTATISTICS,
-    getTickerPath
-} from "../.."
+    getTickerPath,
+    TickerStatisticsType
+} from "utils-trade"
 import { floor } from "utils-general"
 
 export  abstract class TickerStatisticsCustomeClass extends BotFrameClass {
@@ -66,7 +66,7 @@ export  abstract class TickerStatisticsCustomeClass extends BotFrameClass {
     }
 
     protected async updateBadget(): Promise<void> {
-        this.currentBadget = 1
+        // do nothing
     }
 
     protected async updateTrade(): Promise<void> {

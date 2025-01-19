@@ -4,8 +4,7 @@ import {
 import {
     BotFrameClass
 } from "../base/bot"
-import { Ticker } from "utils-trade"
-import { getTickerPath } from "../base"
+import { Ticker, getTickerPath } from "utils-trade"
 
 export  abstract class TickerCollectorCustomeClass extends BotFrameClass {
     constructor(private _params: TickerCollectorCustomeClassParams) {
@@ -30,7 +29,7 @@ export  abstract class TickerCollectorCustomeClass extends BotFrameClass {
     }
 
     protected async updateBadget(): Promise<void> {
-        this.currentBadget = 1
+        // do nothing
     }
 
     protected async updateTrade(): Promise<void> {
