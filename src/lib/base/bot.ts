@@ -36,8 +36,8 @@ export abstract class BotFrameClass {
                 await this.updateTrade()
                 if (!this.isBackTest) {
                     this._botStatus.message = 'Normal.'
+                    this._botStatus.lastDate = Date.now()
                     await this.saveBotStatus()
-                    await this.saveBotStatistics()
                 }
             } catch(e) {
                 const err = e as Error
@@ -114,8 +114,6 @@ export abstract class BotFrameClass {
             {botName: this._baseParams.botName}
             )
     }
-
-    protected abstract saveBotStatistics(): Promise<void>
 
     protected async loadFromMongoDB(path: string, filter?:any): Promise<any> {
         if (!this.isBackTest && this.mongoDB) {

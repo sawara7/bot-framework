@@ -24,10 +24,6 @@ export  abstract class TickerCollectorCustomeClass extends BotFrameClass {
         }  
     }
 
-    protected async saveBotStatistics(): Promise<void> {
-        // do nothing    
-    }
-
     protected async updateBadget(): Promise<void> {
         // do nothing
     }

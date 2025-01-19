@@ -32,8 +32,8 @@ class BotFrameClass {
                     yield this.updateTrade();
                     if (!this.isBackTest) {
                         this._botStatus.message = 'Normal.';
+                        this._botStatus.lastDate = Date.now();
                         yield this.saveBotStatus();
-                        yield this.saveBotStatistics();
                     }
                 }
                 catch (e) {

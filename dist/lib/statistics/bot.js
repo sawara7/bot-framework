@@ -63,11 +63,6 @@ class TickerStatisticsCustomeClass extends bot_1.BotFrameClass {
             }
         });
     }
-    saveBotStatistics() {
-        return __awaiter(this, void 0, void 0, function* () {
-            // do nothing
-        });
-    }
     updateBadget() {
         return __awaiter(this, void 0, void 0, function* () {
             // do nothing
